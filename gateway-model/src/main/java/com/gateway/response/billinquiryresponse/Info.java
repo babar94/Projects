@@ -1,0 +1,28 @@
+package com.gateway.response.billinquiryresponse;
+
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class Info implements Serializable {
+
+	/**
+	 * 
+	 */
+
+	private static final long serialVersionUID = 8396436785949897705L;
+	private String responseCode;
+	private String responseDesc;
+	private String rrn;
+	private String stan;
+
+}

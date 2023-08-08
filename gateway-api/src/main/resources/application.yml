@@ -1,0 +1,123 @@
+jwt:
+  secret: javainuse
+  hours: 1
+  mins: 45
+  secs: 60
+  
+#hours*mins*secs
+  
+server:
+  port: 8082 
+  
+logging:
+  config: file:logback.xml
+
+debug: true
+ 
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
+    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=kartarpur_uat   
+    username: app_user
+    password: $3cUrity&6496
+    #username: paysys
+    #password: paysys
+#    url: jdbc:sqlserver://nbp-db.database.windows.net:1433;database=nbp;
+#    username: PAYSYS
+#    password: C:Flmysy.W3g
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 8
+      maximum-pool-size: 24
+      pool-name: sql-pool
+      auto-commit: true
+  jpa:
+    generate-ddl: false
+    open-in-view: false
+    hibernate:
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      ddl-auto: none #none update, create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+  mvc:
+      pathmatch:
+            matching-strategy: ant_path_matcher
+    
+springfox.documentation.swagger.v2.path: /docs
+
+swagger:
+  enabled: true  
+  
+api:
+  title: OPEN CONNECT API
+  description: REST Services for interacting with the exchange
+  version: 1.0
+  contact: 033333333
+  name: Paysys Labs
+  link: http://www.paysyslabs.com/
+  email: info@paysyslabs.com
+
+mpay:
+   external:
+      username: 'INPUTT'
+      password: ''
+      operand: 'EQ'
+      company: 'PK0010001'
+      columnName: 'LEGAL.ID'
+      criteriaValue: 'ACCOUNT'
+      
+
+service:
+  auth:
+    multilogin: true
+  customer:
+    password:
+      min-length: 8
+      max-length: 14
+    username:
+      min-length: 8
+      max-length: 14
+    registration:
+      password-length: 10
+    default-package: 1
+    count:
+      check: false
+    allowed:
+      count: 1
+    rda:
+      password-length: 10
+      default-package: 1  
+  url:
+    queue: http://10.0.110.1:7033/nbpl/queueforwarding/
+    simulator: http://13.73.143.92:7032/nbpl/queueforwarding/
+    sms: http://13.73.143.92:7034/api/SmsService/
+    email: http://13.73.143.92:7034/api/EmailService/
+    email.attachment: http://13.73.143.92:7034/api/EmailServiceWithAttachement/
+    senderName: 'NATIONAL Bank'
+    senderEmail: 'paysyslabstesting@gmail.com'
+#    queue: http://40.68.251.49:7033/nbpl/queueforwarding/
+#    simulator: http://40.68.251.49:7032/nbpl/queueforwarding/
+#    sms: http://40.68.251.49:7034/api/SmsService/
+#    email: http://40.68.251.49:7034/api/EmailService/
+#    email.attachment: http://40.68.251.49:7034/api/EmailServiceWithAttachement/
+    umps: http://13.73.143.92:65111/umps-api/gateway/v1/internal/hce/
+    
+  thread-pool:
+    notification: 4
+    activity-log: 4
+    audit-log: 4
+    login-audit-log: 4
+    balance-inquiry: 4
+  secret: paysys@123
+  timeout:
+    connect: 15000
+    read: 75000
+  concurrency:
+    maxtotal: 200
+    maxperroute: 100
+
+#simulator key
+mpay.calls.simulator: 0 

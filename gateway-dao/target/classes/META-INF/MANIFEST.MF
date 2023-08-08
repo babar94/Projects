@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: Muhammad Sajid
+Build-Jdk: 17.0.5
+Implementation-Title: gateway-dao
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.gateway
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/starter-parent/nbp-payment-gateway/gateway-dao
+Created-By: Maven Integration for Eclipse
+
