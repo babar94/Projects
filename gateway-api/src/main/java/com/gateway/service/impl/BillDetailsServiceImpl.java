@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gateway.entity.AggregatorsList;
-import com.gateway.entity.BillersList;
+import com.gateway.entity.BillerList;
 import com.gateway.entity.PaymentLog;
+import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
-import com.gateway.repository.AggregatorsListRepository;
 import com.gateway.repository.BillerListRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
+import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
 import com.gateway.response.BillPaymentInquiryValidationResponse;
 import com.gateway.response.billerlistresponse.BillerListResponse;
@@ -34,6 +34,7 @@ import com.gateway.service.BillDetailsService;
 import com.gateway.service.ParamsValidatorService;
 import com.gateway.service.PaymentLoggingService;
 import com.gateway.servicecaller.ServiceCaller;
+import com.gateway.utils.BillerConstant;
 import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
@@ -67,150 +68,194 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	@Autowired
 	ProvinceTransactionDao provinceTransactionDao;
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
-	AggregatorsListRepository aggregatorsListRepository;
-	
+	private SubBillerListRepository subBillerListRepository;
+
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@Override
-	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData,PaymentInquiryRequest request) {
+	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest request) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse paymentInquiryResponse = null;
-		AggregatorsList aggregatorDetail = null;
+		BillerList billerDetail = null;
 
 		Date strDate = new Date();
-		String rrn="";
-		String stan ="";
+		String rrn = "";
+		String stan = "";
+		SubBillersList subBiller;
 		InfoPayInq info = null;
-
+		String billerId = null;
+		String subBillerId = null;
 
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
-			BillPaymentInquiryValidationResponse billPaymentInquiryValidationResponse =null;
-			aggregatorDetail=aggregatorsListRepository.findByAggregatorId(request.getTxnInfo().getAggreagatorId());
-			if(aggregatorDetail!=null) {
-				billPaymentInquiryValidationResponse =  billPaymentInquiryValidations(httpRequestData, request);
-				if(billPaymentInquiryValidationResponse!=null) {
-					if(billPaymentInquiryValidationResponse.getResponseCode().equalsIgnoreCase("00")) {
-						
-						if(aggregatorDetail.getAggregatorName().equalsIgnoreCase("BEOE")) { // BEOE
-							paymentInquiryResponse = paymentInquiryBEOE(request,billPaymentInquiryValidationResponse);
-						}
-						else if(aggregatorDetail.getAggregatorName().equalsIgnoreCase("PRAL")) { //PRAL
-							paymentInquiryResponse = paymentInquiryPRAL(request,billPaymentInquiryValidationResponse);
-						}
-//						else if(aggregatorDetail.getAggregatorName().equalsIgnoreCase("NADRA")) { //NADRA
-//							billInquiryResponse = billInquiryNADRA(request,billInquiryValidationResponse);
-//						}
-//						else if(aggregatorDetail.getAggregatorName().equalsIgnoreCase("PTA")) { //PTA
-//							billInquiryResponse = billInquiryPTA(request,billInquiryValidationResponse);		
-//						}
-						else {
-							info = new InfoPayInq(Constants.ResponseCodes.UNABLE_TO_PROCESS,
-									Constants.ResponseDescription.UNABLE_TO_PROCESS, rrn, stan);
+			BillPaymentInquiryValidationResponse billPaymentInquiryValidationResponse = null;
+			// billerDetail=billerListRepository.findByBillerId(request.getTxnInfo().getBillerId());
+
+			// TODO: here we have changed BillerId()
+						billerId = request.getTxnInfo().getBillerId().substring(0, 2);
+						subBillerId = request.getTxnInfo().getBillerId().substring(2);
+						billerDetail = billerListRepository.findByBillerId(billerId).orElse(null);
+
+						if (billerDetail != null) {
+							subBiller = subBillerListRepository.findBySubBillerIdAndBiller(subBillerId, billerDetail).orElse(null);
+							if (subBiller != null) {
+
+								billPaymentInquiryValidationResponse = billPaymentInquiryValidations(httpRequestData, request, billerId);
+								if (billPaymentInquiryValidationResponse != null) {
+									if (billPaymentInquiryValidationResponse.getResponseCode().equalsIgnoreCase("00")) {
+
+										if (billerDetail.getBillerName().equalsIgnoreCase("BEOE")) { // BEOE
+
+											switch (subBiller.getSubBillerName()) {
+											case BillerConstant.BEOE.BEOE:
+												paymentInquiryResponse = paymentInquiryBEOE(request, billPaymentInquiryValidationResponse);
+												break;
+
+											default:
+												LOG.info("subBiller does not exists.");
+												info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+														Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+												paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+												break;
+
+											}
+										} else if (billerDetail.getBillerName().equalsIgnoreCase("PRAL")) { // PRAL
+
+											switch (subBiller.getSubBillerName()) {
+
+											case BillerConstant.PRAL.KPPSC:
+												paymentInquiryResponse = paymentInquiryPRAL(request, billPaymentInquiryValidationResponse);
+												break;
+
+											default:
+												LOG.info("subBiller does not exists.");
+												info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+														Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+												paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+
+												break;
+											}
+
+										} else {
+											info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+													Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+											paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+										}
+
+									} else {
+										info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+												Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+										paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+									}
+								} else {
+									info = new InfoPayInq(Constants.ResponseCodes.SERVICE_FAIL,
+											Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+									paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+								}
+							} else {
+								info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+										Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+								paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+
+							}
+						} else {
+							info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.INVALID_INPUT_DATA,
+									rrn, stan);
 							paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 						}
-			
-						
-					}else {
-						info = new InfoPayInq(Constants.ResponseCodes.UNABLE_TO_PROCESS,
-								Constants.ResponseDescription.UNABLE_TO_PROCESS, rrn, stan);
-						paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
-					}
-				}else {
-					info = new InfoPayInq(Constants.ResponseCodes.UNABLE_TO_PROCESS,
-							Constants.ResponseDescription.UNABLE_TO_PROCESS, rrn, stan);
-					paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
-				}
-			}else {
-				
-			}
 
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
 
-		} 
+		}
 
 		return paymentInquiryResponse;
 
 	}
-	
-	
-	public BillPaymentInquiryValidationResponse billPaymentInquiryValidations(HttpServletRequest httpRequestData,PaymentInquiryRequest request) {
+
+	public BillPaymentInquiryValidationResponse billPaymentInquiryValidations(HttpServletRequest httpRequestData,
+			PaymentInquiryRequest request,String billerId) {
 		BillPaymentInquiryValidationResponse response = new BillPaymentInquiryValidationResponse();
 		String channel = "";
 		String username = "";
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
-		BillersList billersList = null;
-		
+		BillerList billersList = null;
+
 		Date strDate = new Date();
-		List<PaymentLog> paymentHistory =null;
+		List<PaymentLog> paymentHistory = null;
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 			LOG.info("Calling Payment Inquiry");
 			LOG.info("Payment Inquiry Request {}", request);
-			
+
 			ObjectMapper reqMapper = new ObjectMapper();
 			String requestAsString = reqMapper.writeValueAsString(request);
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
-			
+
 			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 
-				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.INVALID_DATA,rrn,stan);
+				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 				return response;
 			}
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
-				username=result[0];
-				channel=result[1];
-				
-			}catch(Exception ex) {
+				username = result[0];
+				channel = result[1];
+
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			
-			//RRN a validation First check payment Hsitory
+
+			// RRN a validation First check payment Hsitory
 			paymentHistory = paymentLogRepository.findByRrn(rrn);
-			if(paymentHistory!=null && !paymentHistory.isEmpty()) {
-				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.DUPLICATE_TRANSACTION, Constants.ResponseDescription.DUPLICATE_TRANSACTION,
-						rrn, stan);
+			if (paymentHistory != null && !paymentHistory.isEmpty()) {
+				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
 				return response;
 			}
-			
+
 			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
-				billersList = billerListRepository.findByBillerId(request.getTxnInfo().getBillerId());// biller id
+				billersList = billerListRepository.findByBillerId(request.getTxnInfo().getBillerId()).orElse(null);// biller
+																													// id
 				if (billersList == null) {
-					response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.INVALID_DATA,
-							rrn, stan);
+					response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 					return response;
 				}
 			}
-			
-			response = new BillPaymentInquiryValidationResponse("00","SUCCESS", username, channel, rrn, stan);
-			
-		}catch(Exception ex) {
+
+			response = new BillPaymentInquiryValidationResponse("00", "SUCCESS", username, channel, rrn, stan);
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		return response;
-		
+
 	}
-	
-	public PaymentInquiryResponse paymentInquiryBEOE(PaymentInquiryRequest request,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+
+	public PaymentInquiryResponse paymentInquiryBEOE(PaymentInquiryRequest request,
+			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse response = null;
 
 		Date strDate = new Date();
-		String rrn="";
-		String stan ="";
+		String rrn = "";
+		String stan = "";
 		GetVoucherResponse getVoucherResponse = null;
-		List<PaymentLog> paymentHistory =null;
+		List<PaymentLog> paymentHistory = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -228,16 +273,16 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String tranDate = "";
 		String tranTime = "";
 		String province = "";
-		String paymentReferenceDb="";
+		String paymentReferenceDb = "";
 		String channel = "";
 		String username = "";
 
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 			LOG.info("Calling Payment Inquiry");
-			
+
 			ArrayList<String> inquiryParams = new ArrayList<String>();
-			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.BILL_INQUIRY);
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.BEOE_BILL_INQUIRY);
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
@@ -246,16 +291,17 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 					Constants.ACTIVITY.BillInquiry);
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
-					billStatus=getVoucherResponse.getResponse().getGetvoucher().getStatus();
-					if (getVoucherResponse.getResponse().getGetvoucher().getStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+					billStatus = getVoucherResponse.getResponse().getGetvoucher().getStatus();
+					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
+							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
 							LOG.info("Calling PAyment Inquiry");
 							paymentHistory = paymentLogRepository
 									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
-											request.getTxnInfo().getBillerId(),
-											request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID,
-											Constants.ACTIVITY.BillPayment,Constants.ResponseCodes.OK);
-							
+											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+
 							if (paymentHistory != null && !paymentHistory.isEmpty()) {
 
 								PaymentLog paymentLogRecord = paymentHistory.get(0);
@@ -305,7 +351,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						} catch (Exception ex) {
 //							exception = ex;
 
-							LOG.error("{}", ex);
+							LOG.error("Exception{}", ex);
 
 						}
 
@@ -318,7 +364,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						return response;
 
 					}
-				}else if (getVoucherResponse.getResponse().getResponse_code().equals("404")) {
+				} else if (getVoucherResponse.getResponse().getResponse_code().equals("404")) {
 					info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
 							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 					response = new PaymentInquiryResponse(info, null, null);
@@ -350,28 +396,26 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			try {
 
-				ObjectMapper reqMapper = new ObjectMapper();
-				String requestAsString = reqMapper.writeValueAsString(request);
-
-				ObjectMapper respMapper = new ObjectMapper();
-				String responseAsString = respMapper.writeValueAsString(response);
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate,
-						request.getInfo().getRrn(),Long.parseLong(request.getTxnInfo().getBillerId()),request.getTxnInfo().getBillNumber(),channel,username);
+						request.getInfo().getRrn(), Long.parseLong(request.getTxnInfo().getBillerId()),
+						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
-				LOG.error("{}", ex);
+				LOG.error("Exception {}", ex);
 			}
 
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
-						dbAmount, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
+						dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, tranDate, tranTime, province,"");
+						dbTotal, channel, billStatus, tranDate, tranTime, province, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -383,18 +427,19 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		return response;
 
 	}
-	
-	public PaymentInquiryResponse paymentInquiryPRAL(PaymentInquiryRequest request,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+
+	public PaymentInquiryResponse paymentInquiryPRAL(PaymentInquiryRequest request,
+			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse response = null;
-		BillersList billersList = null;
+		BillerList billersList = null;
 
 		Date strDate = new Date();
-		String rrn="";
-		String stan ="";
+		String rrn = "";
+		String stan = "";
 		GetVoucherResponse getVoucherResponse = null;
-		List<PaymentLog> paymentHistory =null;
+		List<PaymentLog> paymentHistory = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -412,7 +457,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String tranDate = "";
 		String tranTime = "";
 		String province = "";
-		String paymentReferenceDb="";
+		String paymentReferenceDb = "";
 		String channel = "";
 		String username = "";
 
@@ -420,9 +465,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 			LOG.info("Calling Payment Inquiry");
 			LOG.info("Payment Inquiry Request {}", request);
-			
+
 			ArrayList<String> inquiryParams = new ArrayList<String>();
-			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.BILL_INQUIRY);
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PRAL_BILL_INQUIRY);
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
@@ -431,15 +476,16 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 					Constants.ACTIVITY.BillInquiry);
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
-					billStatus=getVoucherResponse.getResponse().getGetvoucher().getStatus();
-					if (getVoucherResponse.getResponse().getGetvoucher().getStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+					billStatus = getVoucherResponse.getResponse().getGetvoucher().getStatus();
+					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
+							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
 							LOG.info("Calling PAyment Inquiry");
 							paymentHistory = paymentLogRepository
 									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
-											request.getTxnInfo().getBillerId(),
-											request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID,
-											Constants.ACTIVITY.BillPayment,Constants.ResponseCodes.OK);
+											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
 							if (paymentHistory != null && !paymentHistory.isEmpty()) {
 
 								PaymentLog paymentLogRecord = paymentHistory.get(0);
@@ -502,7 +548,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						return response;
 
 					}
-				}else if (getVoucherResponse.getResponse().getResponse_code().equals("404")) {
+				} else if (getVoucherResponse.getResponse().getResponse_code().equals("404")) {
 					info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
 							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 					response = new PaymentInquiryResponse(info, null, null);
@@ -542,7 +588,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate,
-						request.getInfo().getRrn(),Long.parseLong(request.getTxnInfo().getBillerId()),request.getTxnInfo().getBillNumber(),channel,username);
+						request.getInfo().getRrn(), Long.parseLong(request.getTxnInfo().getBillerId()),
+						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -552,10 +599,10 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
-						dbAmount, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
+						dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, tranDate, tranTime, province,"");
+						dbTotal, channel, billStatus, tranDate, tranTime, province, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -582,21 +629,21 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		try {
 			LOG.info("Getting biller list");
 			UtilMethods.generalLog("IN - getBillerList  " + strDate, LOG);
-			
+
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
-				username=result[0];
-				channel=result[1];
-				
-			}catch(Exception ex) {
+				username = result[0];
+				channel = result[1];
+
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			List<BillersList> billers = billerListRepository.findAll();
+			List<BillerList> billers = billerListRepository.findAll();
 			ArrayList<Billers> bill = new ArrayList<Billers>();
 
 			if (billers != null) {
-				
-				for (BillersList temp : billers) {
+
+				for (BillerList temp : billers) {
 					Billers billerDetail = new Billers();
 					billerDetail.setBillerId(temp.getBillerId());
 					billerDetail.setBillerName(temp.getBillerName());
@@ -629,8 +676,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				String responseAsString = respMapper.writeValueAsString(response);
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.GetBillerList, response.getInfo().getResponseCode(),
-						response.getInfo().getResponseDesc(), "", responseAsString, strDate, strDate,
-						null,null,null,channel,username);
+						response.getInfo().getResponseDesc(), "", responseAsString, strDate, strDate, null, null, null,
+						channel, username);
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
 			}

@@ -22,5 +22,6 @@ public interface ConfigurationManagementService {
 	public GenericResponse<List<CredentialsListAttribute>> getCredentialsList();
 	public GenericResponse<String> disableChannel(ChannelConfigurationRequest user);
 	public GenericResponse<String> enableChannel(ChannelConfigurationRequest user);
+
 }
 

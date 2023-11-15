@@ -51,6 +51,7 @@ public class BillController extends ApiController {
 
 			LOG.info("bill Controller - Bill Payment");
 			try {
+			
 				response = billInquiryService.billInquiry(httpRequestData, request);
 
 			} catch (Exception ex) {
@@ -60,7 +61,7 @@ public class BillController extends ApiController {
 			return response;
 
 		} catch (Exception ex) {
-			LOG.error("{}", ex);
+			LOG.error("Exception in billInquiry method{}", ex);
 		}
 		return response;
 
@@ -72,7 +73,6 @@ public class BillController extends ApiController {
 			throws IOException {
 
 		BillPaymentResponse response = null;
-
 		LOG.info("bill Controller - Bill Payment");
 		try {
 
@@ -129,4 +129,6 @@ public class BillController extends ApiController {
 
 	}
 
-}
+	
+	}
+

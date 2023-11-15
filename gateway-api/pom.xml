@@ -116,12 +116,13 @@
         <version>2.0.1.Final</version>
     </dependency>
     
+    <!-- 
    <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>6.1.6.Final</version>
     </dependency>
-
+-->
 	</dependencies>
 
 	<build>
@@ -133,6 +134,19 @@
 					<executable>true</executable>
 				</configuration>
 			</plugin>
+			<!-- <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>8.4.0</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+            -->
 		</plugins>
 	</build>
 

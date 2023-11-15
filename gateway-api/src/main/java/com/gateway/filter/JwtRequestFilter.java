@@ -46,25 +46,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
+		log.info("JwtRequestFilter execution");
 		CustomHttpRequestBody wrappedRequest = null;
-		boolean basicHeader = false;
+	
 		String requestTokenHeader = request.getHeader("X-Auth-Token");
-		if (requestTokenHeader == null) {
+		if(requestTokenHeader==null) {
 			requestTokenHeader = request.getHeader("Authorization");
-			if (requestTokenHeader != null)
-				basicHeader = requestTokenHeader.startsWith("Basic");
 		}
 
-		if ((basicHeader && request.getRequestURI().equals("/api/v1/bill/Payments/BillInquiry"))
-				|| (basicHeader && request.getRequestURI().equals("/api/v1/bill/Payments/BillPayment"))) {
 
-			chain.doFilter(request, response);
-			return;
-		}
+		
 
-		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")
-				&& !(request.getRequestURI().equals("/api/v1/bill/Payments/BillInquiry")
-						|| request.getRequestURI().equals("/api/v1/bill/Payments/BillPayment"))) {
+		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
 
 			// JWT Token present, process JWT Authentication logic here
 			String jwtToken = requestTokenHeader.substring(7);
@@ -80,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 								userDetails, null, userDetails.getAuthorities());
 						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-						// Added new Work forx custom Request..
+					
 						wrappedRequest = new CustomHttpRequestBody((HttpServletRequest) request);
 					}
 				}
@@ -95,12 +88,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		} else {
 			// Invalid token header, handle accordingly
 			logger.warn("JWT Token does not begin with Bearer String");
-			log.info("RequestUri:"+request.getRequestURI());
-			log.info("RequestUri:"+request.getRequestURI());
-			log.info("RequestUri:"+request.getRequestURI().equalsIgnoreCase("/swagger-ui.html"));
-			if (request.getRequestURI().equalsIgnoreCase("/api/v1/authenticate") || request.getRequestURI().equalsIgnoreCase("swagger-ui.html")) {
-				chain.doFilter(request, response);
-				return;
 			}
 //			AuthenticationResponse authResponse = new AuthenticationResponse(Constants.ResponseCodes.UNAUTHORISED,
 //					Constants.ResponseDescription.UNAUTHORISED_WRONG_CREDENTIALS);
@@ -113,7 +100,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //			response.getWriter().close();
 //			return;
 
-		}
+		
 
 		if (wrappedRequest == null)
 			chain.doFilter(request, response);

@@ -16,6 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class BillPaymentResponse implements Serializable {
 
 	private static final long serialVersionUID = 8225334744231345997L;

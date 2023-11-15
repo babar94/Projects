@@ -10,6 +10,6 @@ import com.gateway.response.billinquiryresponse.OneLinkBillInquiryResponse;
 public interface BillInquiryService {
 
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData,BillInquiryRequest request);
-	public OneLinkBillInquiryResponse oneLinkBillInquiry(HttpServletRequest httpRequestData,OneLinkBillInquiryRequest request);
+//	public OneLinkBillInquiryResponse oneLinkBillInquiry(HttpServletRequest httpRequestData,OneLinkBillInquiryRequest request);
 
 }

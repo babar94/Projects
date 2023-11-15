@@ -70,8 +70,10 @@ public class Constants {
 
 	public static class MPAY_REQUEST_METHODS {
 
-		public static final String BILL_INQUIRY = "GetVoucher"; // Nadra Call for voucher inquiry
-		public static final String BILL_PAYMENT = "UpdateVoucher"; // Nadra Call for voucher payment
+		public static final String BEOE_BILL_INQUIRY = "GetVoucher"; // Nadra Call for voucher inquiry
+		public static final String BEOE_BILL_PAYMENT = "UpdateVoucher"; // Nadra Call for voucher payment
+		public static final String PRAL_BILL_INQUIRY = "PAGetPaymentByPSID"; // Nadra Call for voucher inquiry
+		public static final String PRAL_BILL_PAYMENT = "PAUpdateBillPaymentStatus"; // Nadra Call for voucher payment
 
 	}
 
