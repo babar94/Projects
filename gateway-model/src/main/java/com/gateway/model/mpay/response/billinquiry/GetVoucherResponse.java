@@ -20,4 +20,11 @@ import lombok.ToString;
 public class GetVoucherResponse implements Serializable {
 	private static final long serialVersionUID = 8396436785949897705L;
 	private Response response;
+	
+	
+
+	
+	
+	
+	
 }

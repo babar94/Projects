@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name="nbp_pgw_mpay_log")
+@Table(name="api_gw_mpay_log")
 @Getter
 @Setter
 @AllArgsConstructor

@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.response.AuthenticationResponse;
 import com.gateway.service.CredentialDetailsService;
+import com.gateway.service.impl.CustomCredentialsServiceImpl;
 import com.gateway.utils.Constants;
 import com.gateway.utils.JwtTokenUtil;
 
@@ -37,7 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	public static final String RRN_SESSION_KEY = "rrn";
 
 	@Autowired
-	private CredentialDetailsService jwtUserDetailsService;
+	private CustomCredentialsServiceImpl credentialsServiceImpl;
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -48,14 +49,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		log.info("JwtRequestFilter execution");
 		CustomHttpRequestBody wrappedRequest = null;
-	
+
 		String requestTokenHeader = request.getHeader("X-Auth-Token");
-		if(requestTokenHeader==null) {
+		if (requestTokenHeader == null) {
 			requestTokenHeader = request.getHeader("Authorization");
 		}
-
-
-		
 
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
 
@@ -66,14 +64,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
 				if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-					UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+					UserDetails userDetails = credentialsServiceImpl.loadUserByUsername(username);
 
 					if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 						UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 								userDetails, null, userDetails.getAuthorities());
 						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-					
+
 						wrappedRequest = new CustomHttpRequestBody((HttpServletRequest) request);
 					}
 				}
@@ -88,7 +86,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		} else {
 			// Invalid token header, handle accordingly
 			logger.warn("JWT Token does not begin with Bearer String");
-			}
+		}
 //			AuthenticationResponse authResponse = new AuthenticationResponse(Constants.ResponseCodes.UNAUTHORISED,
 //					Constants.ResponseDescription.UNAUTHORISED_WRONG_CREDENTIALS);
 //			ObjectMapper objectMapper = new ObjectMapper();
@@ -99,8 +97,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //			response.getWriter().flush();
 //			response.getWriter().close();
 //			return;
-
-		
 
 		if (wrappedRequest == null)
 			chain.doFilter(request, response);
@@ -125,6 +121,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 ////			return servletPath.equals("/swagger-ui/index.html") || requestURI.endsWith("//swagger-ui/index.html");
 ////		}
 
-
-		
 }

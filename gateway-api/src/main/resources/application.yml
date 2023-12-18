@@ -19,7 +19,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
-    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=kartarpur_uat   
+    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true  
     username: app_user
     password: $3cUrity&6496
     #username: paysys
@@ -42,9 +42,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
-  mvc:
-      pathmatch:
-            matching-strategy: ant_path_matcher
+#  mvc:
+#      pathmatch:
+#            matching-strategy: ant_path_matcher
     
 springfox.documentation.swagger.v2.path: /docs
 

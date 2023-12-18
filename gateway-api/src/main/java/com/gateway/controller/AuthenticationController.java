@@ -1,6 +1,7 @@
 package com.gateway.controller;
 
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,10 @@ public class AuthenticationController extends ApiController {
 
 	@ApiOperation(value = "Open Connect - Authenticate", notes = "Authenticate")
 	@RequestMapping(value = ApiController.AUTHENTICATE_URL, method = RequestMethod.POST)
-	public AuthenticationResponse createAuthenticationToken(
-			@RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpRequestData)
-			throws Exception {
-		LOG.info("Authentication Controller - Calling Authenticate");
+	public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,
+			HttpServletRequest httpRequestData) throws Exception {
+			
 		return credentialDetailsService.authenticatedToken(authenticationRequest);
 	}
 
 }
-	

@@ -11,7 +11,7 @@ public class Constants {
 		public static final String CONSUMER_NUMBER_BLOCK = "02";
 		public static final String UNKNOWN_ERROR = "03";
 		public static final String INVALID_DATA = "04";
-		//public static final String INVALID_BILLER_DATA = "04";
+		// public static final String INVALID_BILLER_DATA = "04";
 		public static final String SERVICE_FAIL = "05";
 		public static final String BILL_ALREADY_PAID = "06";
 		public static final String BAD_TRANSACTION = "07";
@@ -33,7 +33,7 @@ public class Constants {
 		public static final String CONSUMER_NUMBER_BLOCK = "Consumer Number Block.";
 		public static final String UNKNOWN_ERROR = "Unknown Error / Bad Transaction.";
 		public static final String INVALID_DATA = "Invalid Data.";
-		//public static final String INVALID_BILLER_DATA = "Invalid Biller Id.";
+		// public static final String INVALID_BILLER_DATA = "Invalid Biller Id.";
 		public static final String SERVICE_FAIL = "Processing Failed";
 		public static final String BILL_ALREADY_PAID = "Bill Already Paid";
 		public static final String BAD_TRANSACTION = "Unknown Error / Bad Transaction";
@@ -74,14 +74,24 @@ public class Constants {
 		public static final String BEOE_BILL_PAYMENT = "UpdateVoucher"; // Nadra Call for voucher payment
 		public static final String PRAL_BILL_INQUIRY = "PAGetPaymentByPSID"; // Nadra Call for voucher inquiry
 		public static final String PRAL_BILL_PAYMENT = "PAUpdateBillPaymentStatus"; // Nadra Call for voucher payment
+		public static final String OFFLINE_BILLER_INQUIRY = "offline-biller-getvoucher";
+		public static final String OFFLINE_BILLER_PAYMENT = "offline-biller-updatevoucher";
 
 	}
 
 	public static class BILL_STATUS {
 
-		public static final String BILL_PAID = "paid"; // Nadra Call for voucher inquiry
-		public static final String BILL_UNPAID = "unpaid"; // Nadra Call for voucher payment
-		public static final String BILL_BLOCK = "block"; // Nadra Call for voucher payment
+		public static final String BILL_PAID = "Paid"; // Nadra Call for voucher inquiry
+		public static final String BILL_UNPAID = "Unpaid"; // Nadra Call for voucher payment
+		public static final String BILL_BLOCK = "Block"; // Nadra Call for voucher payment
+		public static final String BILL_EXPIRED = "Expired";
+
+	}
+
+	public static class BillerType {
+
+		public static final String OFFLINE_BILLER = "offline";
+		public static final String ONLINE_BILLER = "online";
 
 	}
 

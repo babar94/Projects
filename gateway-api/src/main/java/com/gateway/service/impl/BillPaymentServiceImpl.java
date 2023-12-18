@@ -5,21 +5,23 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gateway.entity.BillerList;
+import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.UpdateVoucherResponse;
-import com.gateway.repository.BillerListRepository;
+import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
 import com.gateway.repository.SubBillerListRepository;
@@ -59,8 +61,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	private ServiceCaller serviceCaller;
 
 	@Autowired
-	private BillerListRepository billerListRepository;
-
+	// private BillerListRepository billerListRepository;
+	private BillerConfigurationRepo billerConfigurationRepo;
 	@Autowired
 	private PaymentLogRepository paymentLogRepository;
 
@@ -85,12 +87,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("Inside method Bill Payment");
 		BillPaymentResponse billPaymentResponse = null;
 		InfoPay infoPay = null;
-		BillerList billerDetail = null;
-		SubBillersList subBiller;
 
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
-		String billerId = null;
+		String parentBillerId = null;
 		String subBillerId = null;
 
 		try {
@@ -98,77 +98,85 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			// billerList =
 			// billerListRepository.findByBillerId(request.getTxnInfo().getAggregatorId());
 
-			billerId = request.getTxnInfo().getBillerId().substring(0, 3);
+			parentBillerId = request.getTxnInfo().getBillerId().substring(0, 3);
 			subBillerId = request.getTxnInfo().getBillerId().substring(3);
-			billerDetail = billerListRepository.findByBillerId(billerId).orElse(null);
+			Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo.findByBillerId(parentBillerId);
 
-			if (billerDetail != null) {
-				subBiller = subBillerListRepository.findBySubBillerIdAndBiller(subBillerId, billerDetail).orElse(null);
-				if (subBiller != null) {
+			if (billerConfiguration.isPresent()) {
+				BillerConfiguration billerDetail = billerConfiguration.get();
+				String type = billerDetail.getType();
+				Boolean isActive = billerDetail.getIsActive();
 
-					billPaymentValidationResponse = billPaymentValidations(httpRequestData, request, billerId);
-					if (billPaymentValidationResponse != null) {
-						if (billPaymentValidationResponse.getResponseCode().equalsIgnoreCase("00")) {
+				if (isActive) {
+					Optional<SubBillersList> subBiller = subBillerListRepository
+							.findBySubBillerIdAndBillerConfiguration(subBillerId, billerDetail);
+					if (subBiller.isPresent()) {
+						SubBillersList subBillerDetail = subBiller.get();
+						billPaymentValidationResponse = billPaymentValidations(httpRequestData, request,
+								parentBillerId);
+						if (billPaymentValidationResponse != null) {
+							if (billPaymentValidationResponse.getResponseCode().equalsIgnoreCase("00")) {
 
-							if (billerDetail.getBillerName().equalsIgnoreCase("BEOE")) { // BEOE
+								if (billerDetail.getBillerName().equalsIgnoreCase("BEOE")) { // BEOE
 
-								switch (subBiller.getSubBillerName()) {
-								case BillerConstant.BEOE.BEOE:
-									billPaymentResponse = billPaymentBEOE(request, billPaymentValidationResponse);
-									break;
+									switch (subBillerDetail.getSubBillerName()) {
+									case BillerConstant.BEOE.BEOE:
+										billPaymentResponse = billPaymentBEOE(request, billPaymentValidationResponse);
+										break;
 
-								default:
-									LOG.info("subBiller does not exists.");
+									default:
+										LOG.info("subBiller does not exists.");
+										infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+												Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+										billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+										break;
+
+									}
+								} else if (billerDetail.getBillerName().equalsIgnoreCase("PRAL")) { // PRAL
+
+									switch (subBillerDetail.getSubBillerName()) {
+
+									case BillerConstant.PRAL.KPPSC:
+										billPaymentResponse = billPaymentPRAL(request, billPaymentValidationResponse);
+										break;
+
+									default:
+										LOG.info("subBiller does not exists.");
+										infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+												Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+										billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+										break;
+									}
+
+								} else {
+									LOG.info("Biller does not exists.");
 									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
 											Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
 									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
-									break;
-
-								}
-							} else if (billerDetail.getBillerName().equalsIgnoreCase("PRAL")) { // PRAL
-
-								switch (subBiller.getSubBillerName()) {
-
-								case BillerConstant.PRAL.KPPSC:
-									billPaymentResponse = billPaymentPRAL(request, billPaymentValidationResponse);
-									break;
-
-								default:
-									LOG.info("subBiller does not exists.");
-									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-											Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
-									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
-
-									break;
 								}
 
 							} else {
-								LOG.info("Biller does not exists.");
 								infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
 										Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
 								billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 							}
-
 						} else {
-							infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-									Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 							billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 						}
 					} else {
-						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+						infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+								Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
 						billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
 					}
 				} else {
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
 							Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
 					billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
-
 				}
-			} else {
-				infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
-				billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 			}
 		} catch (Exception ex) {
 			LOG.error("Exception in billPayment method {} " + ex);
@@ -199,7 +207,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			String requestAsString = reqMapper.writeValueAsString(request);
 
 			ProvinceTransaction provinceTransaction = null;
-			BillerList billerDetail = null;
 
 			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
@@ -232,9 +239,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 
 			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
-				billerDetail = billerListRepository.findByBillerId(request.getTxnInfo().getBillerId()).orElse(null);// biller
-																													// id
-				if (billerDetail == null) {
+
+				Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo
+						.findByBillerId(request.getTxnInfo().getBillerId());
+
+				if (!billerConfiguration.isPresent()) {
+
 					response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 					return response;

@@ -1,6 +1,6 @@
 package com.gateway.service;
 
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;

@@ -15,7 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "nbp_pgw_credentials")
+@Table(name = "api_gw_credentials")
 @Getter
 @Setter
 @AllArgsConstructor

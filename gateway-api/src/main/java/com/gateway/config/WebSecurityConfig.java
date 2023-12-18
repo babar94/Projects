@@ -20,11 +20,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.gateway.api.ApiController;
 import com.gateway.authentication.JwtAuthenticationEntryPoint;
 import com.gateway.filter.JwtRequestFilter;
+import com.gateway.service.impl.CustomCredentialsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc
-@EnableGlobalMethodSecurity(prePostEnabled =  true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //	@Value("${springfox.documentation.swagger.v2.path:#{null}}")
@@ -32,29 +33,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Value("${swagger.enabled:false}")
 //	private Boolean swaggerEnabled;
 
-	
-	public static final String[] PUBLIC_URLS={"/api/v1/authenticate","/v3/api-docs","/v2/api-docs","/swagger-resources/**","/swagger-ui/**",
-            "/webjars/**"
-    };
+	public static final String[] PUBLIC_URLS = { "/api/v1/authenticate", "/v3/api-docs", "/v2/api-docs",
+			"/swagger-resources/**", "/swagger-ui/**", "/webjars/**" };
 
-	
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Autowired
-	private UserDetailsService jwtUserDetailsService;
+	private CustomCredentialsServiceImpl customCredentialsServiceImpl;
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// configure AuthenticationManager so that it knows from where to load
-		// user for matching credentials
-		// Use BCryptPasswordEncoder
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -70,22 +59,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// don't authenticate this particular request
-		
-				.authorizeRequests()
-			//	.antMatchers("/swagger-ui.html","/v3/api-docs").permitAll()
-				.antMatchers(PUBLIC_URLS).permitAll()
-				.antMatchers(ApiController.BILL_URL + "/billinquiry", ApiController.BILL_URL + "/billpayment")
-				.authenticated().antMatchers("/**").authenticated()
-				// all other requests need to be authenticated
-				.anyRequest().authenticated().and()
-				// configure Basic authentication
-				.httpBasic().and()
-				// configure JWT authentication
-				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-				// configure session management
-				.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+		httpSecurity.csrf().disable().authorizeRequests().antMatchers(PUBLIC_URLS).permitAll() // Public URLs are
+																								// permitted for all
+				.anyRequest().authenticated() // All other requests require authentication
+				.and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
@@ -110,11 +88,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		}
 //		return endpoints;
 //	}
-	
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-	    web.ignoring().antMatchers("/swagger-ui/**", "/swagger-ui.html", "/webjars/**");
+		web.ignoring().antMatchers("/swagger-ui/**", "/swagger-ui.html", "/webjars/**");
 	}
 
-	
 }
