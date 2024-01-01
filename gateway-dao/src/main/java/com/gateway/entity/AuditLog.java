@@ -17,14 +17,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "nbp_pgw_audit_log")
+//@Table(name = "nbp_epayment_portal_gw_audit_log")
+@Table(name = "api_gw_audit_log1")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class AuditLog implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -54,19 +54,19 @@ public class AuditLog implements Serializable {
 
 	@Column(name = "response_datetime")
 	private Date responsetDatetime;
-	
+
 	@Column(name = "rrn")
 	private String rrn;
-	
+
 	@Column(name = "biller_Id")
-	private Long billerId;
-	
+	private String billerId;
+
 	@Column(name = "biller_Number")
 	private String billerNumber;
-	
+
 	@Column(name = "channel")
 	private String channel;
-	
+
 	@Column(name = "username")
 	private String username;
 

@@ -11,6 +11,9 @@ public class Constants {
 		public static final String CONSUMER_NUMBER_BLOCK = "02";
 		public static final String UNKNOWN_ERROR = "03";
 		public static final String INVALID_DATA = "04";
+		public static final String BILLER_NOT_FOUND_DISABLED = "04";
+		public static final String INVALID_BILLER_ID = "04";
+		public static final String BILLER_DISABLED = "04";
 		// public static final String INVALID_BILLER_DATA = "04";
 		public static final String SERVICE_FAIL = "05";
 		public static final String BILL_ALREADY_PAID = "06";
@@ -24,6 +27,8 @@ public class Constants {
 		public static final String DISABLED_EXCEPTION = "400";
 		public static final String UNAUTHORISED = "401";
 		public static final String INVALID_VALIDATION = "400";
+		public static final String NOT_FOUND = "404";
+		public static final String OFFLINE_SERVICE_FAIL = "99";
 
 	}
 
@@ -47,6 +52,11 @@ public class Constants {
 		public static final String UNAUTHORISED_WRONG_CREDENTIALS = "Unauthorized – Wrong Credentials";
 		public static final String UNAUTHORISED_WRONG_CHANNEL = "Unauthorized – Wrong Username Or Channel is disabled";
 		public static final String INVALID_INPUT_DATA = "Invalid input data";
+		public static final String OFFLINE_SERVICE_FAIL = "Processing Failed";
+		public static final String Biller_Disabled = "Biller Disabled";
+		public static final String BILLER_NOT_FOUND_DISABLED = "Biller not found";
+		public static final String INVALID_BILLER_ID = "Invalid billerId";
+
 	}
 
 	public static class ACTIVITY {
@@ -66,6 +76,7 @@ public class Constants {
 		public static final String Fail = "Fail";
 		public static final String Processing = "Processing";
 		public static final String Pending = "Pending";
+		public static final String VOUCHER_UPDATED= "1";
 	}
 
 	public static class MPAY_REQUEST_METHODS {
@@ -76,6 +87,8 @@ public class Constants {
 		public static final String PRAL_BILL_PAYMENT = "PAUpdateBillPaymentStatus"; // Nadra Call for voucher payment
 		public static final String OFFLINE_BILLER_INQUIRY = "offline-biller-getvoucher";
 		public static final String OFFLINE_BILLER_PAYMENT = "offline-biller-updatevoucher";
+		public static final String PTA_BILL_INQUIRY = "pta-getvoucher";
+		public static final String PTA_BILL_PAYMENT = "pta-updatevoucher";
 
 	}
 

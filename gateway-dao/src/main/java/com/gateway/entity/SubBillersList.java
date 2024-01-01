@@ -44,7 +44,10 @@ public class SubBillersList implements Serializable {
 	private String oneBillEnable;
 	@Column(name = "is_active")
 	private Boolean isActive;
-	//@JsonBackReference
+
+	@Column(name = "contact_number")
+	private String contactNumber;
+	// @JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "biller_id")
 	private BillerConfiguration billerConfiguration;

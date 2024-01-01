@@ -5,10 +5,12 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,35 +41,55 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 	@Autowired
 	private AuditLoggingService auditLoggingService;
 
+	@Value("${security.login.max-attempts}")
+	private int maxAttempts;
+
 	@Override
 	public AuthenticationResponse authenticatedToken(AuthenticationRequest authenticationRequest) {
 		AuthenticationResponse response = new AuthenticationResponse(null, null);
 		Credential loginUser = null;
 		try {
 			LOG.info("CredentialDetailsServiceImpl - Calling Customer Inquiry");
-//			loginUser = credentialDao.findByUsernameAndChannelNameAndIsEnable(authenticationRequest.getUsername(),authenticationRequest.getChannel(),true);
-			loginUser = credentialDao.findByUsernameAndChannelName(authenticationRequest.getUsername(),
-					authenticationRequest.getChannel());
+			loginUser = credentialDao.findByUsernameAndChannelNameAndIsEnable(authenticationRequest.getUsername(),
+					authenticationRequest.getChannel(), true);
 			if (loginUser != null) {
 				try {
+					// add account locked logic
+
+					if (loginUser.getRemainingCount() <= 0) {
+						LOG.info("CredentialDetailsServiceImpl - Error - DisabledException");
+						loginUser.setEnable(false);
+						credentialDao.save(loginUser);
+						response = new AuthenticationResponse(Constants.ResponseCodes.DISABLED_EXCEPTION,
+								Constants.ResponseDescription.DISABLED_EXCEPTION);
+						return response;
+					}
+
 					authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 							authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+					loginUser.setRemainingCount(maxAttempts); // Reset retry count on successful login
+					credentialDao.save(loginUser);
+
 					LOG.info("CredentialDetailsServiceImpl - Authenticating Customer");
 				} catch (DisabledException e) {
 					LOG.info("CredentialDetailsServiceImpl - Error - DisabledException");
+
 					response = new AuthenticationResponse(Constants.ResponseCodes.DISABLED_EXCEPTION,
 							Constants.ResponseDescription.DISABLED_EXCEPTION);
 					return response;
 				} catch (BadCredentialsException e) {
 					LOG.info("CredentialDetailsServiceImpl - INVALID CREDENTIALS");
+					// Invalid credentials logic...
+
+					loginUser.setRemainingCount(loginUser.getRemainingCount() - 1);
+					credentialDao.save(loginUser);
+
 					response = new AuthenticationResponse(Constants.ResponseCodes.UNAUTHORISED,
 							Constants.ResponseDescription.UNAUTHORISED_WRONG_CREDENTIALS);
 					return response;
 
 				}
 
-				// final UserDetails userDetails =
-				// loadUserByUsername(authenticationRequest.getUsername());
 				final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername(),
 						authenticationRequest.getChannel());
 				LOG.info("CredentialDetailsServiceImpl - Token Gen");
@@ -76,6 +98,8 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 						expiry, token);
 
 			} else {
+				// Invalid credentials logic...
+
 				response = new AuthenticationResponse(Constants.ResponseCodes.UNAUTHORISED,
 						Constants.ResponseDescription.UNAUTHORISED_WRONG_CHANNEL);
 				return response;

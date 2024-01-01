@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
 
+	@Value("${security.login.max-attempts}")
+	private int maxAttempts;
 
 	@Override
 	public GenericResponse<String> saveCredential(AuthenticationRequest request) {
@@ -46,6 +49,9 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				newUser.setPassword(bcryptEncoder.encode(request.getPassword()));
 				newUser.setChannelName(request.getChannel());
 				newUser.setEnable(true);
+				newUser.setRemainingCount(maxAttempts);
+				newUser.setDescription(request.getChannel() + " Channel Created");
+
 				credentialDao.save(newUser);
 				response = new GenericResponse<>("00", "User created Succesfully!");
 			}
@@ -88,6 +94,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 					request.getChannel());
 			if (checkUserExistance != null) {
 				checkUserExistance.setEnable(true);
+				checkUserExistance.setRemainingCount(maxAttempts);
+				checkUserExistance.setDescription(request.getChannel() +" Channel Created");
 				credentialDao.save(checkUserExistance);
 				response = new GenericResponse<>("00", "User Enabled Successfully!");
 			} else {
@@ -110,11 +118,14 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 					request.getChannel());
 			if (checkUserExistance != null) {
 				checkUserExistance.setPassword(bcryptEncoder.encode(request.getPassword()));
+				checkUserExistance.setRemainingCount(maxAttempts);
+				checkUserExistance.setDescription(request.getChannel() +" Channel Created");
+
 				credentialDao.save(checkUserExistance);
 				response = new GenericResponse<>("00", "Password changed Succesfully!");
 			} else {
 
-				response = new GenericResponse<>("01","User does not exist against the channel!");
+				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -122,7 +133,7 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 
 		return response;
 	}
-	
+
 	@Override
 	public GenericResponse<String> updateCredentialChannel(AuthenticationRequest request) {
 		GenericResponse<String> response = new GenericResponse<>();
@@ -136,7 +147,7 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("00", "Channel changed Succesfully!");
 			} else {
 
-				response = new GenericResponse<>("01","User does not exist against the channel!");
+				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -144,14 +155,15 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 
 		return response;
 	}
-	
+
 	@Override
 	public GenericResponse<String> deleteCredential(AuthenticationRequest request) {
 		GenericResponse<String> response = new GenericResponse<>();
 		Credential checkUserExistance = null;
 		try {
 			LOG.info("CredentialDetailsServiceImpl - Calling Save New Credential");
-			checkUserExistance = (Credential) credentialDao.findByUsernameAndChannelName(request.getUsername(),request.getChannel());
+			checkUserExistance = (Credential) credentialDao.findByUsernameAndChannelName(request.getUsername(),
+					request.getChannel());
 			if (checkUserExistance != null) {
 				credentialDao.delete(checkUserExistance);
 				response = new GenericResponse<>("00", "User Deleted Successfully!");
@@ -165,18 +177,18 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 
 		return response;
 	}
-	
+
 	@Override
 	public GenericResponse<List<CredentialsListAttribute>> getCredentialsList() {
 		GenericResponse<List<CredentialsListAttribute>> response = new GenericResponse<>();
 		List<CredentialsListAttribute> checkExistanceUsers = null;
-	
+
 		try {
 			LOG.info("CredentialDetailsServiceImpl - Calling Save New Credential");
 			checkExistanceUsers = credentialDao.findAllUsersList();
 			if (checkExistanceUsers != null) {
-				
-				response = new GenericResponse<>("00",checkExistanceUsers);
+
+				response = new GenericResponse<>("00", "Users found Successfully!", checkExistanceUsers);
 			} else {
 
 				response = new GenericResponse<>("01", "Users Not Found!");
@@ -187,7 +199,7 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 
 		return response;
 	}
-	
+
 	@Override
 	public GenericResponse<String> disableChannel(ChannelConfigurationRequest request) {
 		GenericResponse<String> response = new GenericResponse<>();
@@ -196,12 +208,13 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 			LOG.info("disableChannel - Calling Disable any Channel");
 			checkUserExistance = credentialDao.findByChannelName(request.getChannel());
 			if (checkUserExistance != null && !checkUserExistance.isEmpty()) {
-				for(Credential temp:checkUserExistance) {
+				for (Credential temp : checkUserExistance) {
 					temp.setEnable(false);
 					credentialDao.save(temp);
 				}
-				
-				response = new GenericResponse<>("00", "channel and its all associated users are Disabled Successfully!");
+
+				response = new GenericResponse<>("00",
+						"channel and its all associated users are Disabled Successfully!");
 			} else {
 				response = new GenericResponse<>("01", "channel does not exist!");
 			}
@@ -211,6 +224,7 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 
 		return response;
 	}
+
 	@Override
 	public GenericResponse<String> enableChannel(ChannelConfigurationRequest request) {
 		GenericResponse<String> response = new GenericResponse<>();
@@ -219,12 +233,13 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 			LOG.info("disableChannel - Calling Enable any Channel");
 			checkUserExistance = credentialDao.findByChannelName(request.getChannel());
 			if (checkUserExistance != null && !checkUserExistance.isEmpty()) {
-				for(Credential temp:checkUserExistance) {
+				for (Credential temp : checkUserExistance) {
 					temp.setEnable(true);
 					credentialDao.save(temp);
 				}
-				
-				response = new GenericResponse<>("00", "channel and its all associated users are Enabled Successfully!");
+
+				response = new GenericResponse<>("00",
+						"channel and its all associated users are Enabled Successfully!");
 			} else {
 				response = new GenericResponse<>("01", "channel does not exist!");
 			}

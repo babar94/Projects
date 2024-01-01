@@ -17,8 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-//@Table(name = "nbp_pgw_payment_log")
-@Table(name = "pg_payment_log")
+@Table(name = "payment_log")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -115,41 +114,5 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "tran_auth_id")
 	private String tranAuthId;
-	
-	@Column(name = "retry_count", length = 4)
-	private int retryCount;
-	
-	@Column(name = "voucher_id", length = 10)
-	private String voucherId;
-	
-	@Column(name = "payment_channel", length = 30)
-	private String paymentChannel;
-	
-	@Column(name = "category", length = 30)
-	private String category;
-	
-	@Column(name = "others_discount_value", length = 8)
-	private float othersDiscountValue;
-	
-	@Column(name = "others_discount_type", length = 30)
-	private String othersDiscountType;
-	
-	@Column(name = "nbp_discount_value", length = 8)
-	private float nbpDiscountValue;
-	
-	@Column(name = "nbp_discount_type", length = 25)
-	private String nbpDiscountType;
-	
-	@Column(name = "BAFL_Fee", length = 4)
-	private int BaflFee;
-	
-	@Column(name = "NBP_Fee", length = 4)
-	private int NbpFee;
-	
-	@Column(name = "to_account", length = 30)
-	private String toAccount;
-	
-	@Column(name = "from_account", length = 30)
-	private String fromAccount;
 
 }

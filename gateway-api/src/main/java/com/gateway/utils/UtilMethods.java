@@ -1,6 +1,7 @@
 package com.gateway.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -84,14 +85,20 @@ public class UtilMethods {
 		return strDate;
 
 	}
-	
-	//Muhamamd Sajid
-	
-	public  String formatDateString(String inputDate) {
-        LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.BASIC_ISO_DATE);
-        String formattedDate = date.format(DateTimeFormatter.ofPattern("yyMM"));
-        return formattedDate;
-    }
+
+	// Muhamamd Sajid
+
+	public String formatDateString(String inputDate) {
+		LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.BASIC_ISO_DATE);
+		String formattedDate = date.format(DateTimeFormatter.ofPattern("yyMM"));
+		return formattedDate;
+	}
+
+	public String formatStringDate(String inputDate) {
+		LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.BASIC_ISO_DATE);
+		String formattedDate = date.format(DateTimeFormatter.ofPattern("yy-MM-dd"));
+		return formattedDate;
+	}
 
 	public String getDueDate(String tranDate) {
 		String strDate = "";
@@ -116,6 +123,26 @@ public class UtilMethods {
 
 		return strDate;
 
+	}
+
+	// muhammad sajid
+	public boolean isValidInput(String input) {
+		return input != null && !input.isEmpty();
+	}
+
+	// Utility method to parse the due date
+	public LocalDate parseDueDate(String dueDateStr) {
+		return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	}
+
+	public Date parseDate(String dateString) throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.parse(dateString);
+	}
+
+	// Utility method to check if the payment is within the due date
+	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
+		return currentDate.isEqual(dueDate) || currentDate.isBefore(dueDate);
 	}
 
 	public String getClientIp(HttpServletRequest request) {
@@ -160,19 +187,16 @@ public class UtilMethods {
 		temp.setUserName(userName);
 		mpayLogRepository.save(temp);
 	}
-	
-	
-	
-		
-		public static String getAggregatorId(String consumerNumber) {
-		    String aggregatorId = consumerNumber.substring(0,4);
-		    return aggregatorId;
-		}
-		
-		public static String getBillerNumber(String consumerNumber) {
-		    String billerId = consumerNumber.substring(4);
-		    return billerId;
-		}
+
+	public static String getAggregatorId(String consumerNumber) {
+		String aggregatorId = consumerNumber.substring(0, 4);
+		return aggregatorId;
+	}
+
+	public static String getBillerNumber(String consumerNumber) {
+		String billerId = consumerNumber.substring(4);
+		return billerId;
+	}
 
 //		public String convertAmountToISOFormat(String amount) {
 //			StringBuilder resultAmount = new StringBuilder();
@@ -198,58 +222,57 @@ public class UtilMethods {
 //			}
 //			return resultAmount.toString();
 //		}
-		
-		//muhamamad Sajid updated IsoFormatTo 14 digit format
-		public String convertAmountToISOFormat(String amount) {
-		    StringBuilder resultAmount = new StringBuilder();
-		    int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
 
-		    if (decimalPlaces < 2) {
-		        amount = amount.replace(".", "0");
-		    } else {
-		        amount = amount.replace(".", "");
-		    }
+	// muhamamad Sajid updated IsoFormatTo 14 digit format
+	public String convertAmountToISOFormat(String amount) {
+		StringBuilder resultAmount = new StringBuilder();
+		int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
 
-		    int additionalZerosLength = 14 - amount.length() - 1; // Adjusted to account for the "+" sign
-
-		    try {
-		        if (amount.startsWith("-")) {
-		            resultAmount.append("-");
-		            additionalZerosLength -= 1; // Adjust for the negative sign
-		        } else {
-		            resultAmount.append("+");
-		        }
-
-		        for (int j = 0; j < additionalZerosLength; j++) {
-		            resultAmount.append("0");
-		        }
-
-		        resultAmount.append(amount.substring(amount.indexOf("+") + 1)); // Exclude the leading zeros and the "+" sign
-		    } catch (Exception ex) {
-		        ex.printStackTrace();
-		    }
-
-		    return resultAmount.toString();
+		if (decimalPlaces < 2) {
+			amount = amount.replace(".", "0");
+		} else {
+			amount = amount.replace(".", "");
 		}
 
-		
-		
-		
-		public String convertISOFormatAmount(String amount) {
-			Double doubleAmount = 0d;
-			String resultAmount = "";
-			try {
-				amount = amount.replace("+0", "");
-				doubleAmount = Double.parseDouble(amount) / 100;
-				// resultAmount = doubleAmount.toString();
-				resultAmount = df.format(doubleAmount);
+		int additionalZerosLength = 14 - amount.length() - 1; // Adjusted to account for the "+" sign
 
-			} catch (Exception ex) {
-				ex.printStackTrace();
+		try {
+			if (amount.startsWith("-")) {
+				resultAmount.append("-");
+				additionalZerosLength -= 1; // Adjust for the negative sign
+			} else {
+				resultAmount.append("+");
 			}
-			return resultAmount;
+
+			for (int j = 0; j < additionalZerosLength; j++) {
+				resultAmount.append("0");
+			}
+
+			resultAmount.append(amount.substring(amount.indexOf("+") + 1)); // Exclude the leading zeros and the "+"
+																			// sign
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		public double bigDecimalToDouble(BigDecimal decimal) {
+
+		return resultAmount.toString();
+	}
+
+	public String convertISOFormatAmount(String amount) {
+		Double doubleAmount = 0d;
+		String resultAmount = "";
+		try {
+			amount = amount.replace("+0", "");
+			doubleAmount = Double.parseDouble(amount) / 100;
+			// resultAmount = doubleAmount.toString();
+			resultAmount = df.format(doubleAmount);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return resultAmount;
+	}
+
+	public double bigDecimalToDouble(BigDecimal decimal) {
 //			DecimalFormat df = new DecimalFormat("0.00");
 //			double value;
 //			value= Double.parseDouble(df.format(decimal));
@@ -258,8 +281,27 @@ public class UtilMethods {
 //		    double parsedValue = Double.parseDouble(formatted);
 //		   
 //		    return parsedValue;
-			 DecimalFormat df = new DecimalFormat("0.00");
-			    return Double.parseDouble(df.format(decimal));
-		}
-	
+		DecimalFormat df = new DecimalFormat("0.00");
+		return Double.parseDouble(df.format(decimal));
+	}
+
+	// muhammad sajid
+
+	public String formatAmount(BigDecimal amount, int length) {
+		// Scale the BigDecimal to two decimal places
+		BigDecimal scaledAmount = amount.setScale(2, RoundingMode.HALF_UP);
+
+		// Extract the integer part and the last two digits
+		int integerPart = scaledAmount.intValue();
+		int lastTwoDigits = integerPart % 100;
+
+		// Ensure that the last two digits are minimized within the specified range
+		lastTwoDigits = Math.min(lastTwoDigits, 99); // Minimize to two digits
+
+		// Construct the final formatted string with left-padding and zeros at the end
+		String formattedString = String.format("%0" + (length - 4) + "d%02d00", integerPart / 100, lastTwoDigits);
+
+		return formattedString.substring(formattedString.length() - length);
+	}
+
 }

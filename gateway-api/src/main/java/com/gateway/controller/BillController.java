@@ -50,20 +50,12 @@ public class BillController extends ApiController {
 		LOG.info("Bill Controller - Bill Inquiry");
 		try {
 
-			LOG.info("bill Controller - Bill Payment");
-			try {
-			
-				response = billInquiryService.billInquiry(httpRequestData, request);
-
-			} catch (Exception ex) {
-				LOG.error("{}", ex);
-			}
-
-			return response;
+			response = billInquiryService.billInquiry(httpRequestData, request);
 
 		} catch (Exception ex) {
 			LOG.error("Exception in billInquiry method{}", ex);
 		}
+
 		return response;
 
 	}
@@ -130,6 +122,4 @@ public class BillController extends ApiController {
 
 	}
 
-	
-	}
-
+}

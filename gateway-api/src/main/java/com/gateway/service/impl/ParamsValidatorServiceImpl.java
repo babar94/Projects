@@ -42,6 +42,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
 					if (transactionParam.isRequired()) {
 						match = requestParamValue.matches(regex);
+						
 						if (match) {
 							result = true;
 							LOG.info("Regex matches");

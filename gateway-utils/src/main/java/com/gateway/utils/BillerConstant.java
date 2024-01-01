@@ -13,5 +13,11 @@ public interface BillerConstant {
 		String KPPSC = "KPPSC";
 		
 	}
+	
+	interface PTA {
+
+		String PTA = "PTA";
+		
+	}
 
 }

@@ -36,17 +36,23 @@ public class Credential {
 
 	@Column(name = "channel_name")
 	private String channelName;
-	
+
 	@Column(name = "is_enable")
 	private boolean isEnable;
-	
+
 	@Column(name = "consumer_number")
 	private String consumerNumber;
-	
+
 	@Column(name = "bank_mnemonic")
 	private String bankMnemonic;
-	
-	@Column(name="reserved_field")
+
+	@Column(name = "reserved_field")
 	private String reserved;
+
+	@Column(name = "remaining_count")
+	private Integer remainingCount;
+
+	@Column(name = "description")
+	private String description;
 
 }

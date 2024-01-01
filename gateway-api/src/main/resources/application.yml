@@ -69,6 +69,9 @@ mpay:
       columnName: 'LEGAL.ID'
       criteriaValue: 'ACCOUNT'
       
+security:
+  login:
+    max-attempts: 3
 
 service:
   auth:

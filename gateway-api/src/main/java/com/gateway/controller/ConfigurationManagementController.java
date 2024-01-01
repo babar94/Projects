@@ -2,6 +2,8 @@ package com.gateway.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(path = ApiController.CONFIGURATION_URL)
 public class ConfigurationManagementController extends ApiController {
 
-//	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationManagementController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationManagementController.class);
 
 	@Autowired
 	private ConfigurationManagementService configurationManagementService;

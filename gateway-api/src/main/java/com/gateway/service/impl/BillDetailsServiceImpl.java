@@ -412,7 +412,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate,
-						request.getInfo().getRrn(), Long.parseLong(request.getTxnInfo().getBillerId()),
+						request.getInfo().getRrn(), request.getTxnInfo().getBillerId(),
 						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
@@ -598,7 +598,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate,
-						request.getInfo().getRrn(), Long.parseLong(request.getTxnInfo().getBillerId()),
+						request.getInfo().getRrn(),request.getTxnInfo().getBillerId(),
 						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
