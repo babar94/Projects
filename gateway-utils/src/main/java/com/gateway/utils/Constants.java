@@ -39,7 +39,7 @@ public class Constants {
 		public static final String UNKNOWN_ERROR = "Unknown Error / Bad Transaction.";
 		public static final String INVALID_DATA = "Invalid Data.";
 		// public static final String INVALID_BILLER_DATA = "Invalid Biller Id.";
-		public static final String SERVICE_FAIL = "Processing Failed";
+		public static final String SERVICE_FAIL = "Processing/Service Failed";
 		public static final String BILL_ALREADY_PAID = "Bill Already Paid";
 		public static final String BAD_TRANSACTION = "Unknown Error / Bad Transaction";
 		public static final String DUPLICATE_TRANSACTION = "Duplicate Transaction";

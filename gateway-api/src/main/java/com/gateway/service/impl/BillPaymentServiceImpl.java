@@ -34,7 +34,6 @@ import com.gateway.repository.ProvinceTransactionDao;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
-import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -141,8 +140,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 										default:
 											LOG.info("subBiller does not exists.");
-											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-													Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
 											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 											break;
 
@@ -159,8 +158,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 										default:
 											LOG.info("subBiller does not exists.");
-											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-													Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
 											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 
 											break;
@@ -204,8 +203,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								}
 
 								else {
-									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
-											Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+											Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 								}
 							} else {
@@ -635,11 +634,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
-						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillPayment,
+						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address,
+						transactionFees, dbTax, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
@@ -883,11 +882,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
-						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillPayment,
+						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address,
+						transactionFees, dbTax, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
@@ -1315,12 +1314,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
-						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), province, transAuthId);
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(),name, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), amountInDueToDate, dbTransactionFees,
+						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
+						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1633,6 +1632,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					transactionStatus = Constants.Status.Fail;
 					LOG.info("Calling Bill payment End");
 				}
+			} else {
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+						rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+
 			}
 		} catch (Exception ex) {
 
@@ -1656,11 +1660,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile,
-						depostiroName, request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
-						dbAmount, dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(),depostiroName, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillPayment,
+						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address,
+						transactionFees, dbTax, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {

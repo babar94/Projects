@@ -463,11 +463,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
-						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry,
+						"", request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -542,7 +543,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, request.getTerminalInfo().getMobile(), name,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
@@ -777,7 +778,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, request.getTerminalInfo().getMobile(), name,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
@@ -900,21 +901,33 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							status = "B";
 						}
 
+						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+								request.getTxnInfo().getBillNumber(), depostiroName, status, dueDAte,
+								String.valueOf(amountPaidInDueDate), amountAfterDueDate, billingMonth, transAuthId,
+								datePaid, amountPaid);
+
+						AdditionalInfo additionalInfo = new AdditionalInfo(
+								request.getAdditionalInfo().getReserveField1(),
+
+								request.getAdditionalInfo().getReserveField2(),
+								request.getAdditionalInfo().getReserveField3(),
+								request.getAdditionalInfo().getReserveField4(),
+								request.getAdditionalInfo().getReserveField5());
+
+						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+					} else if (getVoucherResponse.getResponse().getResponseCode().equals("404")) {
+						info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+
+					} else {
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
 					}
-
-					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), depostiroName, status, dueDAte,
-							String.valueOf(amountPaidInDueDate), amountAfterDueDate, billingMonth, transAuthId,
-							datePaid, amountPaid);
-
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
-
-					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 				} else if (getVoucherResponse.getResponse().getResponseCode().equals("404")) {
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -936,7 +949,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			}
 
-		} catch (Exception ex) {
+		} catch (
+
+		Exception ex) {
 
 			LOG.error("Exception {}", ex);
 
@@ -958,10 +973,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile,
-						depostiroName, request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
-						dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry,
+						"", request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId);
 
