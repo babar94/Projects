@@ -388,7 +388,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							transAuthId = "";
 							// PaymentLog paymentLog =
 							// paymentLogRepository.findFirstByBillerNumberAndBillStatus(request.getTxnInfo().getBillNumber().trim(),Constants.BILL_STATUS.BILL_PAID);
-							amountPaidInDueDate = "";
+							
 							// datePaid = paymentLog.getTranDate();
 
 							// billingMonth= utilMethods.formatDateString(datePaid);
