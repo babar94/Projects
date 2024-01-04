@@ -26,11 +26,24 @@ public class TxnInfo implements Serializable {
 	private String dueDate;
 	private String amountwithinduedate;
 	private String amountafterduedate;
-	private String billingMonth;
 	private String tranAuthId;
-	private String datePaid;
-	private String amountPaid;
-	
-	
-	
+	private String oneBillNumber;
+
+	public TxnInfo(String billerId, String billNumber, String consumerName, String billStatus, String dueDate,
+			String amountwithinduedate, String amountafterduedate, String tranAuthId) {
+		super();
+		this.billerId = billerId;
+		this.billNumber = billNumber;
+		this.consumerName = consumerName;
+		this.billStatus = billStatus;
+		this.dueDate = dueDate;
+		this.amountwithinduedate = amountwithinduedate;
+		this.amountafterduedate = amountafterduedate;
+		this.tranAuthId = tranAuthId;
+	}
+
+//	private String billingMonth;
+//	private String datePaid;
+//	private String amountPaid;
+
 }

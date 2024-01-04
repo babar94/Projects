@@ -62,4 +62,5 @@ public class DataWrapper {
 	@JsonProperty("status")
 	private String status;
 
+	private String oneBillNumber;
 }

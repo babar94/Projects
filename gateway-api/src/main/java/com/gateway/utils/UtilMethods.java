@@ -272,6 +272,16 @@ public class UtilMethods {
 		return resultAmount;
 	}
 
+	// muhammad Sajid
+
+	public String removeHyphen(String dateBillingMonth) {
+		
+		String result = dateBillingMonth.replace("-", "");
+		return result;
+	}
+
+	// muhammad Sajid
+
 	public double bigDecimalToDouble(BigDecimal decimal) {
 //			DecimalFormat df = new DecimalFormat("0.00");
 //			double value;

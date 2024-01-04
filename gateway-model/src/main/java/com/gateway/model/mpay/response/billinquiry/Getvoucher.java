@@ -28,5 +28,6 @@ public class Getvoucher implements Serializable {
 	private String voucher_id;
 	private String cnic;
 	private String status;
-	
+	private String oneBillNumber;
+
 }

@@ -204,7 +204,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								else {
 									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-											Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+											billPaymentValidationResponse.getResponseDesc(), rrn, stan);
 									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 								}
 							} else {
@@ -288,6 +288,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			paymentHistory = paymentLogRepository.findByTranAuthIdAndActivity(request.getTxnInfo().getTranAuthId(),
 					Constants.ACTIVITY.BillPayment);
 			if (paymentHistory != null && !paymentHistory.isEmpty()) {
+				LOG.info("Duplicate/Invalid Tran-Auth Id ");
 				response = new BillPaymentValidationResponse(Constants.ResponseCodes.DUPLICATE_TRANSACTION_AUTH_ID,
 						Constants.ResponseDescription.DUPLICATE_TRANSACTION_AUTH_ID, rrn, stan);
 				return response;
@@ -359,7 +360,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String rrn = request.getInfo().getRrn();
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
-		String transAuthId = "";
+		String transAuthId = request.getTxnInfo().getTranAuthId();
 		String paymentRefrence = "";
 
 		String channel = "";
@@ -434,6 +435,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 									paymentRefrence = utilMethods.getRRN();
 									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 											request.getTxnInfo().getBillNumber(), name);
+
 									additionalInfoPay = new AdditionalInfoPay(
 											request.getAdditionalInfo().getReserveField1(),
 											request.getAdditionalInfo().getReserveField2(),
@@ -929,7 +931,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String rrn = request.getInfo().getRrn();
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
-		String transAuthId = "";
+		// String transAuthId = "";
+		String transAuthId = request.getTxnInfo().getTranAuthId();
 		String paymentRefrence = "";
 		String billingDate = "";
 		String billingMonth = "";
@@ -974,34 +977,34 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						String amountStr = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getAmount();
 						String amountAfterDueDateStr = getVoucherResponse.getResponse().getOfflineBillerGetvoucher()
-								.getGetvoucher().getAmountafterduedate();
+								.getGetvoucher().getAmountAfterDueDate();
 
 						if (!amountStr.isEmpty()) {
 							requestAmount = BigDecimal.valueOf(Double.parseDouble(amountStr)).setScale(2,
 									RoundingMode.UP);
 							amountInDueToDate = utilMethods.bigDecimalToDouble(requestAmount);
-							amountPaidInDueDate = utilMethods.formatAmount(requestAmount, 12);
+							//amountPaidInDueDate = utilMethods.formatAmount(requestAmount, 12);
 						}
 
 						if (!amountAfterDueDateStr.isEmpty()) {
 							requestAmountafterduedate = BigDecimal.valueOf(Double.parseDouble(amountAfterDueDateStr))
 									.setScale(2, RoundingMode.UP);
 							amountAfterDueDate = utilMethods.bigDecimalToDouble(requestAmountafterduedate);
-							amountPaidAfterDueDate = utilMethods.formatAmount(requestAmountafterduedate, 12);
+							//amountPaidAfterDueDate = utilMethods.formatAmount(requestAmountafterduedate, 12);
 						}
 
 						name = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getName();
 
 						billingDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillingdate();
+								.getBillingDate();
 						billingMonth = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillingmonth();
+								.getBillingMonth();
 						dueDateStr = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getDuedate();
+								.getDueDate();
 						expiryDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getExpirydate();
+								.getExpiryDate();
 						billStatus = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillstatus();
+								.getBillStatus();
 						// dbAmount = requestAmount.doubleValue();
 
 						if (utilMethods.isValidInput(dueDateStr)) {
@@ -1044,7 +1047,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						}
 
 						if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillstatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
 							try {
 
@@ -1132,7 +1135,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										if (getVoucherResponse.getResponse().getResponseCode()
 												.equals(ResponseCodes.OK)) {
 											if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher()
-													.getGetvoucher().getBillstatus()
+													.getGetvoucher().getBillStatus()
 													.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 												paymentRefrence = utilMethods.getRRN();
 												txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
@@ -1200,7 +1203,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							}
 
 						} else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillstatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 							infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
 									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
 							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
@@ -1214,9 +1217,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 							transactionStatus = Constants.Status.Success;
 						} else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillstatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
-							infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
-									Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
+								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
+							infoPay = new InfoPay(Constants.BILL_STATUS.BILL_EXPIRED,
+									Constants.ResponseDescription.CONSUMER_NUMBER_Expired, rrn, stan);
 							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 									request.getTxnInfo().getBillNumber(), name);// paymentRefrence
 							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
@@ -1315,7 +1318,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
-						request.getTerminalInfo().getMobile(),name, request.getTxnInfo().getBillNumber(),
+						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueToDate, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
@@ -1360,7 +1363,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String rrn = request.getInfo().getRrn();
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
-		String transAuthId = "";
+		String transAuthId = request.getTxnInfo().getTranAuthId();
 		String paymentRefrence = "";
 		String amountPaidInDueDate = "";
 		String amountPaid = "";
@@ -1397,9 +1400,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						requestTotalAmountbdUp = BigDecimal.valueOf(Double.parseDouble(dataWrapper.getTotalAmount()))
 								.setScale(2, RoundingMode.UP);
 						amountInDueToDate = utilMethods.bigDecimalToDouble(requestTotalAmountbdUp);
-						amountPaidInDueDate = utilMethods.formatAmount(requestTotalAmountbdUp, 12);
-						amountAfterDueDate = amountPaidInDueDate;
-						amountPaid = amountPaidInDueDate;
+						//amountPaidInDueDate = utilMethods.formatAmount(requestTotalAmountbdUp, 12);
+						amountAfterDueDate = String.valueOf(amountInDueToDate);
+						//amountPaid = amountPaidInDueDate;
 
 						depostiroName = dataWrapper.getDepositorName();
 						mobile = dataWrapper.getDepositorContactNo();
@@ -1661,7 +1664,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
-						request.getTerminalInfo().getMobile(),depostiroName, request.getTxnInfo().getBillNumber(),
+						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillPayment,
 						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						transactionFees, dbTax, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),

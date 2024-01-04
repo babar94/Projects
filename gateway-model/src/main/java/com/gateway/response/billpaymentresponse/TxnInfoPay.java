@@ -13,19 +13,16 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
+@AllArgsConstructor
 public class TxnInfoPay implements Serializable {
 
 	private static final long serialVersionUID = 8396436785949897705L;
 	private String billerId;
-	//private String billNumber;
-	//private String paymentRefno;
-	private String identificationParameter;
+	private String billNumber;
+	private String paymentRefno;
+	//private String identificationParameter;
 
-	public TxnInfoPay(String billerId, String billNumber, String identificationParameter) {
-		super();
-		this.billerId = billerId;
-		this.identificationParameter = identificationParameter;
-	}
+
 	
 	
 

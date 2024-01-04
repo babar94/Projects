@@ -56,6 +56,7 @@ public class Constants {
 		public static final String Biller_Disabled = "Biller Disabled";
 		public static final String BILLER_NOT_FOUND_DISABLED = "Biller not found";
 		public static final String INVALID_BILLER_ID = "Invalid billerId";
+		public static final String CONSUMER_NUMBER_Expired = "Consumer Number Expired";
 
 	}
 
