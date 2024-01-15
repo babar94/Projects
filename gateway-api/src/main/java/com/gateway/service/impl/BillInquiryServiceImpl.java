@@ -101,8 +101,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			if (billerId != null && billerId.length() == 4) {
 				parentBillerId = billerId.substring(0, 2);
 				subBillerId = billerId.substring(2);
-				parentBillerId = request.getTxnInfo().getBillerId().substring(0, 2);
-				subBillerId = request.getTxnInfo().getBillerId().substring(2);
+
 				Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo
 						.findByBillerId(parentBillerId);
 
@@ -308,7 +307,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String address = "";
 		String name = "";
 		String billStatus = "";
-		double dbAmount = 0;
+		Double dbAmount = null;
 		double dbTax = 0;
 		double dbTransactionFees = 0;
 		double dbTotal = 0;
@@ -321,6 +320,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String billingMonth = "";
 		String dueDAte = "";
 		String oneBillNumber = "";
+		BigDecimal requestTotalAmountbdUp = null;
 
 		try {
 
@@ -338,14 +338,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						getVoucherResponse.getResponse().getResponse_desc(), rrn, stan);
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
 
-					double amountInDueToDate = 0;
+					Double amountInDueToDate = null;
 					String amountAfterDueDate = "";
 					String billstatus = "";
 
-					BigDecimal requestTotalAmountbdUp = null;
 					if (getVoucherResponse.getResponse().getGetvoucher() != null) {
 
-						requestTotalAmountbdUp = BigDecimal
+						requestTotalAmountbdUp = BigDecimal // 450.0
 								.valueOf(
 										Double.parseDouble(getVoucherResponse.getResponse().getGetvoucher().getTotal()))
 								.setScale(2, RoundingMode.UP);
@@ -360,7 +359,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						name = getVoucherResponse.getResponse().getGetvoucher().getName();
 						address = getVoucherResponse.getResponse().getGetvoucher().getAddress();
 						billStatus = getVoucherResponse.getResponse().getGetvoucher().getStatus();
-						dbAmount = requestTotalAmountbdUp.doubleValue();
+						dbAmount = amountInDueToDate;
 						oneBillNumber = getVoucherResponse.getResponse().getGetvoucher().getOneBillNumber();
 						if (oneBillNumber == null) {
 							oneBillNumber = "";
@@ -414,7 +413,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(),
 							getVoucherResponse.getResponse().getGetvoucher().getName(), billstatus, dueDAte,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDueDate), transAuthId,
+							String.valueOf(requestTotalAmountbdUp), String.valueOf(amountAfterDueDate), transAuthId,
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -470,10 +469,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry,
-						"", request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), province, transAuthId);
+						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, dbTransactionFees,
+						Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(), transactionStatus,
+						address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -514,6 +513,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String datePaid = "";
 		// String endpoint = httpServletRequest.getRequestURI();
 		String billingMonth = "";
+
+		BigDecimal requestTotalAmountbdUp = null;
 		try {
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
@@ -550,10 +551,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry,
-						"", request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), province, transAuthId);
+						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, dbTransactionFees,
+						Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(), transactionStatus,
+						address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("Exception {}", ex);
@@ -603,6 +604,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String billingDate = "";
 		String expiryDate = "";
 		String oneBillNumber = "";
+		BigDecimal requestAmount = null;
 
 		try {
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
@@ -629,7 +631,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					double amountAfterDueDate = 0;
 					String billstatus = "";
 
-					BigDecimal requestAmount = null;
 					BigDecimal requestAmountafterduedate = null;
 					if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() != null) {
 
@@ -689,6 +690,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								billstatus = "P";
 								// amountPaid = String.valueOf(paymentLog.getAmount());
 								transAuthId = paymentLog.getTranAuthId();
+								// requestAmount = paymentLog.getAmount();
+
 //								String duedate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher()
 //										.getGetvoucher().getDuedate();
 //								Date parsePaidDate = utilMethods.parseDate(datePaid);
@@ -731,7 +734,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), name, billstatus, dueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDueDate), transAuthId,
+							String.valueOf(requestAmount), String.valueOf(requestAmountafterduedate), transAuthId,
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -797,7 +800,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), amountInDueToDate, dbTransactionFees,
+						request.getTxnInfo().getBillerId(), requestAmount, dbTransactionFees,
 						Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(), transactionStatus,
 						address, transactionFees, dbTax, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
@@ -844,6 +847,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String billingMonth = "";
 		String dueDAte = "";
 		String oneBillNumber = "";
+		BigDecimal requestTotalAmountbdUp = null;
 
 		try {
 
@@ -861,11 +865,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						getVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 				if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
-					double amountInDueToDate = 0;
+					Double amountInDueToDate = null;
 					String amountAfterDueDate = "";
 					String status = "";
 
-					BigDecimal requestTotalAmountbdUp = null;
 					if (getVoucherResponse.getResponse().getPtaGetVoucher() != null) {
 
 						DataWrapper dataWrapper = getVoucherResponse.getResponse().getPtaGetVoucher().getDataWrapper()
@@ -875,13 +878,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								.setScale(2, RoundingMode.UP);
 						amountInDueToDate = utilMethods.bigDecimalToDouble(requestTotalAmountbdUp);
 						// amountPaidInDueDate = utilMethods.formatAmount(requestTotalAmountbdUp, 12);
-						amountAfterDueDate = String.valueOf(amountInDueToDate);
+						amountAfterDueDate = String.valueOf(requestTotalAmountbdUp);
 						// amountPaid = amountPaidInDueDate;
 
 						depostiroName = dataWrapper.getDepositorName();
 						mobile = dataWrapper.getDepositorContactNo();
 						billStatus = dataWrapper.getStatus();
-						dbAmount = requestTotalAmountbdUp.doubleValue();
+						dbAmount = amountInDueToDate;
 						oneBillNumber = dataWrapper.getOneBillNumber();
 						oneBillNumber = dataWrapper.getOneBillNumber();
 						if (oneBillNumber == null) {
@@ -1000,10 +1003,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), dbAmount, dbTransactionFees, Constants.ACTIVITY.BillInquiry,
-						"", request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), province, transAuthId);
+						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, dbTransactionFees,
+						Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(), transactionStatus,
+						address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

@@ -125,11 +125,12 @@ public class UtilMethods {
 
 	}
 
-	// muhammad sajid
+	// Muhammad sajid
 	public boolean isValidInput(String input) {
 		return input != null && !input.isEmpty();
 	}
 
+	// Muhammad Sajids
 	// Utility method to parse the due date
 	public LocalDate parseDueDate(String dueDateStr) {
 		return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -140,6 +141,7 @@ public class UtilMethods {
 		return dateFormat.parse(dateString);
 	}
 
+	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
 		return currentDate.isEqual(dueDate) || currentDate.isBefore(dueDate);
@@ -275,24 +277,28 @@ public class UtilMethods {
 	// muhammad Sajid
 
 	public String removeHyphen(String dateBillingMonth) {
-		
+
 		String result = dateBillingMonth.replace("-", "");
 		return result;
 	}
 
 	// muhammad Sajid
 
+//	public double bigDecimalToDouble(BigDecimal decimal) {
+////			DecimalFormat df = new DecimalFormat("0.00");
+////			double value;
+////			value= Double.parseDouble(df.format(decimal));
+////		    
+////		    String formatted = String.format("%.2f", value);
+////		    double parsedValue = Double.parseDouble(formatted);
+////		   
+////		    return parsedValue;
+//		DecimalFormat df = new DecimalFormat("0.00");
+//		return Double.parseDouble(df.format(decimal));
+//	}
 	public double bigDecimalToDouble(BigDecimal decimal) {
-//			DecimalFormat df = new DecimalFormat("0.00");
-//			double value;
-//			value= Double.parseDouble(df.format(decimal));
-//		    
-//		    String formatted = String.format("%.2f", value);
-//		    double parsedValue = Double.parseDouble(formatted);
-//		   
-//		    return parsedValue;
-		DecimalFormat df = new DecimalFormat("0.00");
-		return Double.parseDouble(df.format(decimal));
+		// Format BigDecimal as a string without scientific notation
+		 return decimal.doubleValue();
 	}
 
 	// muhammad sajid

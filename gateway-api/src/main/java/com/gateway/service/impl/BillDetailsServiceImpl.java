@@ -1,5 +1,6 @@
 package com.gateway.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -277,7 +278,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String address = "";
 		String name = "";
 		String billStatus = "";
-		double dbAmount = 0;
+		BigDecimal dbAmount = null;
 		double dbTax = 0;
 		double dbTransactionFees = 0;
 		double dbTotal = 0;
@@ -460,7 +461,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String address = "";
 		String name = "";
 		String billStatus = "";
-		double dbAmount = 0;
+		BigDecimal dbAmount = null;
 		double dbTax = 0;
 		double dbTransactionFees = 0;
 		double dbTotal = 0;
@@ -521,7 +522,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								name = paymentLogRecord.getName();
 								address = paymentLogRecord.getAddress();
 								billStatus = paymentLogRecord.getBillStatus();
-								dbAmount = paymentLogRecord.getAmount();
+								// dbAmount = paymentLogRecord.getAmount();
 								dbTax = paymentLogRecord.getTaxAmount();
 								dbTransactionFees = paymentLogRecord.getTransactionFees();
 								dbTotal = paymentLogRecord.getTotal();
@@ -598,7 +599,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate,
-						request.getInfo().getRrn(),request.getTxnInfo().getBillerId(),
+						request.getInfo().getRrn(), request.getTxnInfo().getBillerId(),
 						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
