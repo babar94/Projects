@@ -5,14 +5,10 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
 @ToString
+
 @JsonInclude(value = Include.NON_NULL)
 public class AuthenticationResponse implements Serializable {
 
@@ -21,14 +17,14 @@ public class AuthenticationResponse implements Serializable {
 	private String responseDescription;
 	private String identificationParameter;
 	private String reserveField;
-	private  String expiry;
-	private  String token;
-	
+	private String expiry;
+	private String token;
+
 	public AuthenticationResponse(String responseCode, String responseDescription) {
 		super();
 		this.responseCode = responseCode;
 		this.responseDescription = responseDescription;
-		
+
 	}
 
 	public AuthenticationResponse(String responseCode, String responseDescription, String expiry, String token) {
@@ -40,8 +36,7 @@ public class AuthenticationResponse implements Serializable {
 	}
 
 	public AuthenticationResponse() {
-		
-		
+
 	}
 
 	public AuthenticationResponse(String responseCode, String identificationParameter, String reserveField) {
@@ -50,15 +45,57 @@ public class AuthenticationResponse implements Serializable {
 		this.identificationParameter = identificationParameter;
 		this.reserveField = reserveField;
 	}
-	
-	
-	
-	
 
+	public String getResponseCode() {
+		return responseCode;
+	}
 
+	public void setResponseCode(String responseCode) {
+		this.responseCode = responseCode;
+	}
 
-	
-	
-	
+	public String getResponseDescription() {
+		return responseDescription;
+	}
+
+	public void setResponseDescription(String responseDescription) {
+		this.responseDescription = responseDescription;
+	}
+
+	public String getIdentificationParameter() {
+		return identificationParameter;
+	}
+
+	public void setIdentificationParameter(String identificationParameter) {
+		this.identificationParameter = identificationParameter;
+	}
+
+	public String getReserveField() {
+		return reserveField;
+	}
+
+	public void setReserveField(String reserveField) {
+		this.reserveField = reserveField;
+	}
+
+	public String getExpiry() {
+		return expiry;
+	}
+
+	public void setExpiry(String expiry) {
+		this.expiry = expiry;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 }

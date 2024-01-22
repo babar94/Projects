@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,8 @@ import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.UtilMethods;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class BillInquiryServiceImpl implements BillInquiryService {
@@ -143,8 +143,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.PRAL.KPPSC:
-											billInquiryResponse = billInquiryPRAL(request,
+											billInquiryResponse = billInquiryKppsc(request,
 													billInquiryValidationResponse);
+											break;
+										case BillerConstant.PRAL.FBR:
+											billInquiryResponse = billInquiryFbr(request);
 											break;
 
 										default:
@@ -483,7 +486,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	public BillInquiryResponse billInquiryPRAL(BillInquiryRequest request,
+	public BillInquiryResponse billInquiryKppsc(BillInquiryRequest request,
 			BillInquiryValidationResponse billInquiryValidationResponse) {
 
 		LOG.info("PRAL Bill Inquiry Request {} ", request.toString());
@@ -1015,5 +1018,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		}
 		return response;
 
+	}
+
+	@Override
+	public BillInquiryResponse billInquiryFbr(BillInquiryRequest request) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

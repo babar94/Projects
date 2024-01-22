@@ -1,7 +1,5 @@
 package com.gateway.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,9 @@ import com.gateway.request.AuthenticationRequest;
 import com.gateway.response.AuthenticationResponse;
 import com.gateway.service.CredentialDetailsService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
 
-@Api(tags = "Authentication Controller")
+//@Api(tags = "Authentication Controller")
 @RestController
 @CrossOrigin
 public class AuthenticationController extends ApiController {
@@ -29,7 +26,7 @@ public class AuthenticationController extends ApiController {
 	@Autowired
 	private CredentialDetailsService credentialDetailsService;
 
-	@ApiOperation(value = "Open Connect - Authenticate", notes = "Authenticate")
+	//@ApiOperation(value = "Open Connect - Authenticate", notes = "Authenticate")
 	@RequestMapping(value = ApiController.AUTHENTICATE_URL, method = RequestMethod.POST)
 	public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,
 			HttpServletRequest httpRequestData) throws Exception {

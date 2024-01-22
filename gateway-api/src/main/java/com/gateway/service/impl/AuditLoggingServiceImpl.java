@@ -28,6 +28,8 @@ public class AuditLoggingServiceImpl implements AuditLoggingService {
 		AuditLog auditLog = new AuditLog();
 		LOG.info("Inserting in table (audit)");
 
+		
+		
 		auditLog.setActivity(activity);
 		auditLog.setRequestParam(requestParam);
 		auditLog.setResponseParam(responseParam);

@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gateway.entity.ProvinceTransaction;
-import com.gateway.response.billinquiryresponse.AdditionalInfo;
-import com.gateway.response.billinquiryresponse.Info;
-import com.gateway.response.billinquiryresponse.TxnInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

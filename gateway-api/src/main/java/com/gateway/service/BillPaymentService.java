@@ -1,9 +1,9 @@
 package com.gateway.service;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface BillPaymentService {
 

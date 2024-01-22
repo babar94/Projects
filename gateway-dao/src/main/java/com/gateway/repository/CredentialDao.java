@@ -24,4 +24,5 @@ public interface CredentialDao extends JpaRepository<Credential, Integer> {
     
     @Query(value="select c.username,c.channel_name as channelName,c.is_enable as isEnable from api_gw_credentials c",nativeQuery = true)
     public List<CredentialsListAttribute> findAllUsersList();
+    
 }

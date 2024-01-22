@@ -9,7 +9,6 @@ com\gateway\response\BillPaymentInquiryValidationResponse.class
 com\gateway\repository\ProvinceTransactionDao.class
 com\gateway\entity\BillerConfiguration.class
 com\gateway\entity\Credential.class
-com\gateway\entity\Credential$CredentialBuilder.class
 com\gateway\response\BillInquiryValidationResponse.class
 com\gateway\repository\SubBillerListRepository.class
 com\gateway\entity\PgPaymentLog.class

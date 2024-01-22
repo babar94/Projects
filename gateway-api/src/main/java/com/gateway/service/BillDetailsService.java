@@ -1,10 +1,10 @@
 package com.gateway.service;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
 import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.paymentinquiryresponse.PaymentInquiryResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface BillDetailsService {
 

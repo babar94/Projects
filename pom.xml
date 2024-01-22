@@ -4,11 +4,13 @@
   <groupId>com.gateway</groupId>
   <artifactId>nbp-payment-gateway</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <parent>
-		<groupId>com.paysyslabs.bootstrap</groupId>
-		<artifactId>starter-parent</artifactId>
-		<version>1.0.4</version>
+ <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.0</version>
 	</parent>
+	
+	
   <packaging>pom</packaging>
   <name>nbpGateway</name>
   <description>Root Maven Project</description>

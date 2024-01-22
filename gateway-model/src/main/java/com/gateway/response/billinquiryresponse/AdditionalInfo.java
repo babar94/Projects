@@ -3,17 +3,13 @@ package com.gateway.response.billinquiryresponse;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
+
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
-
 public class AdditionalInfo implements Serializable {
 
 	/**

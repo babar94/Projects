@@ -13,8 +13,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
 import com.gateway.repository.MPAYLogRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class UtilMethods {
@@ -298,7 +298,7 @@ public class UtilMethods {
 //	}
 	public double bigDecimalToDouble(BigDecimal decimal) {
 		// Format BigDecimal as a string without scientific notation
-		 return decimal.doubleValue();
+		return decimal.doubleValue();
 	}
 
 	// muhammad sajid

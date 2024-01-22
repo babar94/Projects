@@ -2,14 +2,10 @@ package com.gateway.filter;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,23 +13,21 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gateway.response.AuthenticationResponse;
-import com.gateway.service.CredentialDetailsService;
 import com.gateway.service.impl.CustomCredentialsServiceImpl;
-import com.gateway.utils.Constants;
 import com.gateway.utils.JwtTokenUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@Slf4j
+
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-	// private static final Logger LOG =
-	// LoggerFactory.getLogger(JwtRequestFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JwtRequestFilter.class);
 
 	public static final String RRN_SESSION_KEY = "rrn";
 
@@ -47,8 +41,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		log.info("JwtRequestFilter execution");
-		CustomHttpRequestBody wrappedRequest = null;
+		LOG.info("JwtRequestFilter execution");
+		// CustomHttpRequestBody wrappedRequest = null;
 
 		String requestTokenHeader = request.getHeader("X-Auth-Token");
 		if (requestTokenHeader == null) {
@@ -72,7 +66,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-						wrappedRequest = new CustomHttpRequestBody((HttpServletRequest) request);
+						// wrappedRequest = new CustomHttpRequestBody((HttpServletRequest) request);
 					}
 				}
 			} catch (IllegalArgumentException e) {
@@ -98,10 +92,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //			response.getWriter().close();
 //			return;
 
-		if (wrappedRequest == null)
-			chain.doFilter(request, response);
-		else
-			chain.doFilter(wrappedRequest, response);
+		// if (wrappedRequest == null)
+		chain.doFilter(request, response);
+		// else
+		// chain.doFilter(wrappedRequest, response);
 	}
 
 //		@Override
@@ -120,5 +114,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 ////			// Exclude the swagger-ui.html request from filtering
 ////			return servletPath.equals("/swagger-ui/index.html") || requestURI.endsWith("//swagger-ui/index.html");
 ////		}
-
 }

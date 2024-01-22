@@ -1,9 +1,10 @@
 package com.gateway.service;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.gateway.request.billinquiry.BillInquiryRequest;
+import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface BillInquiryService {
 
@@ -12,6 +13,8 @@ public interface BillInquiryService {
 //	public OneLinkBillInquiryResponse oneLinkBillInquiry(HttpServletRequest httpRequestData,OneLinkBillInquiryRequest request);
 	public BillInquiryResponse billInquiryOffline(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller);
+
+	public BillInquiryResponse billInquiryFbr(BillInquiryRequest request);
 
 	public BillInquiryResponse billInquiryPta(BillInquiryRequest request);
 

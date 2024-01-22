@@ -6,19 +6,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
+
 public class Getvoucher implements Serializable {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	@JsonProperty(value = "billingdate")
 	private String billingDate;
@@ -35,6 +38,6 @@ public class Getvoucher implements Serializable {
 	@JsonProperty(value = "billstatus")
 	private String billStatus;
 	@JsonProperty(value = "onebillNumber")
-	private String oneBillNumber; 
+	private String oneBillNumber;
 
 }

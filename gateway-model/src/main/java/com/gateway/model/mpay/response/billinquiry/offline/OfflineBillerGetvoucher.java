@@ -11,4 +11,7 @@ import lombok.NoArgsConstructor;
 public class OfflineBillerGetvoucher {
 
 	private Getvoucher getvoucher;
+
+	
+	
 }

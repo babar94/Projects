@@ -29,6 +29,7 @@ public class Constants {
 		public static final String INVALID_VALIDATION = "400";
 		public static final String NOT_FOUND = "404";
 		public static final String OFFLINE_SERVICE_FAIL = "99";
+		public static final String INTERNAL_SERVER_ERROR = "500";
 
 	}
 
@@ -57,6 +58,8 @@ public class Constants {
 		public static final String BILLER_NOT_FOUND_DISABLED = "Biller not found";
 		public static final String INVALID_BILLER_ID = "Invalid billerId";
 		public static final String CONSUMER_NUMBER_Expired = "Consumer Number Expired";
+        public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+
 
 	}
 

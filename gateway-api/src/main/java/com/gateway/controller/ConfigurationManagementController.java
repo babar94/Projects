@@ -18,9 +18,7 @@ import com.gateway.response.CredentialsListAttribute;
 import com.gateway.response.GenericResponse;
 import com.gateway.service.ConfigurationManagementService;
 
-import io.swagger.annotations.Api;
-
-@Api(tags = "Configuration Managem Controller")
+//@Api(tags = "Configuration Managem Controller")
 @RestController
 //@CrossOrigin
 @RequestMapping(path = ApiController.CONFIGURATION_URL)
