@@ -14,8 +14,8 @@ public interface BillInquiryService {
 	public BillInquiryResponse billInquiryOffline(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller);
 
-	public BillInquiryResponse billInquiryFbr(BillInquiryRequest request);
+	public BillInquiryResponse billInquiryFbr(BillInquiryRequest request,HttpServletRequest httpRequestData);
 
-	public BillInquiryResponse billInquiryPta(BillInquiryRequest request);
+	public BillInquiryResponse billInquiryPta(BillInquiryRequest request,HttpServletRequest httpRequestData);
 
 }

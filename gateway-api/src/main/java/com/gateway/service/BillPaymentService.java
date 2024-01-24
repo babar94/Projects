@@ -13,4 +13,8 @@ public interface BillPaymentService {
 			String parentBiller, String subBiller);
 
 	public BillPaymentResponse billPaymentPta(BillPaymentRequest request);
+
+	public BillPaymentResponse billPaymentPral(BillPaymentRequest request);
+
+	public BillPaymentResponse billPaymentFbr(BillPaymentRequest request,HttpServletRequest httpRequestData);
 }
