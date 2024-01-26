@@ -25,9 +25,11 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\InfoPayInqRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\TxnInfoPay.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\AdditionalInfoPayInqRequest.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\Response.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\ValidateParamResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\AuthenticationRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billinquiryresponse\Info.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\PralFbrGetVoucher.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\TxnInfoPayRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\PaymentInquiryResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\ConfigurationRequest.java
@@ -37,6 +39,7 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\FeeType.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\offline\OfflineUpdateVoucherResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\GenericResponse.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\FbrGetVoucherResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\InfoPay.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\Fees.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\InfoPayInq.java
@@ -44,6 +47,7 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\offline\Getvoucher.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\TerminalInfoPayRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\Getvoucher.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\fbr\Response.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billinquiryresponse\BillInquiryResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\pta\PtaUpdateVoucherResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billinquiryresponse\AdditionalInfo.java
@@ -56,6 +60,7 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\ChannelConfigurationRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\BillPaymentResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\offline\OfflineBillerGetvoucher.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\fbr\FbrUpdateVoucherResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billerlistresponse\InfoBiller.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\AdditionalInfoPayInq.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\TxnInfoPayInqRequest.java

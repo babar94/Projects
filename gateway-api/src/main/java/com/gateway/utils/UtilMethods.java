@@ -135,6 +135,11 @@ public class UtilMethods {
 	public LocalDate parseDueDate(String dueDateStr) {
 		return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
+	// Muhammad Sajids
+
+	public LocalDate parseDueDateWithoutDashes(String dueDateStr) {
+	    return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
+	}
 
 	public Date parseDate(String dateString) throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

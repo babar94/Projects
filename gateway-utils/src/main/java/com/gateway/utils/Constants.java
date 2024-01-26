@@ -58,8 +58,7 @@ public class Constants {
 		public static final String BILLER_NOT_FOUND_DISABLED = "Biller not found";
 		public static final String INVALID_BILLER_ID = "Invalid billerId";
 		public static final String CONSUMER_NUMBER_Expired = "Consumer Number Expired";
-        public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-
+		public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 
 	}
 
@@ -80,7 +79,7 @@ public class Constants {
 		public static final String Fail = "Fail";
 		public static final String Processing = "Processing";
 		public static final String Pending = "Pending";
-		public static final String VOUCHER_UPDATED= "1";
+		public static final String VOUCHER_UPDATED = "1";
 	}
 
 	public static class MPAY_REQUEST_METHODS {
@@ -93,6 +92,8 @@ public class Constants {
 		public static final String OFFLINE_BILLER_PAYMENT = "offline-biller-updatevoucher";
 		public static final String PTA_BILL_INQUIRY = "pta-getvoucher";
 		public static final String PTA_BILL_PAYMENT = "pta-updatevoucher";
+		public static final String PRAL_FBR_BILL_INQUIRY = "pral-fbr-getvoucher";
+		public static final String PRAL_FBR_BILL_PAYMENT = "pral-fbr-updatevoucher";
 
 	}
 

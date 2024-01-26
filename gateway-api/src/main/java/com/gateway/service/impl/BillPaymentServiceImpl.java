@@ -1733,15 +1733,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			channel = result[1];
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
-			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PRAL_FBR_BILL_PAYMENT);
-			inquiryParams.add(""); // Identification_Type
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PRAL_FBR_BILL_INQUIRY);
+			inquiryParams.add("");// Identification_Type
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
-			inquiryParams.add("NBP"); // Bank_Mnemonic
-			inquiryParams.add(request.getAdditionalInfo().getReserveField1());
-			inquiryParams.add(request.getTxnInfo().getTranAuthId());
-			inquiryParams.add(request.getTxnInfo().getTranDate());
-			inquiryParams.add(request.getTxnInfo().getTranTime());
-			inquiryParams.add(request.getTxnInfo().getTranAmount().trim());
+			inquiryParams.add("NBP");// Bank_Mnemonic
+			inquiryParams.add(request.getAdditionalInfo().getReserveField1());// Bank_Mnemonic
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 
@@ -1794,7 +1790,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							LocalDate currentDate = LocalDate.now();
 
 							try {
-								LocalDate dueDate = utilMethods.parseDueDate(dueDateStr);
+								LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateStr);
 
 								// Check due date conditions
 								if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
@@ -2048,7 +2044,40 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						transactionStatus = Constants.Status.Fail;
 					}
 
-				} else {
+				}
+
+				else if (fbrGetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.NOT_FOUND)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+							request.getTxnInfo().getBillNumber(), name);// paymentRefrence
+					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+							request.getAdditionalInfo().getReserveField2(),
+							request.getAdditionalInfo().getReserveField3(),
+							request.getAdditionalInfo().getReserveField4(),
+							request.getAdditionalInfo().getReserveField5());
+					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else if (fbrGetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+							request.getTxnInfo().getBillNumber(), name);// paymentRefrence
+					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+							request.getAdditionalInfo().getReserveField2(),
+							request.getAdditionalInfo().getReserveField3(),
+							request.getAdditionalInfo().getReserveField4(),
+							request.getAdditionalInfo().getReserveField5());
+					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else {
 					infoPay = new InfoPay(Constants.ResponseCodes.BAD_TRANSACTION,
 							Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan);
 					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
@@ -2061,8 +2090,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
 					transactionStatus = Constants.Status.Fail;
-					LOG.info("Calling Bill payment End");
+
 				}
+
 			} else {
 				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
 						rrn, stan);
