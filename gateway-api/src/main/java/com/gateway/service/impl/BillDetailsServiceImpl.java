@@ -267,7 +267,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String rrn = "";
 		String stan = "";
 		GetVoucherResponse getVoucherResponse = null;
-		List<PaymentLog> paymentHistory = null;
+		// List<PaymentLog> paymentHistory = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -308,22 +308,28 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
 							LOG.info("Calling PAyment Inquiry");
-							paymentHistory = paymentLogRepository
-									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
-											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 											Constants.ResponseCodes.OK);
+//							paymentHistory = paymentLogRepository
+//									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
+//											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+//											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+//											Constants.ResponseCodes.OK);
 
-							if (paymentHistory != null && !paymentHistory.isEmpty()) {
+							if (paymentLog != null && paymentLog.getID() != null) {
 
-								PaymentLog paymentLogRecord = paymentHistory.get(0);
+								// PaymentLog paymentLogRecord = paymentLog.get(0);
 								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
 										stan); // success
 
 								txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-										request.getTxnInfo().getBillNumber(), paymentLogRecord.getPaymentRefNo(),
-										paymentLogRecord.getTranDate(), paymentLogRecord.getTranTime(),
-										String.valueOf(paymentLogRecord.getTotal()));
+										request.getTxnInfo().getBillNumber(), paymentLog.getPaymentRefNo(),
+										paymentLog.getTranDate(), paymentLog.getTranTime(),
+										String.valueOf(paymentLog.getTotal()));
 
 								additionalInfo = new AdditionalInfoPayInq(
 										request.getAdditionalInfo().getReserveField1(),
@@ -333,21 +339,21 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										request.getAdditionalInfo().getReserveField5());
 
 								transactionStatus = Constants.Status.Success;
-								cnic = paymentLogRecord.getCnic();
-								mobile = paymentLogRecord.getMobile();
-								address = paymentLogRecord.getAddress();
-								name = paymentLogRecord.getName();
-								address = paymentLogRecord.getAddress();
-								billStatus = paymentLogRecord.getBillStatus();
-								dbAmount = paymentLogRecord.getAmount();
-								dbTax = paymentLogRecord.getTaxAmount();
-								dbTransactionFees = paymentLogRecord.getTransactionFees();
-								dbTotal = paymentLogRecord.getTotal();
-								tranDate = paymentLogRecord.getTranDate();
-								tranTime = paymentLogRecord.getTranTime();
-								transactionFees = paymentLogRecord.getTransactionFees();
-								province = paymentLogRecord.getProvince();
-								paymentReferenceDb = paymentLogRecord.getPaymentRefNo();
+								cnic = paymentLog.getCnic();
+								mobile = paymentLog.getMobile();
+								address = paymentLog.getAddress();
+								name = paymentLog.getName();
+								address = paymentLog.getAddress();
+								billStatus = paymentLog.getBillStatus();
+								dbAmount = paymentLog.getAmount();
+								dbTax = paymentLog.getTaxAmount();
+								dbTransactionFees = paymentLog.getTransactionFees();
+								dbTotal = paymentLog.getTotal();
+								tranDate = paymentLog.getTranDate();
+								tranTime = paymentLog.getTranTime();
+								transactionFees = paymentLog.getTransactionFees();
+								province = paymentLog.getProvince();
+								paymentReferenceDb = paymentLog.getPaymentRefNo();
 
 								response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 								return response;
@@ -450,7 +456,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String rrn = "";
 		String stan = "";
 		GetVoucherResponse getVoucherResponse = null;
-		List<PaymentLog> paymentHistory = null;
+		// List<PaymentLog> paymentHistory = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -492,21 +498,22 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
 							LOG.info("Calling PAyment Inquiry");
-							paymentHistory = paymentLogRepository
-									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
-											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 											Constants.ResponseCodes.OK);
-							if (paymentHistory != null && !paymentHistory.isEmpty()) {
+							if (paymentLog != null && paymentLog.getID() != null) {
 
-								PaymentLog paymentLogRecord = paymentHistory.get(0);
+//								PaymentLog paymentLogRecord = paymentHistory.get(0);
 								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
 										stan); // success
 
 								txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-										request.getTxnInfo().getBillNumber(), paymentLogRecord.getPaymentRefNo(),
-										paymentLogRecord.getTranDate(), paymentLogRecord.getTranTime(),
-										String.valueOf(paymentLogRecord.getTotal()));
+										request.getTxnInfo().getBillNumber(), paymentLog.getPaymentRefNo(),
+										paymentLog.getTranDate(), paymentLog.getTranTime(),
+										String.valueOf(paymentLog.getTotal()));
 
 								additionalInfo = new AdditionalInfoPayInq(
 										request.getAdditionalInfo().getReserveField1(),
@@ -516,21 +523,21 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										request.getAdditionalInfo().getReserveField5());
 
 								transactionStatus = Constants.Status.Success;
-								cnic = paymentLogRecord.getCnic();
-								mobile = paymentLogRecord.getMobile();
-								address = paymentLogRecord.getAddress();
-								name = paymentLogRecord.getName();
-								address = paymentLogRecord.getAddress();
-								billStatus = paymentLogRecord.getBillStatus();
+								cnic = paymentLog.getCnic();
+								mobile = paymentLog.getMobile();
+								address = paymentLog.getAddress();
+								name = paymentLog.getName();
+								address = paymentLog.getAddress();
+								billStatus = paymentLog.getBillStatus();
 								// dbAmount = paymentLogRecord.getAmount();
-								dbTax = paymentLogRecord.getTaxAmount();
-								dbTransactionFees = paymentLogRecord.getTransactionFees();
-								dbTotal = paymentLogRecord.getTotal();
-								tranDate = paymentLogRecord.getTranDate();
-								tranTime = paymentLogRecord.getTranTime();
-								transactionFees = paymentLogRecord.getTransactionFees();
-								province = paymentLogRecord.getProvince();
-								paymentReferenceDb = paymentLogRecord.getPaymentRefNo();
+								dbTax = paymentLog.getTaxAmount();
+								dbTransactionFees = paymentLog.getTransactionFees();
+								dbTotal = paymentLog.getTotal();
+								tranDate = paymentLog.getTranDate();
+								tranTime = paymentLog.getTranTime();
+								transactionFees = paymentLog.getTransactionFees();
+								province = paymentLog.getProvince();
+								paymentReferenceDb = paymentLog.getPaymentRefNo();
 
 								response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 								return response;

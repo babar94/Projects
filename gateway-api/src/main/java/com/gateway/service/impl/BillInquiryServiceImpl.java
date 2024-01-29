@@ -374,8 +374,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTotal = requestTotalAmountbdUp.doubleValue();
 						if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 								.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
-							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+
+//							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
 							if (paymentLog != null) {
 								// datePaid = paymentLog.getTranDate();
 								// billingMonth = utilMethods.formatDateString(datePaid);
@@ -690,8 +696,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
-							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+//						PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
 							if (paymentLog != null) {
 								datePaid = paymentLog.getTranDate();
 								// billingMonth = utilMethods.formatDateString(datePaid);
@@ -908,8 +919,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						billStatus = dataWrapper.getStatus().trim().equals("0") ? Constants.BILL_STATUS.BILL_UNPAID
 								: Constants.BILL_STATUS.BILL_PAID;
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
-							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+//							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
+//									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
 							if (paymentLog != null) {
 								datePaid = paymentLog.getTranDate();
 								// billingMonth = utilMethods.formatDateString(datePaid);
@@ -1137,8 +1154,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						// dbTotal = requestTotalAmountbdUp.doubleValue();
 
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
-							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
+
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+//							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
+//									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
 							if (paymentLog != null) {
 								// datePaid = paymentLog.getTranDate();
 								// billingMonth = utilMethods.formatDateString(datePaid);
