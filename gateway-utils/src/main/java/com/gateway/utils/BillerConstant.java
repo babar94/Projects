@@ -21,4 +21,9 @@ public interface BillerConstant {
 
 	}
 
+	interface AIOU {
+
+		String AIOU = "AIOU";
+	}
+
 }

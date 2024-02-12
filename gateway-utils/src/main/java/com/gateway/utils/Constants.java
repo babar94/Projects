@@ -94,6 +94,8 @@ public class Constants {
 		public static final String PTA_BILL_PAYMENT = "pta-updatevoucher";
 		public static final String PRAL_FBR_BILL_INQUIRY = "pral-fbr-getvoucher";
 		public static final String PRAL_FBR_BILL_PAYMENT = "pral-fbr-updatevoucher";
+		public static final String AIOU_BILL_INQUIRY = "aiou-getvoucher";
+		public static final String AIOU_BILL_PAYMENT = "aiou-updatevoucher";
 
 	}
 
@@ -110,6 +112,12 @@ public class Constants {
 
 		public static final String OFFLINE_BILLER = "offline";
 		public static final String ONLINE_BILLER = "online";
+
+	}
+
+	public static class BankMnemonic {
+		public static final String NBP = "NBP";
+		public static final String ABL = "ABL";
 
 	}
 
