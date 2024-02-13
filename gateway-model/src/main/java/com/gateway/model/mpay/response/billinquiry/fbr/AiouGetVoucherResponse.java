@@ -20,9 +20,8 @@ import lombok.ToString;
 @ToString
 public class AiouGetVoucherResponse implements Serializable {
 	private static final long serialVersionUID = 8396436785949897705L;
-	
-	@JsonProperty("response")
+
+    // The actual response data
     private Response response;
-	
 
 }

@@ -11,6 +11,7 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\DataWrapper.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\OneLinkBillInquiryRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billinquiryresponse\TxnInfo.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\AiouGetVoucherResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\BillPaymentRequest.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\offline\Response.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\PtaGetVoucherResponse.java

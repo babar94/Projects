@@ -16,5 +16,8 @@ public interface BillPaymentService {
 
 	public BillPaymentResponse billPaymentPral(BillPaymentRequest request);
 
-	public BillPaymentResponse billPaymentFbr(BillPaymentRequest request,HttpServletRequest httpRequestData);
+	public BillPaymentResponse billPaymentFbr(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
+	public BillPaymentResponse billPaymentAiou(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
 }
