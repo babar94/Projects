@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "api_gw_transaction_params")
+//@Table(name = "nbp_pgw_api_gw_transaction_params npagtp")
 @Data
 @NoArgsConstructor
 

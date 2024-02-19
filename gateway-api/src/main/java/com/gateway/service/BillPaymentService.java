@@ -12,9 +12,9 @@ public interface BillPaymentService {
 	public BillPaymentResponse billPaymentOffline(BillPaymentRequest request, HttpServletRequest httpRequestData,
 			String parentBiller, String subBiller);
 
-	public BillPaymentResponse billPaymentPta(BillPaymentRequest request);
+	public BillPaymentResponse billPaymentPta(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
-	public BillPaymentResponse billPaymentPral(BillPaymentRequest request);
+	public BillPaymentResponse billPaymentPral(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
 	public BillPaymentResponse billPaymentFbr(BillPaymentRequest request, HttpServletRequest httpRequestData);
 

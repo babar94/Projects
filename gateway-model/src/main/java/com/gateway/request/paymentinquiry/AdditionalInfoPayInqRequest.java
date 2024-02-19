@@ -24,5 +24,10 @@ public class AdditionalInfoPayInqRequest implements Serializable {
 	private String reserveField3;
 	private String reserveField4;
 	private String reserveField5;
+	private String reserveField6;
+	private String reserveField7;
+	private String reserveField8;
+	private String reserveField9;
+	private String reserveField10;
 
 }

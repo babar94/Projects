@@ -14,7 +14,6 @@ public class Constants {
 		public static final String BILLER_NOT_FOUND_DISABLED = "04";
 		public static final String INVALID_BILLER_ID = "04";
 		public static final String BILLER_DISABLED = "04";
-		// public static final String INVALID_BILLER_DATA = "04";
 		public static final String SERVICE_FAIL = "05";
 		public static final String BILL_ALREADY_PAID = "06";
 		public static final String BAD_TRANSACTION = "07";
@@ -23,6 +22,7 @@ public class Constants {
 		public static final String UNABLE_TO_PROCESS = "10";
 		public static final String AMMOUNT_MISMATCH = "11";
 		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "12";
+		
 
 		public static final String DISABLED_EXCEPTION = "400";
 		public static final String UNAUTHORISED = "401";

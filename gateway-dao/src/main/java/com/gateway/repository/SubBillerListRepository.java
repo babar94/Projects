@@ -1,10 +1,9 @@
 package com.gateway.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.SubBillersList;
@@ -26,5 +25,7 @@ public interface SubBillerListRepository extends JpaRepository<SubBillersList, L
 //	    public ArrayList<BillersList> getBillerList();
 
 //	@Query(value = "SELECT * FROM pg_billers a WHERE a.biller_id = :billerId", nativeQuery = true)
+
+	List<SubBillersList> findByBillerConfigurationAndIsActiveTrue(BillerConfiguration billerConfiguration);
 
 }

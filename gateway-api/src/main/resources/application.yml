@@ -34,7 +34,7 @@ spring:
       pool-name: sql-pool
       auto-commit: true
   jpa:
-    generate-ddl: false
+    generate-ddl: true
     open-in-view: false
     hibernate:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy

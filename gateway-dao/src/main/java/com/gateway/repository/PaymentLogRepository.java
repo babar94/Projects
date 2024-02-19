@@ -13,8 +13,8 @@ public interface PaymentLogRepository extends JpaRepository<PaymentLog, Long> {
 	// billerId, String billerNumber,String billStatus,String Activity,String
 	// responseCode);
 
-	PaymentLog findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(String billerId,
-			String billerNumber, String billStatus, String activity, String responseCode);
+	PaymentLog findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+			String billerId, String billerNumber, String billStatus, String activity, String responseCode);
 
 	public List<PaymentLog> findByRrn(String rrn);
 

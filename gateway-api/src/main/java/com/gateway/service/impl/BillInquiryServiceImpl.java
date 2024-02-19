@@ -17,7 +17,7 @@ import com.gateway.entity.PaymentLog;
 import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
-import com.gateway.model.mpay.response.billinquiry.fbr.AiouGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
@@ -124,8 +124,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 										switch (subBillerDetail.getSubBillerName()) {
 										case BillerConstant.BEOE.BEOE:
-											billInquiryResponse = billInquiryBEOE(request,
-													billInquiryValidationResponse);
+											billInquiryResponse = billInquiryBEOE(request, httpRequestData);
 											break;
 
 										default:
@@ -307,8 +306,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		return response;
 	}
 
-	public BillInquiryResponse billInquiryBEOE(BillInquiryRequest request,
-			BillInquiryValidationResponse billInquiryValidationResponse) {
+	public BillInquiryResponse billInquiryBEOE(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("BEOE Bill Inquiry Request {} ", request.toString());
 
@@ -343,6 +341,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal requestTotalAmountbdUp = null;
 
 		try {
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+			username = result[0];
+			channel = result[1];
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.BEOE_BILL_INQUIRY);
@@ -391,7 +392,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 								.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
@@ -447,7 +448,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -713,7 +719,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
 							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
@@ -777,7 +783,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -936,7 +947,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								: Constants.BILL_STATUS.BILL_PAID;
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
@@ -985,7 +996,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								request.getAdditionalInfo().getReserveField2(),
 								request.getAdditionalInfo().getReserveField3(),
 								request.getAdditionalInfo().getReserveField4(),
-								request.getAdditionalInfo().getReserveField5());
+								request.getAdditionalInfo().getReserveField5(),
+								request.getAdditionalInfo().getReserveField6(),
+								request.getAdditionalInfo().getReserveField7(),
+								request.getAdditionalInfo().getReserveField8(),
+								request.getAdditionalInfo().getReserveField9(),
+								request.getAdditionalInfo().getReserveField10());
 
 						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -1172,7 +1188,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
 							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
@@ -1227,7 +1243,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -1347,8 +1368,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.AIOU_BILL_INQUIRY);
-			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(Constants.BankMnemonic.ABL);
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 
@@ -1363,12 +1384,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					double amountAfterDueDate = 0;
 
 					BigDecimal requestAmountafterduedate = null;
-					if (aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher() != null) {
+					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
 
-						String amountStr = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher()
-								.getAmountWithinDueDate();
-						String amountAfterDueDateStr = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher()
-								.getAmountAfterDueDate();
+						String amountStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
+								.getResponseBillInquiry().getAmountWithinDueDate();
+						String amountAfterDueDateStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
+								.getResponseBillInquiry().getAmountAfterDueDate();
 
 						if (!amountStr.isEmpty()) {
 							requestAmount = BigDecimal.valueOf(Double.parseDouble(amountStr)).setScale(2,
@@ -1388,18 +1409,20 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						}
 
-						name = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getConsumerDetail();
-						dueDate = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getDueDate();
-						reserved = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getReserved();
+						name = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
+								.getName();
+						dueDate = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
+								.getDueDate();
 						if (reserved == null || reserved.isBlank() || reserved.isEmpty()) {
 							reserved = request.getAdditionalInfo().getReserveField1();
 						}
-						billStatus = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus().trim()
-								.equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
+						billStatus = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
+								.getBillStatus().trim().equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
 										: Constants.BILL_STATUS.BILL_PAID;
 						dbBillStatus = billStatus;
 						// dbAmount = amountInDueToDate;
-						oneBillNumber = aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getOneBillNumber();
+						oneBillNumber = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
+								.getResponseBillInquiry().getOneBillNumber();
 						if (oneBillNumber == null) {
 							oneBillNumber = "";
 						}
@@ -1411,7 +1434,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
 							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCodeOrderByIDDesc(
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
@@ -1446,8 +1469,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							transactionStatus = Constants.Status.Pending;
 
 						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)
-								|| aiouGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus()
-										.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK.substring(0))) {
+								|| aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
+										.getBillStatus()
+										.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK.substring(0, 1))) {
 							transactionStatus = Constants.Status.Fail;
 							billStatus = "B";
 						}
@@ -1466,7 +1490,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 

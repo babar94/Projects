@@ -1,4 +1,4 @@
-package com.gateway.model.mpay.response.billinquiry.fbr;
+package com.gateway.model.mpay.response.billinquiry.aiou;
 
 import java.io.Serializable;
 
@@ -21,7 +21,6 @@ import lombok.ToString;
 public class AiouGetVoucherResponse implements Serializable {
 	private static final long serialVersionUID = 8396436785949897705L;
 
-    // The actual response data
-    private Response response;
+	private Response response;
 
 }
