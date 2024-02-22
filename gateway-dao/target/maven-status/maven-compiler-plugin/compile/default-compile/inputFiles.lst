@@ -1,4 +1,5 @@
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\repository\PgPaymentLogRepository.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\repository\ReservedFieldMappingRepository.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\BillerConfiguration.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\response\BillInquiryValidationResponse.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\response\BillPaymentValidationResponse.java
@@ -15,6 +16,7 @@ D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\ma
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\PgPaymentLog.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\repository\BillerListRepository.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\MPAYLog.java
+D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\ReservedFieldsMapping.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\ProvinceTransaction.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\entity\PaymentLog.java
 D:\PaysyslabsProjects\epayment-appservice\epayment-appservice\gateway-dao\src\main\java\com\gateway\repository\AuditLogRepository.java

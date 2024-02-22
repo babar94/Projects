@@ -1,3 +1,4 @@
+com\gateway\entity\ReservedFieldsMapping.class
 com\gateway\repository\TransactionParamsDao.class
 com\gateway\entity\AuditLog.class
 com\gateway\entity\SubBillersList.class
@@ -19,3 +20,4 @@ com\gateway\repository\CredentialDao.class
 com\gateway\repository\PaymentLogRepository.class
 com\gateway\entity\PaymentLog.class
 com\gateway\entity\MPAYLog.class
+com\gateway\repository\ReservedFieldMappingRepository.class

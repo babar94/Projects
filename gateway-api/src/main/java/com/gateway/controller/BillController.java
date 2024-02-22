@@ -57,6 +57,7 @@ public class BillController extends ApiController {
 		BillInquiryResponse response = null;
 		LOG.info("Bill Controller - Bill Inquiry");
 		try {
+			
 			if (isDuplicateRRN(request.getInfo().getRrn())) {
 				// Duplicate RRN found, return a detailed response
 				BillInquiryValidationResponse validationResponse = new BillInquiryValidationResponse(

@@ -7,6 +7,7 @@ com\gateway\response\billinquiryresponse\BillInquiryResponse.class
 com\gateway\response\billpaymentresponse\BillPaymentResponse.class
 com\gateway\response\paymentinquiryresponse\AdditionalInfoPayInq.class
 com\gateway\response\billerlistresponse\BillerListResponse.class
+com\gateway\model\mpay\response\billpayment\aiou\AiouUpdateVoucherResponse.class
 com\gateway\request\billpayment\TxnInfoPayRequest.class
 com\gateway\response\billpaymentresponse\TxnInfoPay.class
 com\gateway\request\paymentinquiry\InfoPayInqRequest.class
@@ -26,12 +27,14 @@ com\gateway\response\paymentinquiryresponse\TxnInfoPayInq.class
 com\gateway\model\mpay\response\billpayment\pta\PtaUpdateVoucherResponse.class
 com\gateway\model\mpay\response\billpayment\UpdateVoucherResponse.class
 com\gateway\request\billinquiry\TxnInfoRequest.class
+com\gateway\model\mpay\response\billinquiry\aiou\AiouGetVoucher.class
 com\gateway\model\mpay\response\billinquiry\fbr\Response.class
 com\gateway\model\mpay\response\billinquiry\pta\PtaGetVoucher.class
 com\gateway\request\ChannelConfigurationRequest.class
 com\gateway\model\mpay\response\billinquiry\Response.class
 com\gateway\request\AuthenticationRequest.class
 com\gateway\request\billpayment\BillPaymentRequest.class
+com\gateway\model\mpay\response\billinquiry\aiou\AiouGetVoucherResponse.class
 com\gateway\model\mpay\response\billinquiry\offline\OfflineBillerGetvoucher.class
 com\gateway\model\mpay\response\billpayment\offline\OfflineUpdateVoucherResponse.class
 com\gateway\model\mpay\response\billinquiry\offline\Getvoucher.class
@@ -43,6 +46,7 @@ com\gateway\request\ConfigurationRequest.class
 com\gateway\request\paymentinquiry\PaymentInquiryRequest.class
 com\gateway\request\paymentinquiry\AdditionalInfoPayInqRequest.class
 com\gateway\response\CredentialsListAttribute.class
+com\gateway\model\mpay\response\billinquiry\aiou\ResponseBillInquiry.class
 com\gateway\model\mpay\response\billpayment\fbr\Response.class
 com\gateway\model\mpay\response\billpayment\pta\Response.class
 com\gateway\model\mpay\response\billinquiry\pta\DataWrapper.class
@@ -50,12 +54,14 @@ com\gateway\request\billpayment\AdditionalInfoRequest.class
 com\gateway\request\billinquiry\BillInquiryRequest.class
 com\gateway\request\billpayment\InfoPayRequest.class
 com\gateway\response\billerlistresponse\Billers.class
+com\gateway\model\mpay\response\billpayment\aiou\Response.class
 com\gateway\response\ValidateParamResponse.class
 com\gateway\response\paymentinquiryresponse\PaymentInquiryResponse.class
 com\gateway\model\mpay\response\billinquiry\Getvoucher.class
 com\gateway\model\mpay\response\billinquiry\fbr\FbrGetVoucherResponse.class
 com\gateway\model\mpay\response\billpayment\offline\Response.class
 com\gateway\model\mpay\response\billpayment\Response.class
+com\gateway\model\mpay\response\billinquiry\aiou\Response.class
 com\gateway\model\mpay\response\billinquiry\pta\PtaGetVoucherResponse.class
 com\gateway\request\paymentinquiry\TerminalInfoPayInqRequest.class
 com\gateway\response\billinquiryresponse\AdditionalInfo.class

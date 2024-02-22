@@ -138,7 +138,7 @@ public class UtilMethods {
 	// Muhammad Sajids
 
 	public LocalDate parseDueDateWithoutDashes(String dueDateStr) {
-	    return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
+		return LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
 	}
 
 	public Date parseDate(String dateString) throws ParseException {
@@ -301,12 +301,23 @@ public class UtilMethods {
 //		DecimalFormat df = new DecimalFormat("0.00");
 //		return Double.parseDouble(df.format(decimal));
 //	}
+//	public double bigDecimalToDouble(BigDecimal decimal) {
+//		// Format BigDecimal as a string without scientific notation
+//		return decimal.doubleValue();
+//	}
+
+	// muhammad sajid
+
 	public double bigDecimalToDouble(BigDecimal decimal) {
 		// Format BigDecimal as a string without scientific notation
 		return decimal.doubleValue();
 	}
 
-	// muhammad sajid
+	public String formatAmount(BigDecimal amount) {
+		// Format as a currency with two decimal places
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		return decimalFormat.format(amount);
+	}
 
 	public String formatAmount(BigDecimal amount, int length) {
 		// Scale the BigDecimal to two decimal places
@@ -323,6 +334,7 @@ public class UtilMethods {
 		String formattedString = String.format("%0" + (length - 4) + "d%02d00", integerPart / 100, lastTwoDigits);
 
 		return formattedString.substring(formattedString.length() - length);
+
 	}
 
 }

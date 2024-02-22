@@ -8,6 +8,7 @@ public class Constants {
 
 		public static final String OK = "00";
 		public static final String CONSUMER_NUMBER_NOT_EXISTS = "01";
+
 		public static final String CONSUMER_NUMBER_BLOCK = "02";
 		public static final String UNKNOWN_ERROR = "03";
 		public static final String INVALID_DATA = "04";
@@ -22,7 +23,7 @@ public class Constants {
 		public static final String UNABLE_TO_PROCESS = "10";
 		public static final String AMMOUNT_MISMATCH = "11";
 		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "12";
-		
+		public static final String TRANSACTION_CAN_NOT_BE_PROCESSED = "13";
 
 		public static final String DISABLED_EXCEPTION = "400";
 		public static final String UNAUTHORISED = "401";
@@ -59,6 +60,7 @@ public class Constants {
 		public static final String INVALID_BILLER_ID = "Invalid billerId";
 		public static final String CONSUMER_NUMBER_Expired = "Consumer Number Expired";
 		public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+		public static final String TRANSACTION_CAN_NOT_BE_PROCESSED = "Your transaction cannot be processed. Please contact NBP Helpline 021-111627627";
 
 	}
 

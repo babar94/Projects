@@ -1,6 +1,7 @@
 com\gateway\utils\BillerConstant$PTA.class
 com\gateway\utils\Constants$ACTIVITY.class
 com\gateway\utils\ParamsValidator.class
+com\gateway\utils\BillerConstant$AIOU.class
 com\gateway\utils\XMLBeautifier.class
 com\gateway\utils\BillerConstant$BEOE.class
 com\gateway\utils\BillerConstant$PRAL.class
@@ -10,6 +11,7 @@ com\gateway\utils\Constants$Status.class
 com\gateway\utils\Constants$Channel.class
 com\gateway\utils\Constants.class
 com\gateway\utils\BillerConstant.class
+com\gateway\utils\Constants$BankMnemonic.class
 com\gateway\utils\Constants$BillerType.class
 com\gateway\utils\Constants$MPAY_REQUEST_METHODS.class
 com\gateway\utils\Constants$ResponseDescription.class

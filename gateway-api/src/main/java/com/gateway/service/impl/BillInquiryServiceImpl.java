@@ -779,16 +779,16 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
+							request.getAdditionalInfo().getReserveField5());
+
+//							request.getAdditionalInfo().getReserveField6(),
+//							request.getAdditionalInfo().getReserveField7(),
+//							request.getAdditionalInfo().getReserveField8(),
+//							request.getAdditionalInfo().getReserveField9(),
+//							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -1098,7 +1098,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String address = "";
 		String name = "";
 		String billStatus = "";
-		double amountInDueToDate = 0;// double dbAmount = 0;
+		BigDecimal amountInDueToDate = null;// double dbAmount = 0;
 		double dbTax = 0;
 		double dbTransactionFees = 0;
 		double dbTotal = 0;
@@ -1137,7 +1137,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						fbrGetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 				if (fbrGetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
-					double amountAfterDueDate = 0;
+					BigDecimal amountAfterDueDate = null;
 
 					BigDecimal requestAmountafterduedate = null;
 					if (fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher() != null) {
@@ -1147,95 +1147,114 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						String amountAfterDueDateStr = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher()
 								.getAmountAfterDueDate();
 
-						if (!amountStr.isEmpty()) {
-							requestAmount = BigDecimal.valueOf(Double.parseDouble(amountStr)).setScale(2,
-									RoundingMode.UP);
-							amountInDueToDate = utilMethods.bigDecimalToDouble(requestAmount);
-							// amountPaidInDueDate = utilMethods.formatAmount(requestAmount, 12);
+						if ((amountStr.length() >= 1 && amountStr.length() <= 14)
+								&& (amountAfterDueDateStr.length() >= 1 && amountAfterDueDateStr.length() <= 14)
+								&& !amountStr.contains(".")) {
 
-							// dbAmount = requestAmount.doubleValue();
-						}
+							if (!amountStr.isEmpty()) {
+								// Remove leading zeros and convert to BigDecimal
+								requestAmount = new BigDecimal(amountStr.replaceFirst("^\\+?0+", ""));
+								requestAmount = requestAmount.divide(BigDecimal.valueOf(100));
 
-						if (!amountAfterDueDateStr.isEmpty()) {
-							requestAmountafterduedate = BigDecimal.valueOf(Double.parseDouble(amountAfterDueDateStr))
-									.setScale(2, RoundingMode.UP);
-							amountAfterDueDate = utilMethods.bigDecimalToDouble(requestAmountafterduedate);
-							// amountPaidAfterDueDate = utilMethods.formatAmount(requestAmountafterduedate,
-							// 12);
+								// Set scale to 2 and round up
+								amountInDueToDate = requestAmount.setScale(2, RoundingMode.UP);
 
-						}
+							}
 
-						name = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getConsumerDetail();
-						dueDate = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getDueDate();
-						reserved = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getReserved();
-						if (reserved == null || reserved.isBlank() || reserved.isEmpty()) {
-							reserved = request.getAdditionalInfo().getReserveField1();
-						}
-						billStatus = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus().trim()
-								.equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
-										: Constants.BILL_STATUS.BILL_PAID;
-						dbBillStatus = billStatus;
-						// dbAmount = amountInDueToDate;
-						oneBillNumber = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getOneBillNumber();
-						if (oneBillNumber == null) {
-							oneBillNumber = "";
-						}
+							if (!amountAfterDueDateStr.isEmpty()) {
+								// Remove leading zeros and convert to BigDecimal
+
+								requestAmountafterduedate = new BigDecimal(
+										amountAfterDueDateStr.replaceFirst("^\\+?0+", ""));
+
+								requestAmountafterduedate = requestAmountafterduedate.divide(BigDecimal.valueOf(100));
+
+								// Set scale to 2 and round up
+								amountAfterDueDate = requestAmountafterduedate.setScale(2, RoundingMode.UP);
+
+								// Continue with your logic using amountAfterDueDate...
+							}
+
+							name = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getConsumerDetail();
+							dueDate = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getDueDate();
+							reserved = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getReserved();
+							if (reserved == null || reserved.isBlank() || reserved.isEmpty()) {
+								reserved = request.getAdditionalInfo().getReserveField1();
+							}
+							billStatus = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus()
+									.trim().equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
+											: Constants.BILL_STATUS.BILL_PAID;
+							dbBillStatus = billStatus;
+							// dbAmount = amountInDueToDate;
+							oneBillNumber = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher()
+									.getOneBillNumber();
+							if (oneBillNumber == null) {
+								oneBillNumber = "";
+							}
 //						amountPaid = String.format("%012d",
 //								Integer.parseInt(getVoucherResponse.getResponse().getGetvoucher().getTotal()));
 
-						// dbTotal = requestTotalAmountbdUp.doubleValue();
+							// dbTotal = requestTotalAmountbdUp.doubleValue();
 
-						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+							if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
-							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-											request.getTxnInfo().getBillerId().trim(),
-											request.getTxnInfo().getBillNumber().trim(),
-											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
-											Constants.ResponseCodes.OK);
+								PaymentLog paymentLog = paymentLogRepository
+										.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+												request.getTxnInfo().getBillerId().trim(),
+												request.getTxnInfo().getBillNumber().trim(),
+												Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+												Constants.ResponseCodes.OK);
 //							PaymentLog paymentLog = paymentLogRepository.findFirstByBillerNumberAndBillStatus(
 //									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID);
-							if (paymentLog != null) {
+								if (paymentLog != null) {
+									// datePaid = paymentLog.getTranDate();
+									// billingMonth = utilMethods.formatDateString(datePaid);
+									billStatus = "P";
+									transAuthId = paymentLog.getTranAuthId();
+
+								} else {
+									info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+											Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+									response = new BillInquiryResponse(info, null, null);
+									return response;
+								}
+
+								transactionStatus = Constants.Status.Success;
+							} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+								billStatus = "U";
+								transAuthId = "";
+								// PaymentLog paymentLog =
+								// paymentLogRepository.findFirstByBillerNumberAndBillStatus(request.getTxnInfo().getBillNumber().trim(),Constants.BILL_STATUS.BILL_PAID);
+
 								// datePaid = paymentLog.getTranDate();
-								// billingMonth = utilMethods.formatDateString(datePaid);
-								billStatus = "P";
-								transAuthId = paymentLog.getTranAuthId();
 
-							} else {
-								info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
-										Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
-								response = new BillInquiryResponse(info, null, null);
-								return response;
+								// billingMonth= utilMethods.formatDateString(datePaid);
+								datePaid = "";
+
+								transactionStatus = Constants.Status.Pending;
+
+							} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)
+									|| fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus()
+											.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK.substring(0))) {
+								transactionStatus = Constants.Status.Fail;
+								billStatus = "B";
 							}
+							// hardcoded date
+							// dueDAte = utilMethods.getDueDate("20220825");
 
-							transactionStatus = Constants.Status.Success;
-						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
-							billStatus = "U";
-							transAuthId = "";
-							// PaymentLog paymentLog =
-							// paymentLogRepository.findFirstByBillerNumberAndBillStatus(request.getTxnInfo().getBillNumber().trim(),Constants.BILL_STATUS.BILL_PAID);
-
-							// datePaid = paymentLog.getTranDate();
-
-							// billingMonth= utilMethods.formatDateString(datePaid);
-							datePaid = "";
-
+						} else {
+							info = new Info(Constants.ResponseCodes.TRANSACTION_CAN_NOT_BE_PROCESSED,
+									Constants.ResponseDescription.TRANSACTION_CAN_NOT_BE_PROCESSED, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
 							transactionStatus = Constants.Status.Pending;
+							return response;
 
-						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)
-								|| fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus()
-										.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK.substring(0))) {
-							transactionStatus = Constants.Status.Fail;
-							billStatus = "B";
 						}
-						// hardcoded date
-						// dueDAte = utilMethods.getDueDate("20220825");
-
 					}
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), name, billStatus, dueDate,
-							String.valueOf(requestAmount), String.valueOf(requestAmountafterduedate), transAuthId,
+							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDueDate), transAuthId,
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(reserved,

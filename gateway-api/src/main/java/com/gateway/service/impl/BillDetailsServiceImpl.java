@@ -127,8 +127,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									switch (subBillerDetail.getSubBillerName()) {
 									case BillerConstant.BEOE.BEOE:
-										paymentInquiryResponse = paymentInquiryBEOE(request,
-												billPaymentInquiryValidationResponse);
+										paymentInquiryResponse = paymentInquiryBEOE(request, httpRequestData);
 										break;
 
 									default:
@@ -335,7 +334,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	}
 
 	public PaymentInquiryResponse paymentInquiryBEOE(PaymentInquiryRequest request,
-			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+			HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse response = null;
@@ -367,6 +366,11 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String username = "";
 
 		try {
+
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+			username = result[0];
+			channel = result[1];
+
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 			LOG.info("Calling Payment Inquiry");
 
