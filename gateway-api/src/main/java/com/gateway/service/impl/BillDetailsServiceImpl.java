@@ -364,6 +364,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String paymentReferenceDb = "";
 		String channel = "";
 		String username = "";
+		BigDecimal amountInDueDate = null;
+		BigDecimal amountAfterDueDate = null;
 
 		try {
 
@@ -382,9 +384,14 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
+
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
 					billStatus = getVoucherResponse.getResponse().getGetvoucher().getStatus();
+					amountInDueDate = utilMethods
+							.FormatStringToBigDecimal(getVoucherResponse.getResponse().getGetvoucher().getTotal());
+					amountAfterDueDate = amountInDueDate;
+
 					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
@@ -431,7 +438,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								name = paymentLog.getName();
 								address = paymentLog.getAddress();
 								billStatus = paymentLog.getBillStatus();
-								dbAmount = paymentLog.getAmount();
+								dbAmount = paymentLog.getAmountPaid();
 								dbTax = paymentLog.getTaxAmount();
 								dbTransactionFees = paymentLog.getTransactionFees();
 								dbTotal = paymentLog.getTotal();
@@ -517,9 +524,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
-						dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, tranDate, tranTime, province, "");
+						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
+						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address,
+						transactionFees, dbTax, dbTotal, channel, billStatus, tranDate, tranTime, province, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -563,6 +570,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String paymentReferenceDb = "";
 		String channel = "";
 		String username = "";
+		BigDecimal amountInDueDate = null;
+		BigDecimal amountAfterDueDate = null;
 
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
@@ -577,9 +586,15 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
+
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
+
 					billStatus = getVoucherResponse.getResponse().getGetvoucher().getStatus();
+					amountInDueDate = utilMethods
+							.FormatStringToBigDecimal(getVoucherResponse.getResponse().getGetvoucher().getTotal());
+					amountAfterDueDate = amountInDueDate;
+
 					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						try {
@@ -709,9 +724,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic, mobile, name,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), dbAmount,
-						dbTransactionFees, Constants.ACTIVITY.PaymentInquiry, paymentReferenceDb,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
-						dbTotal, channel, billStatus, tranDate, tranTime, province, "");
+						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
+						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address,
+						transactionFees, dbTax, dbTotal, channel, billStatus, tranDate, tranTime, province, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

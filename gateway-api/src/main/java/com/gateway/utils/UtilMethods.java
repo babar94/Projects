@@ -264,6 +264,17 @@ public class UtilMethods {
 		return resultAmount.toString();
 	}
 
+	// muhammad updated on 23-02-24 for AIOU in 13 digit format
+	public String formatAmountAn13(double amount) {
+		// Step 1: Remove the decimal point and currency symbol
+		long amountInMinorUnits = (long) (amount * 100);
+
+		// Step 2: Left-pad with zeros to make it 13 digits
+		String formattedAmount = String.format("%013d", amountInMinorUnits);
+
+		return formattedAmount;
+	}
+
 	public String convertISOFormatAmount(String amount) {
 		Double doubleAmount = 0d;
 		String resultAmount = "";
@@ -307,6 +318,18 @@ public class UtilMethods {
 //	}
 
 	// muhammad sajid
+
+	public BigDecimal FormatStringToBigDecimal(String amountStr) {
+		if (!amountStr.isEmpty()) {
+			// Remove leading zeros and convert to BigDecimal
+			BigDecimal amount = new BigDecimal(amountStr.replaceFirst("^\\+?0+", ""));
+			amount = amount.divide(BigDecimal.valueOf(100));
+
+			// Set scale to 2 and round up
+			return amount.setScale(2, RoundingMode.UP);
+		}
+		return null;
+	}
 
 	public double bigDecimalToDouble(BigDecimal decimal) {
 		// Format BigDecimal as a string without scientific notation

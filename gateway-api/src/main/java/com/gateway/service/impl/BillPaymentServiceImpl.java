@@ -2039,7 +2039,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						billStatus = fbrGetVoucherResponse.getResponse().getPralFbrGetVoucher().getBillStatus().trim()
 								.equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
 										: Constants.BILL_STATUS.BILL_PAID;
-						dbBillStatus = billStatus;
 
 						BigDecimal txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 						if (utilMethods.isValidInput(dueDateStr)) {
@@ -2454,7 +2453,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), requestAmountDb, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, dbBillStatus,
+						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
@@ -2484,13 +2483,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		AdditionalInfoPay additionalInfoPay = null;
 		Info info = null;
 		String transactionStatus = "";
+		String paymentRefrence = utilMethods.getRRN();
 		double transactionFees = 0;
 		String cnic = "";
 		String mobile = "";
 		String address = "";
 		String name = "";
 		String billStatus = "";
-		double amountInDueToDate = 0; // dbAmount = 0;
+		BigDecimal amountInDueToDate = null; // dbAmount = 0;
 		double dbTax = 0;
 		double dbTransactionFees = 0;
 		double dbTotal = 0;
@@ -2500,7 +2500,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
 		String transAuthId = request.getTxnInfo().getTranAuthId();
-		String paymentRefrence = "";
+
 		BigDecimal inquiryTotalAmountbdUp = null;
 		String dbBillStatus = "";
 		BigDecimal requestAmount = null;
@@ -2509,7 +2509,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		String channel = "";
 		String username = "";
-
+		BigDecimal amountAfterDueDate = null;
+		BigDecimal txnAmount = null;
 		try {
 
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
@@ -2537,84 +2538,80 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						aiouGetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 				if (aiouGetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
-					double amountAfterDueDate = 0;
+					name = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry().getName();
+					dueDateStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
+							.getDueDate();
+
 					String billstatus = "";
 
 					BigDecimal requestAmountafterduedate = null;
 					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
-
-						String amountStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
-								.getResponseBillInquiry().getAmountWithinDueDate();
-						String amountAfterDueDateStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
-								.getResponseBillInquiry().getAmountAfterDueDate();
-
-						if (!amountStr.isEmpty()) {
-							requestAmount = BigDecimal.valueOf(Double.parseDouble(amountStr)).setScale(2,
-									RoundingMode.UP);
-							amountInDueToDate = utilMethods.bigDecimalToDouble(requestAmount);
-							// amountPaidInDueDate = utilMethods.formatAmount(requestAmount, 12);
-
-							// dbAmount = requestAmount.doubleValue();
-						}
-
-						if (!amountAfterDueDateStr.isEmpty()) {
-							requestAmountafterduedate = BigDecimal.valueOf(Double.parseDouble(amountAfterDueDateStr))
-									.setScale(2, RoundingMode.UP);
-							amountAfterDueDate = utilMethods.bigDecimalToDouble(requestAmountafterduedate);
-							// amountPaidAfterDueDate = utilMethods.formatAmount(requestAmountafterduedate,
-							// 12);
-
-						}
-
-						name = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
-								.getName();
-						dueDateStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
-								.getDueDate();
 
 						billStatus = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
 								.getBillStatus().trim().equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
 										: Constants.BILL_STATUS.BILL_PAID;
 						// dbBillStatus = billStatus;
 
-						if (utilMethods.isValidInput(dueDateStr)) {
-							LocalDate currentDate = LocalDate.now();
-
-							try {
-								LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateStr);
-
-								// Check due date conditions
-								if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
-									if (Double.valueOf(request.getTxnInfo().getTranAmount())
-											.compareTo(amountInDueToDate) != 0) {
-										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-										response = new BillPaymentResponse(infoPay, null, null);
-										return response;
-									}
-								} else {
-									if (Double.valueOf(request.getTxnInfo().getTranAmount())
-											.compareTo(amountAfterDueDate) != 0) {
-										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-										response = new BillPaymentResponse(infoPay, null, null);
-										return response;
-									}
-								}
-							} catch (DateTimeParseException e) {
-								LOG.error("Error parsing due date: " + e.getMessage());
-							}
-						} else {
-							LOG.info("Invalid due date input");
-							if (Double.valueOf(request.getTxnInfo().getTranAmount())
-									.compareTo(amountInDueToDate) != 0) {
-								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-								response = new BillPaymentResponse(infoPay, null, null);
-								return response;
-							}
-						}
-
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+
+							String amountStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
+									.getResponseBillInquiry().getAmountWithinDueDate();
+							String amountAfterDueDateStr = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
+									.getResponseBillInquiry().getAmountAfterDueDate();
+
+							if (!amountStr.isEmpty()) {
+								requestAmount = new BigDecimal(amountStr.replaceFirst("^\\+?0+", ""));
+								requestAmount = requestAmount.divide(BigDecimal.valueOf(100));
+
+								// Set scale to 2 and round up
+								amountInDueToDate = requestAmount.setScale(2, RoundingMode.UP);
+
+							}
+
+							if (!amountAfterDueDateStr.isEmpty()) {
+								requestAmountafterduedate = new BigDecimal(
+										amountAfterDueDateStr.replaceFirst("^\\+?0+", ""));
+
+								requestAmountafterduedate = requestAmountafterduedate.divide(BigDecimal.valueOf(100));
+
+								// Set scale to 2 and round up
+								amountAfterDueDate = requestAmountafterduedate.setScale(2, RoundingMode.UP);
+							}
+							txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
+							if (utilMethods.isValidInput(dueDateStr)) {
+								LocalDate currentDate = LocalDate.now();
+
+								try {
+									LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateStr);
+
+									// Check due date conditions
+									if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
+										if (txnAmount.compareTo(amountInDueToDate) != 0) {
+											infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+													Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+											response = new BillPaymentResponse(infoPay, null, null);
+											return response;
+										}
+									} else {
+										if (txnAmount.compareTo(amountAfterDueDate) != 0) {
+											infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+													Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+											response = new BillPaymentResponse(infoPay, null, null);
+											return response;
+										}
+									}
+								} catch (DateTimeParseException e) {
+									LOG.error("Error parsing due date: " + e.getMessage());
+								}
+							} else {
+								LOG.info("Invalid due date input or empty from Aiou ");
+								if (txnAmount.compareTo(amountInDueToDate) != 0) {
+									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									return response;
+								}
+							}
 
 							try {
 
@@ -2626,18 +2623,30 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								LOG.info("Calling UpdateVoucher for Aiou");
 
 								ArrayList<String> ubpsBillParams = new ArrayList<String>();
+//		   String urlParameters = "aiou-updatevoucher-call,ABL,9990000003332,A21,Waseem Abbas,Naeem Abbas,1234567890123,0201,A203450,12PRI12345,
+								// 03068575572,20240220,0000000000200,Allied Bank Limited,1234,G10
+								// Islamabad,3254,654321,"+ GenerateRRN() + ",001345";
+
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.AIOU_BILL_PAYMENT);
 								ubpsBillParams.add(Constants.BankMnemonic.ABL);// Bank_Mnemonic
 								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
-								ubpsBillParams.add(request.getTerminalInfo().getMobile().trim());
-								ubpsBillParams.add(request.getTxnInfo().getTranDate().trim());
-								ubpsBillParams.add(request.getTxnInfo().getTranAmount().trim());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField1());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField2());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField3());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField4());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField5());
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField6());
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField1());// semester
+								ubpsBillParams.add("");// name
+								ubpsBillParams.add("");// fname
+								ubpsBillParams.add("");// cnic
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField1());// programme
+								ubpsBillParams.add("");// rollNumber
+								ubpsBillParams.add("");// registrationNumber
+								ubpsBillParams.add(request.getTerminalInfo().getMobile());//
+								ubpsBillParams.add(request.getTxnInfo().getTranDate());// dueDate
+								ubpsBillParams.add(utilMethods.formatAmountAn13(
+										Double.parseDouble(request.getTxnInfo().getTranAmount().trim())));// AmountPaid
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField3());// BankName
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField4());// BankCode
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField5());// Branchname
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField6());// BankCode
+								ubpsBillParams.add("123456");// Stan
+
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
 
@@ -2722,7 +2731,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 													|| aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
 															.getResponseBillInquiry().getBillStatus().equalsIgnoreCase(
 																	Constants.BILL_STATUS.BILL_PAID.substring(0))) {
-												paymentRefrence = utilMethods.getRRN();
+
 												txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 														request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
 												additionalInfoPay = new AdditionalInfoPay(reserved,
@@ -2993,10 +3002,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), inquiryTotalAmountbdUp, dbTransactionFees,
-						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId);
+						request.getTxnInfo().getBillerId(), txnAmount, amountInDueToDate, amountAfterDueDate,
+						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						request.getTxnInfo().getTranTime(), province, transAuthId);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

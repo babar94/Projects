@@ -97,7 +97,7 @@ public class Constants {
 		public static final String PRAL_FBR_BILL_INQUIRY = "pral-fbr-getvoucher";
 		public static final String PRAL_FBR_BILL_PAYMENT = "pral-fbr-updatevoucher";
 		public static final String AIOU_BILL_INQUIRY = "aiou-getvoucher";
-		public static final String AIOU_BILL_PAYMENT = "aiou-updatevoucher";
+		public static final String AIOU_BILL_PAYMENT = "aiou-updatevoucher-call";
 
 	}
 

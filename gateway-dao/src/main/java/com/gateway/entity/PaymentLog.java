@@ -67,9 +67,9 @@ public class PaymentLog implements Serializable {
 	@Column(name = "biller_Id")
 	private String billerId;
 
-	@Column(name = "amount")
+	@Column(name = "amountPaid")
 	// private double amount;
-	private BigDecimal amount;
+	private BigDecimal amountPaid;
 	@Column(name = "charges")
 	private double charges;
 
@@ -114,5 +114,13 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "tran_auth_id")
 	private String tranAuthId;
+
+	// new added on 22-02-24
+
+	@Column(name = "amount_withinduedate")
+	private BigDecimal amountwithinduedate;
+
+	@Column(name = "amount_afterduedate")
+	private BigDecimal amountafterduedate;
 
 }
