@@ -30,6 +30,7 @@ import com.gateway.service.BillDetailsService;
 import com.gateway.service.BillInquiryService;
 import com.gateway.service.BillPaymentService;
 import com.gateway.utils.Constants;
+import com.gateway.utils.ValidationUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -50,6 +51,9 @@ public class BillController extends ApiController {
 	@Autowired
 	private PaymentLogRepository paymentLogRepository;
 
+	@Autowired
+	private ValidationUtil validationUtil;
+
 //	@ApiOperation(value = "API Gateway - Bill Inquiry", notes = "Bill inquiry")
 	@RequestMapping(path = "/billinquiry", method = RequestMethod.POST)
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
@@ -57,21 +61,21 @@ public class BillController extends ApiController {
 		BillInquiryResponse response = null;
 		LOG.info("Bill Controller - Bill Inquiry");
 		try {
-			
-			if (isDuplicateRRN(request.getInfo().getRrn())) {
-				// Duplicate RRN found, return a detailed response
-				BillInquiryValidationResponse validationResponse = new BillInquiryValidationResponse(
-						Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-						Constants.ResponseDescription.DUPLICATE_TRANSACTION, request.getInfo().getRrn(),
-						request.getInfo().getStan());
 
-				// Returning a BillInquiryResponse with the validation response
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
 
-				return new BillInquiryResponse(
-						new Info(validationResponse.getResponseCode(), validationResponse.getResponseDesc(),
-								validationResponse.getRrn(), validationResponse.getStan()),
-						null, null);
+			if (validationUtil.isNullOrEmpty(rrn)) {
+				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
 			}
+
+			if (validationUtil.isDuplicateRRN(rrn)) {
+				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan), null, null);
+
+			}
+
 			response = billInquiryService.billInquiry(httpRequestData, request);
 
 		} catch (Exception ex) {
@@ -93,19 +97,17 @@ public class BillController extends ApiController {
 
 		try {
 
-			if (isDuplicateRRN(request.getInfo().getRrn())) {
-				// Duplicate RRN found, return a detailed response
-				BillPaymentValidationResponse validationResponse = new BillPaymentValidationResponse(
-						Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-						Constants.ResponseDescription.DUPLICATE_TRANSACTION, request.getInfo().getRrn(),
-						request.getInfo().getStan());
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
 
-				// Returning a BillInquiryResponse with the validation response
+			if (validationUtil.isNullOrEmpty(rrn)) {
+				return response = new BillPaymentResponse(new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
+			}
 
-				return new BillPaymentResponse(
-						new InfoPay(validationResponse.getResponseCode(), validationResponse.getResponseDesc(),
-								validationResponse.getRrn(), validationResponse.getStan()),
-						null, null);
+			if (validationUtil.isDuplicateRRN(rrn)) {
+				return response = new BillPaymentResponse(new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan), null, null);
 			}
 
 			response = billPaymentService.billPayment(httpRequestData, request);
@@ -127,18 +129,18 @@ public class BillController extends ApiController {
 		LOG.info("Bill Controller - Payment Inquiry");
 		try {
 
-			if (isDuplicateRRN(request.getInfo().getRrn())) {
-				// Duplicate RRN found, return a detailed response
-				BillPaymentValidationResponse validationResponse = new BillPaymentValidationResponse(
-						Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-						Constants.ResponseDescription.DUPLICATE_TRANSACTION, request.getInfo().getRrn(),
-						request.getInfo().getStan());
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
 
-				// Returning a BillInquiryResponse with the validation response
+			if (validationUtil.isNullOrEmpty(rrn)) {
+				return response = new PaymentInquiryResponse(new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
+			}
 
-				return new PaymentInquiryResponse(
-						new InfoPayInq(validationResponse.getResponseCode(), validationResponse.getResponseDesc(),
-								validationResponse.getRrn(), validationResponse.getStan()),
+			if (validationUtil.isDuplicateRRN(rrn)) {
+				return response = new PaymentInquiryResponse(
+						new InfoPayInq(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+								Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan),
 						null, null);
 			}
 
@@ -174,10 +176,10 @@ public class BillController extends ApiController {
 
 	}
 
-	private boolean isDuplicateRRN(String rrn) {
-		// RRN validation: Check payment history
-		List<PaymentLog> paymentHistory = paymentLogRepository.findByRrn(rrn);
-		return paymentHistory != null && !paymentHistory.isEmpty();
-	}
+//	private boolean isDuplicateRRN(String rrn) {
+//
+//		List<PaymentLog> paymentHistory = paymentLogRepository.findByRrn(rrn);
+//		return paymentHistory != null && !paymentHistory.isEmpty();
+//	}
 
 }

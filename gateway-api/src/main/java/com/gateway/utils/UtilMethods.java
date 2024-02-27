@@ -22,6 +22,9 @@ import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
 import com.gateway.repository.MPAYLogRepository;
+import com.gateway.response.BillInquiryValidationResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
+import com.gateway.response.billinquiryresponse.Info;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -263,6 +266,39 @@ public class UtilMethods {
 
 		return resultAmount.toString();
 	}
+	
+	
+	public String convertAmountToISOFormatWithoutPlusSign(String amount) {
+	    StringBuilder resultAmount = new StringBuilder();
+	    int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
+
+	    if (decimalPlaces < 2) {
+	        amount = amount.replace(".", "0");
+	    } else {
+	        amount = amount.replace(".", "");
+	    }
+
+	    int additionalZerosLength = 14 - amount.length(); // Adjusted to account for the sign
+
+	    try {
+	        if (amount.startsWith("-")) {
+	            resultAmount.append("-");
+	            additionalZerosLength -= 1; // Adjust for the negative sign
+	        }
+
+	        for (int j = 0; j < additionalZerosLength; j++) {
+	            resultAmount.append("0");
+	        }
+
+	        resultAmount.append(amount.charAt(0)); // Append the sign
+	        resultAmount.append(amount.substring(1)); // Exclude the leading zeros and the sign
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+
+	    return resultAmount.toString();
+	}
+
 
 	// muhammad updated on 23-02-24 for AIOU in 13 digit format
 	public String formatAmountAn13(double amount) {
@@ -359,5 +395,7 @@ public class UtilMethods {
 		return formattedString.substring(formattedString.length() - length);
 
 	}
+
+	
 
 }

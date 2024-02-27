@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,6 +98,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Value("${fbr.identification.type}")
+	private String identificationType;
+
+	@Value("${fbr.bank.mnemonic}")
+	private String bankMnemonic;
+
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
 
@@ -141,7 +148,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) { // BEOE
 
 										switch (subBillerDetail.getSubBillerName()) {
-										case BillerConstant.BEOE.BEOE:
+										case BillerConstant.Beoe.BEOE:
 											billPaymentResponse = billPaymentBEOE(request, httpRequestData);
 											break;
 
@@ -158,11 +165,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.PRAL.KPPSC:
+										case BillerConstant.Pral.KPPSC:
 											billPaymentResponse = billPaymentPral(request, httpRequestData);
 											break;
 
-										case BillerConstant.PRAL.FBR:
+										case BillerConstant.Pral.FBR:
 											billPaymentResponse = billPaymentFbr(request, httpRequestData);
 											break;
 
@@ -182,7 +189,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.PTA.PTA:
+										case BillerConstant.Pta.PTA:
 											billPaymentResponse = billPaymentPta(request, httpRequestData);
 											break;
 
@@ -198,12 +205,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 									// AIOU
 									// PTA
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.AIOU.AIOU)
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Aiou.AIOU)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) { // PRAL
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.AIOU.AIOU:
+										case BillerConstant.Aiou.AIOU:
 
 //											reservedFieldsValidationService.validateReservedFields(request)
 //											billPaymentResponse = billPaymentAiou(request, httpRequestData);
@@ -1984,9 +1991,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PRAL_FBR_BILL_INQUIRY);
-			inquiryParams.add("");// Identification_Type
+			inquiryParams.add(identificationType);// Identification_Type
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
-			inquiryParams.add("NBP");// Bank_Mnemonic
+			inquiryParams.add(bankMnemonic);// Bank_Mnemonic
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1());// Bank_Mnemonic
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
@@ -2087,17 +2094,19 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								}
 								LOG.info("Calling UpdateVoucher for Fbr");
 
+//								
+//								
 								ArrayList<String> ubpsBillParams = new ArrayList<String>();
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.PRAL_FBR_BILL_PAYMENT);
-								ubpsBillParams.add(""); // Identification_Type
+								ubpsBillParams.add(identificationType); // Identification_Type
 								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
-								ubpsBillParams.add("NBP"); // Bank_Mnemonic
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField1());
+								ubpsBillParams.add(bankMnemonic); // Bank_Mnemonic
+								ubpsBillParams.add("");// RESERVED
 								ubpsBillParams.add(request.getTxnInfo().getTranAuthId());
 								ubpsBillParams.add(request.getTxnInfo().getTranDate());
 								ubpsBillParams.add(request.getTxnInfo().getTranTime());
-								ubpsBillParams.add(utilMethods
-										.convertAmountToISOFormat(request.getTxnInfo().getTranAmount().trim()));
+								ubpsBillParams.add(utilMethods.convertAmountToISOFormatWithoutPlusSign(
+										request.getTxnInfo().getTranAmount().trim()));
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
 

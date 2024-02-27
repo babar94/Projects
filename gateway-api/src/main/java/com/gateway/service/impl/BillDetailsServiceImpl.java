@@ -126,7 +126,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								if (billerDetail.getBillerName().equalsIgnoreCase("BEOE")) { // BEOE
 
 									switch (subBillerDetail.getSubBillerName()) {
-									case BillerConstant.BEOE.BEOE:
+									case BillerConstant.Beoe.BEOE:
 										paymentInquiryResponse = paymentInquiryBEOE(request, httpRequestData);
 										break;
 
@@ -142,7 +142,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									switch (subBillerDetail.getSubBillerName()) {
 
-									case BillerConstant.PRAL.KPPSC:
+									case BillerConstant.Pral.KPPSC:
 										paymentInquiryResponse = paymentInquiryPRAL(request,
 												billPaymentInquiryValidationResponse);
 										break;

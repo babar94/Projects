@@ -72,6 +72,13 @@ mpay:
 security:
   login:
     max-attempts: 3
+    
+    
+fbr:
+  identification:
+   type: 5  
+  bank:
+   mnemonic: NBP	
 
 service:
   auth:
