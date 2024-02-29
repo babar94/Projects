@@ -1609,7 +1609,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 //						billStatus = dataWrapper.getStatus();
 						billStatus = dataWrapper.getStatus().trim().equals("0") ? Constants.BILL_STATUS.BILL_UNPAID
 								: Constants.BILL_STATUS.BILL_PAID;
-						dbTotal = requestTotalAmountbdUp.doubleValue();
+;						dbTotal = requestTotalAmountbdUp.doubleValue();
 						dbAmount = requestTotalAmountbdUp.doubleValue();
 
 						if (Double.valueOf(request.getTxnInfo().getTranAmount()).compareTo(dbAmount) != 0) {

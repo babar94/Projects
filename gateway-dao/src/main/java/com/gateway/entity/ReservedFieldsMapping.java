@@ -29,4 +29,13 @@ public class ReservedFieldsMapping {
 	@Column(name = "actual_field")
 	private String actualField;
 
+	@Column(name = "regex")
+	private String regex;
+
+	@Column(name = "param_type")
+	private String param_type;
+
+	@Column(name = "is_required")
+	private String isRequired;
+
 }

@@ -24,6 +24,7 @@ public class Constants {
 		public static final String AMMOUNT_MISMATCH = "11";
 		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "12";
 		public static final String TRANSACTION_CAN_NOT_BE_PROCESSED = "13";
+		public static final String UNAUTHORISED_USER = "14";
 
 		public static final String DISABLED_EXCEPTION = "400";
 		public static final String UNAUTHORISED = "401";
@@ -48,7 +49,7 @@ public class Constants {
 		public static final String PAYMENT_NOT_FOUND = "Payment not found.";
 		public static final String UNABLE_TO_PROCESS = "Unable to process at this time, please try again later.";
 		public static final String AMMOUNT_MISMATCH = "Amount mismatch.";
-		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "Invalid Tran-Auth Id.";
+		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "duplicate Tran-Auth Id.";
 
 		public static final String DISABLED_EXCEPTION = "Disabled Exception";
 		public static final String UNAUTHORISED_WRONG_CREDENTIALS = "Unauthorized – Wrong Credentials";

@@ -20,6 +20,6 @@ public interface BillInquiryService {
 
 	public BillInquiryResponse billInquiryAiou(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
-	public BillInquiryResponse billInquiryPithm(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
 
 }

@@ -2,28 +2,33 @@ package com.gateway.utils;
 
 public interface BillerConstant {
 
-	interface BEOE {
+	interface Beoe {
 
 		String BEOE = "BEOE";
 
 	}
 
-	interface PRAL {
+	interface Pral {
 
 		String KPPSC = "KPPSC";
 		String FBR = "FBR";
 
 	}
 
-	interface PTA {
+	interface Pta {
 
 		String PTA = "PTA";
 
 	}
 
-	interface AIOU {
+	interface Aiou {
 
 		String AIOU = "AIOU";
+	}
+
+	interface Pithm {
+
+		String PITHM = "PITHM";
 	}
 
 }
