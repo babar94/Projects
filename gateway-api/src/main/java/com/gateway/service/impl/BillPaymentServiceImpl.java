@@ -104,6 +104,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${fbr.bank.mnemonic}")
 	private String bankMnemonic;
 
+	
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
 
