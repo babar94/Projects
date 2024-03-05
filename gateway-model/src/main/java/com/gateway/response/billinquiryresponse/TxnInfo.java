@@ -42,8 +42,6 @@ public class TxnInfo implements Serializable {
 		this.tranAuthId = tranAuthId;
 	}
 
-//	private String billingMonth;
-//	private String datePaid;
-//	private String amountPaid;
+
 
 }

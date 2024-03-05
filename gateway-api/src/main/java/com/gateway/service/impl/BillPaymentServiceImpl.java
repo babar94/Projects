@@ -24,12 +24,14 @@ import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
 import com.gateway.model.mpay.response.billinquiry.pta.PtaGetVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.UpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.aiou.AiouUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.fbr.FbrUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.offline.OfflineUpdateVoucherResponse;
+import com.gateway.model.mpay.response.billpayment.pitham.PithamUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.pta.PtaUpdateVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.PaymentLogRepository;
@@ -37,6 +39,7 @@ import com.gateway.repository.ProvinceTransactionDao;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -75,7 +78,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	private ServiceCaller serviceCaller;
 
 	@Autowired
-	// private BillerListRepository billerListRepository;
 	private BillerConfigurationRepo billerConfigurationRepo;
 	@Autowired
 	private PaymentLogRepository paymentLogRepository;
@@ -98,6 +100,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	
+	@Autowired
+	private PaymentLogRepository paymentloggingRepository;
+	
+	
 	@Value("${fbr.identification.type}")
 	private String identificationType;
 
@@ -203,6 +210,34 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											break;
 										}
 									}
+									
+									
+
+									 ////////// PITHAM ///////
+																	
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.Pithm.PITHM:
+											billPaymentResponse = billPaymentPitham(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
+										}
+									}
+									
+									
+									
+									 ////////// PITHAM ///////
+
 
 									// AIOU
 									// PTA
@@ -3028,4 +3063,203 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		return response;
 
 	}
+	
+	
+	@Override
+	public BillPaymentResponse billPaymentPitham(BillPaymentRequest request, HttpServletRequest httpRequestData) {
+
+		LOG.info("Inside billPayment Pitham method ");
+		
+		BillPaymentResponse response = null;
+		PithamGetVoucherResponse pithamgetVoucherResponse = null;
+		PithamUpdateVoucherResponse  pithanUpdateVoucherResponse = null;
+		Date requestedDate = new Date();
+		InfoPay infoPay = null;
+		TxnInfoPay txnInfoPay = null;
+		AdditionalInfoPay additionalInfoPay = null;
+		String transactionStatus = "";
+		String billStatus = "";
+		String rrn = request.getInfo().getRrn().substring(0,10); // utilMethods.getRRN();
+		LOG.info("RRN :{ }", rrn);
+		String stan = request.getInfo().getStan();
+		String transAuthId = request.getTxnInfo().getTranAuthId();
+		String amountPaidInDueDate = "";
+		String amountPaid = "";
+		String channel = "";
+		String username = "";
+
+		ArrayList<String> inquiryParams = new ArrayList<String>();
+		ArrayList<String> paymentParams = new ArrayList<String>();
+
+		
+		try {
+			
+			
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+		
+			username = result[0];
+			channel = result[1];
+
+			
+			List<PaymentLog> rrnValue  = paymentloggingRepository.findByRrn(rrn);  
+			
+			for(PaymentLog value : rrnValue) {
+			
+			if(value!=null) {
+					
+				infoPay = new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				return response;}
+			
+			}
+			
+			
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
+			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());			
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());			
+			inquiryParams.add(rrn);
+
+			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
+					Constants.ACTIVITY.BillInquiry);
+
+			
+				
+			paymentParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_PAYMENT);
+			paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+			paymentParams.add(request.getAdditionalInfo().getReserveField1());
+			paymentParams.add(request.getAdditionalInfo().getReserveField2());
+			paymentParams.add(request.getTxnInfo().getTranAmount().trim());
+			paymentParams.add(request.getTxnInfo().getTranDate().trim());
+			paymentParams.add(request.getAdditionalInfo().getReserveField3());
+			paymentParams.add(rrn);
+
+				
+			pithanUpdateVoucherResponse = serviceCaller.get(inquiryParams, PithamUpdateVoucherResponse.class, rrn,
+					Constants.ACTIVITY.BillPayment);
+
+			
+			if (pithanUpdateVoucherResponse != null) {
+
+							
+            if(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+
+            	infoPay = new InfoPay(pithanUpdateVoucherResponse.getResponseCode(),
+						pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
+
+            		
+            	txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+						request.getTxnInfo().getBillNumber(), null);
+            	
+            	additionalInfoPay = new AdditionalInfoPay(pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusCode(),
+            			pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusDesc(),
+						request.getAdditionalInfo().getReserveField3(),
+						request.getAdditionalInfo().getReserveField4(),
+						request.getAdditionalInfo().getReserveField5(),
+						request.getAdditionalInfo().getReserveField6(),
+						request.getAdditionalInfo().getReserveField7(),
+						request.getAdditionalInfo().getReserveField8(),
+						request.getAdditionalInfo().getReserveField9(),
+						request.getAdditionalInfo().getReserveField10());
+				
+            	response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+                
+            	
+            	return response;
+            	
+            }
+			
+            
+            else {
+			
+            	infoPay = new InfoPay(pithanUpdateVoucherResponse.getResponseCode(),
+
+            			pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
+			
+			
+    			response = new BillPaymentResponse(infoPay, null, null);
+
+            }
+		
+		}
+			
+			else {
+				
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+						Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				return response;
+			}
+		
+	}
+		
+	
+		catch(Exception e) {
+			
+			LOG.info("Exception in bill payment ");
+			
+		}
+	
+		
+	finally {
+			
+			LOG.info("Bill Payment Response {}", response);
+			
+			try {
+
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
+
+				auditLoggingService.auditLog(Constants.ACTIVITY.BillPayment, response.getInfo().getResponseCode(),
+						response.getInfo().getResponseDesc(), requestAsString, responseAsString, requestedDate, new Date(),
+						request.getInfo().getRrn(), request.getTxnInfo().getBillerId(),
+						request.getTxnInfo().getBillNumber(), channel, username);
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+			
+			try {
+
+			
+	            if(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+
+				
+				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName(), 
+						request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate()),
+						new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate()), 
+						Constants.ACTIVITY.BillPayment,transactionStatus,channel,Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
+						request.getTxnInfo().getTranTime(), transAuthId);
+				
+				
+				
+	            }
+	            
+	            else {
+	            	
+	            	paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+							response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName(), 
+							request.getTxnInfo().getBillNumber(),
+							request.getTxnInfo().getBillerId(), new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate()),
+							new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate()), 
+							Constants.ACTIVITY.BillPayment,transactionStatus,channel,pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc(),request.getTxnInfo().getTranDate(),
+							request.getTxnInfo().getTranTime(), transAuthId);
+					        	
+	            }
+	            
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+		
+	
+	   }
+		return response;
+	}		
+	
+	
 }

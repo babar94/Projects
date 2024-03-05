@@ -25,12 +25,7 @@ public class BillPaymentResponse implements Serializable {
 	private TxnInfoPay txnInfo;
 	private AdditionalInfoPay additionalInfo;
 	
-	
-//	public BillPaymentResponse(InfoPay info, AdditionalInfoPay additionalInfo) {
-//		super();
-//		this.info = info;
-//		this.additionalInfo = additionalInfo;
-//	}
+
 
 
 	

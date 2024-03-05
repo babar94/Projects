@@ -2,9 +2,10 @@ package com.gateway.model.mpay.response.billinquiry;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gateway.model.mpay.response.billinquiry.Response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

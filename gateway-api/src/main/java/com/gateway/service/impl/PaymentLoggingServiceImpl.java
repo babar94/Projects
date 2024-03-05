@@ -113,5 +113,43 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		LOG.info("Inserted in table (audit)");
 
 	}
+	
+	@Async("paymentLoggingExecutor")
+	@Override
+	public void paymentLog(Date requestedDate, Date responsedate,String rrn,String stan,String responseCode,
+			String responseDesc,String studentName,String billNumber,String billerId,
+			BigDecimal amountInDueDate,BigDecimal amountAfterDueDate,String billinquiry,
+			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId) {
+
+	
+		PaymentLog paymentLog = new PaymentLog();
+		LOG.info("Inserting in table (paymentLog audit)");
+
+		paymentLog.setRequestDatetime(requestedDate);
+		paymentLog.setResponsetDatetime(responsedate);
+		paymentLog.setRrn(rrn);
+		paymentLog.setStan(stan);
+		paymentLog.setResponseCode(responseCode);
+		paymentLog.setResponseDescription(responseDesc);
+		paymentLog.setConsumerNumber(billNumber);
+		paymentLog.setBillerId(billerId);
+		paymentLog.setAmountwithinduedate(amountInDueDate);
+		paymentLog.setAmountafterduedate(amountAfterDueDate);
+		paymentLog.setTransactionStatus(transactionStatus);
+		paymentLog.setChannel(channel);
+		paymentLog.setBillStatus(billstatus);
+		paymentLog.setTranDate(tranDate);
+		paymentLog.setTranTime(tranTime);
+		paymentLog.setTranAuthId(transAuthId);
+
+		transactionDetialsLogRepository.save(paymentLog);
+
+
+	}
+	
+	
+	
+	
+	
 
 }

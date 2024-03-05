@@ -18,7 +18,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-//@Table(name = "nbp_epayment_portal_gw_audit_log")
 @Table(name = "api_gw_audit_log")
 @Data
 

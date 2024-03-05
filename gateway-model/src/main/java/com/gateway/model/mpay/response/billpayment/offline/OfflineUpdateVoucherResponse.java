@@ -1,6 +1,6 @@
 package com.gateway.model.mpay.response.billpayment.offline;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gateway.model.mpay.response.billpayment.Response;

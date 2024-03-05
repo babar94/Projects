@@ -8,10 +8,7 @@ import com.gateway.entity.PaymentLog;
 
 public interface PaymentLogRepository extends JpaRepository<PaymentLog, Long> {
 
-	// public List<PaymentLog>
-	// findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(String
-	// billerId, String billerNumber,String billStatus,String Activity,String
-	// responseCode);
+	
 
 	PaymentLog findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 			String billerId, String billerNumber, String billStatus, String activity, String responseCode);
@@ -21,4 +18,6 @@ public interface PaymentLogRepository extends JpaRepository<PaymentLog, Long> {
 	public List<PaymentLog> findByTranAuthIdAndActivity(String tranAuthId, String activity);
 
 	public PaymentLog findFirstByBillerNumberAndBillStatus(String billNumber, String billStatus);
+	
+
 }

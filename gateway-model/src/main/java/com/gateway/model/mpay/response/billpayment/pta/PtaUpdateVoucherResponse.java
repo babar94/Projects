@@ -1,9 +1,9 @@
 package com.gateway.model.mpay.response.billpayment.pta;
 
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.gateway.model.mpay.response.billinquiry.pta.Response;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

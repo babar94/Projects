@@ -21,4 +21,11 @@ public interface PaymentLoggingService {
 			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId)
 			throws Exception;
 
+	
+
+	public void paymentLog(Date requestedDate,Date responsedate,String rrn,String stan,String responseCode,
+			String responseDesc,String studentName,String billNumber,String billerId,
+			BigDecimal bigDecimal,BigDecimal bigDecimal2,String billinquiry,
+			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId);
+
 }

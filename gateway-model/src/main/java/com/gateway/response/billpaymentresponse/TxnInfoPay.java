@@ -20,7 +20,6 @@ public class TxnInfoPay implements Serializable {
 	private String billerId;
 	private String billNumber;
 	private String paymentRefno;
-	//private String identificationParameter;
 
 
 	

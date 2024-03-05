@@ -19,10 +19,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.utils.URLParamEncoder;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.gateway.utils.UtilMethods;
 import com.gateway.utils.XMLBeautifier;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.utils.URLParamEncoder;
 
 @Component
 public class ServiceCaller {
@@ -60,6 +61,7 @@ public class ServiceCaller {
 	public <T> T get(List<String> params, Class<T> type, String rrn, String userName) {
 		String result = null;
 		T obj = null;
+		boolean isJsonObject = utilMethods.isJSON(result);
 
 		String endPoint = getEndpoint();
 
@@ -86,24 +88,25 @@ public class ServiceCaller {
 				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout");
 				return null;
 			}
-			// LOG.info("\n\n[ MPAY RESPONSE #{} ]\n\n{}\n\n",
-			// XMLBeautifier.format(result));
 			utilMethods.insertMpayLog("Response", new Date(), userName, rrn, result);
 			LOG.info("\n\n[ MPAY RESPONSE #{} ]\n\n{}\n\n", result);
 
-			ObjectMapper Mapobj = new ObjectMapper();
-			Mapobj.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			Mapobj.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-			obj = Mapobj.readValue(result, type);
+			
+			if(isJsonObject) {
+				ObjectMapper Mapobj = new ObjectMapper();
+				Mapobj.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+				Mapobj.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+				obj = Mapobj.readValue(result, type);
+			}else {//XML
+				 XmlMapper xmlMapper = new XmlMapper();
+			        xmlMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+			        xmlMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+			        obj = xmlMapper.readValue(result, type);
+			}
 
-//		    ObjectMapper mapper = new JsonMapper();
-//		    JsonNode json = mapper.readTree(body);
-//
-//		    String email = json.get("email").asText();
-//		    String password = json.get("password").asText();
-
+			
+			
 			LOG.info("\n[\n%%%%%%%%%%%%%% Total ***MPAY*** Call Execution Time: '{}' %%%%%%%%%%%%%%\n]\n", totalTime);
-			// obj = typecastToT(result, type);
 
 		} catch (Exception e) {
 			LOG.error("{}", e);
