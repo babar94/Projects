@@ -68,8 +68,8 @@ public class PaymentLog implements Serializable {
 	private String billerId;
 
 	@Column(name = "amountPaid")
-	// private double amount;
 	private BigDecimal amountPaid;
+	
 	@Column(name = "charges")
 	private double charges;
 
@@ -122,5 +122,9 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "amount_afterduedate")
 	private BigDecimal amountafterduedate;
+	
+	@Column(name = "duedate")
+	private String duedate;
+	
 
 }

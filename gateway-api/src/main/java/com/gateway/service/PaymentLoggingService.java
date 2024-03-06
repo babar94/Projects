@@ -26,6 +26,6 @@ public interface PaymentLoggingService {
 	public void paymentLog(Date requestedDate,Date responsedate,String rrn,String stan,String responseCode,
 			String responseDesc,String studentName,String billNumber,String billerId,
 			BigDecimal bigDecimal,BigDecimal bigDecimal2,String billinquiry,
-			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId);
+			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId, BigDecimal amountpaid,String duedate);
 
 }

@@ -32,10 +32,6 @@ public class Constants {
 		public static final String NOT_FOUND = "404";
 		public static final String OFFLINE_SERVICE_FAIL = "99";
 		public static final String INTERNAL_SERVER_ERROR = "500";
-		
-		
-		public static final String BILL_PAID = "097";
-
 
 	}
 
@@ -61,11 +57,15 @@ public class Constants {
 		public static final String OFFLINE_SERVICE_FAIL = "Processing Failed";
 		public static final String Biller_Disabled = "Biller Disabled";
 		public static final String BILLER_NOT_FOUND_DISABLED = "Biller not found";
-		public static final String INVALID_BILLER_ID = "Invalid billerId";
+		public static final String INVALID_BILLER_ID = "Invalid biller Id";
 		public static final String CONSUMER_NUMBER_Expired = "Consumer Number Expired";
 		public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 		public static final String TRANSACTION_CAN_NOT_BE_PROCESSED = "Your transaction cannot be processed. Please contact NBP Helpline 021-111627627";
 		public static final String DULPLICATE_RRN = "rrn should be unique";
+		
+		public static final String INVALID_BILLER_NUMBER= " Invalid biller number";
+		public static final String INVALID_AUTH_ID= " invalid Auth id ";
+		
 
 	}
 

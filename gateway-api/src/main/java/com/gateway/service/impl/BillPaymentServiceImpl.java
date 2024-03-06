@@ -346,6 +346,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
+		
 		try {
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
@@ -359,6 +360,24 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			ProvinceTransaction provinceTransaction = null;
 
+			
+			 if(request.getTxnInfo().getBillNumber()==null || request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
+	            	
+	    			response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
+					return response;
+		
+	            }
+			
+             if(request.getTxnInfo().getTranAuthId()==null || request.getTxnInfo().getTranAuthId().equalsIgnoreCase("")) {
+         	
+ 			response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.INVALID_AUTH_ID, rrn, stan);
+				return response;
+	
+             }
+			
+		
 			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
@@ -373,8 +392,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
+			
+			 		
 			// RRN a validation First check payment Hsitory
-
+	
 			// tran Auth Id Validation - Stop Duplication
 			paymentHistory = paymentLogRepository.findByTranAuthIdAndActivity(request.getTxnInfo().getTranAuthId(),
 					Constants.ACTIVITY.BillPayment);
@@ -3090,7 +3111,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
-
+		String amountWithInDueDate="";
+		String amountAfterDueDateStr="";
+		String dueDateReq ="";
 		
 		try {
 			
@@ -3125,35 +3148,168 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					Constants.ACTIVITY.BillInquiry);
 
 			
+			if (pithamgetVoucherResponse != null  || pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
+
+			
+				if (pithamgetVoucherResponse.getResponseCode().equals("404")) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+				
+		     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("01")) {
+
+					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+		     }
+		     
+		     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("091")) {
+
+					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+		            }
+		     
+		     
+		     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("092")) {
+
+					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+		            }
+		     
+		     
+		     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("094")) {
+
+					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+		            }
+		     
+		     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("500")) {
+
+					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+		            }
+		     		     
+			}
+			
+			
+              else {
+				
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+						Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				return response;
+			}
+		     
+			
+			if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)){
+				
+				
+				infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+						pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+				return response;
+				
+			}
+			
 				
 			paymentParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_PAYMENT);
 			paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+			paymentParams.add(rrn);
 			paymentParams.add(request.getAdditionalInfo().getReserveField1());
-			paymentParams.add(request.getAdditionalInfo().getReserveField2());
 			paymentParams.add(request.getTxnInfo().getTranAmount().trim());
 			paymentParams.add(request.getTxnInfo().getTranDate().trim());
-			paymentParams.add(request.getAdditionalInfo().getReserveField3());
+			paymentParams.add(request.getAdditionalInfo().getReserveField2());
 			paymentParams.add(rrn);
+			
 
+			
+			 amountWithInDueDate = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
+			
+			 amountAfterDueDateStr = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();
+
+		     dueDateReq=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
+			
 				
-			pithanUpdateVoucherResponse = serviceCaller.get(inquiryParams, PithamUpdateVoucherResponse.class, rrn,
+			if (utilMethods.isValidInput(dueDateReq)) {
+				LocalDate currentDate = LocalDate.now();
+
+				try {
+					LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateReq);
+
+					              ///// Check due date conditions///
+					
+					if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
+						if (Double.valueOf(request.getTxnInfo().getTranAmount())
+								.compareTo(Double.valueOf(amountWithInDueDate)) != 0) {
+							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							return response;
+						}
+					} else {
+						if (Double.valueOf(request.getTxnInfo().getTranAmount())
+								.compareTo(Double.valueOf(amountAfterDueDateStr)) != 0) {
+							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							return response;
+						}
+					}
+				} catch (DateTimeParseException e) {
+					LOG.error("Error parsing due date: " + e.getMessage());
+				}
+			} else {
+				LOG.info("Invalid due date input");
+				if (Double.valueOf(request.getTxnInfo().getTranAmount())
+						.compareTo(Double.valueOf(amountWithInDueDate)) != 0) {
+					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					return response;
+				}
+			}
+
+					
+			pithanUpdateVoucherResponse = serviceCaller.get(paymentParams, PithamUpdateVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillPayment);
 
 			
-			if (pithanUpdateVoucherResponse != null) {
+			if (pithanUpdateVoucherResponse != null || pithanUpdateVoucherResponse.getPithmUpdateVoucher()!=null) {
+								
+            if(pithanUpdateVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
-							
-            if(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
-
-            	infoPay = new InfoPay(pithanUpdateVoucherResponse.getResponseCode(),
-						pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
+            	infoPay = new InfoPay(pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusCode(),
+            			pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusDesc(), rrn, stan);
 
             		
             	txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 						request.getTxnInfo().getBillNumber(), null);
             	
-            	additionalInfoPay = new AdditionalInfoPay(pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusCode(),
-            			pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult().getStatusDesc(),
+            	additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+            			request.getAdditionalInfo().getReserveField2(),
 						request.getAdditionalInfo().getReserveField3(),
 						request.getAdditionalInfo().getReserveField4(),
 						request.getAdditionalInfo().getReserveField5(),
@@ -3224,7 +3380,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 			
-	            if(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc().equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+	            if(pithanUpdateVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 				
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
@@ -3233,7 +3389,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillerId(), new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate()),
 						new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate()), 
 						Constants.ACTIVITY.BillPayment,transactionStatus,channel,Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), transAuthId);
+						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateReq);
 				
 				
 				
@@ -3242,12 +3398,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	            else {
 	            	
 	            	paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-							response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName(), 
+							response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),null, 
 							request.getTxnInfo().getBillNumber(),
-							request.getTxnInfo().getBillerId(), new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate()),
-							new BigDecimal(pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate()), 
-							Constants.ACTIVITY.BillPayment,transactionStatus,channel,pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc(),request.getTxnInfo().getTranDate(),
-							request.getTxnInfo().getTranTime(), transAuthId);
+							request.getTxnInfo().getBillerId(),null,null, 
+							Constants.ACTIVITY.BillPayment,transactionStatus,channel,pithamgetVoucherResponse.getResponseDesc(),request.getTxnInfo().getTranDate(),
+							request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateReq);
 					        	
 	            }
 	            
