@@ -61,7 +61,8 @@ public class ServiceCaller {
 	public <T> T get(List<String> params, Class<T> type, String rrn, String userName) {
 		String result = null;
 		T obj = null;
-		boolean isJsonObject = utilMethods.isJSON(result);
+		
+		
 
 		String endPoint = getEndpoint();
 
@@ -90,8 +91,9 @@ public class ServiceCaller {
 			}
 			utilMethods.insertMpayLog("Response", new Date(), userName, rrn, result);
 			LOG.info("\n\n[ MPAY RESPONSE #{} ]\n\n{}\n\n", result);
-
 			
+			boolean isJsonObject = utilMethods.isJSON(result);
+
 			if(isJsonObject) {
 				ObjectMapper Mapobj = new ObjectMapper();
 				Mapobj.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
