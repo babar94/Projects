@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -341,6 +342,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
+		String  pattern = "^(\\d{6})?$";
 		
 		try {
 			rrn = request.getInfo().getRrn();
@@ -362,9 +364,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
 					return response;
 		
-	            }
+	         }
 			
-             if(request.getTxnInfo().getTranAuthId()==null || request.getTxnInfo().getTranAuthId().equalsIgnoreCase("")) {
+             if(request.getTxnInfo().getTranAuthId()==null || request.getTxnInfo().getTranAuthId().equalsIgnoreCase("") || !Pattern.matches(pattern, request.getTxnInfo().getTranAuthId())) {
          	
  			response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_AUTH_ID, rrn, stan);
@@ -3124,7 +3126,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
         String billingMonthRes="";
         String billStatusCodeRes="";
         String billStatusDescRes="";
-		
+		String pattern = "\\d+\\.\\d{2}";
+
 		try {
 					
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
@@ -3158,8 +3161,53 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			
 			if (pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
 
+				
+				billerNameRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
+				billingMonthRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
+			    billStatusCodeRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
+			    billStatusDescRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();						
+				dueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
+				amountWithInDueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
+				amountAfterDueDateRes= pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();												
+			
+				
+
+		        if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					return response;
 		
-			     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)){
+		        } 
+
+				
+				
+		        else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
+					    
+					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.EXPIRED, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+				}
+
+
+				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
+				    
+					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.BLOCK, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+					
+				}
+
+				
+				
+		
+				else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)){
 						
 									
 						PaymentLog paymentLog = paymentLogRepository
@@ -3211,13 +3259,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;}
 			     
 							
-				billerNameRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
-				billingMonthRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
-			    billStatusCodeRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
-			    billStatusDescRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();						
-				dueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
-				amountWithInDueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
-				amountAfterDueDateRes= pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();												
 			
 				if(amountWithInDueDateRes==null) {
 					
@@ -3250,7 +3291,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentParams.add(rrn);
 			
 				
-				
+		       		        
+		        
 			if (utilMethods.isValidInput(dueDateRes)) {
 				LocalDate currentDate = LocalDate.now();
 
@@ -3373,7 +3415,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateRes==null ? duedate :dueDateRes, billingMonthRes==null ? billingMonth : billingMonthRes);
 				
 
-				LOG.info( "--- Ending billPayment pitham method --- ");
+				LOG.info( " --- Bill Payment Method End --- ");
 
 
 				

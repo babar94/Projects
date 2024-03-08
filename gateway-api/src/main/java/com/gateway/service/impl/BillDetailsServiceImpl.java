@@ -16,6 +16,7 @@ import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
@@ -157,6 +158,33 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 									}
 
 								}
+								
+						     ////////// PITHAM ///////
+								
+								else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)) { 
+
+									switch (subBillerDetail.getSubBillerName()) {
+
+									case BillerConstant.Pithm.PITHM:
+										paymentInquiryResponse = paymentInquiryPITHAM(request,
+												billPaymentInquiryValidationResponse);
+										break;
+
+									default:
+										LOG.info("subBiller does not exists.");
+										info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+												Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+										paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+
+										break;
+									}
+
+								}
+								
+						     ////////// PITHAM ///////
+
+
+								
 
 //								//add new 
 //								else if (billerDetail.getBillerName().equalsIgnoreCase("PRAL")
@@ -824,5 +852,224 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		return response;
 
 	}
+	
+	                  //////////////////////////////////////////////////////////////
+	
+	
+	
+	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,
+			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+
+		LOG.info("Inside method Bill Inquiry");
+		PaymentInquiryResponse response = null;
+
+		Date requestedDate = new Date();
+		String rrn = "";
+		String stan = "";
+		PithamGetVoucherResponse PithamGetVoucherResponse = null;
+		InfoPayInq info = null;
+		TxnInfoPayInq txnInfo = null;
+		AdditionalInfoPayInq additionalInfo = null;
+		String transactionStatus="";
+		String billStatus = "";
+		String tranDate = "";
+		String tranTime = "";
+		String channel = "";
+		String username = "";
+		BigDecimal amountInDueDate = null;
+		BigDecimal amountAfterDueDate = null;
+
+		String billerName="";
+        String dueDate="";
+        String billingMonth="";
+        BigDecimal amountPaid;
+        BigDecimal amountInDueToDate=null;
+        BigDecimal amountAfterDate=null;
+		String transAuthId = ""; 
+
+		
+		try {
+			
+			UtilMethods.generalLog("IN - Payment Inquiry  " + requestedDate, LOG);
+			LOG.info("Calling Payment Inquiry");
+			LOG.info("Payment Inquiry Request {}", request);
+
+
+			ArrayList<String> inquiryParams = new ArrayList<String>();
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
+			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());			
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());			
+			inquiryParams.add(rrn);
+
+			
+			
+			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
+					Constants.ACTIVITY.BillInquiry);
+
+			if (PithamGetVoucherResponse != null) {
+				if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
+
+					billStatus = PithamGetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();
+			
+
+					if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+						
+						try {
+						
+							LOG.info("Calling Payment Inquiry");
+						
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+						
+							if (paymentLog != null && paymentLog.getID() != null) {
+
+								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
+										stan); // success
+
+								txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
+										request.getTxnInfo().getBillNumber(), paymentLog.getPaymentRefNo(),
+										paymentLog.getTranDate(), paymentLog.getTranTime(),
+										String.valueOf(paymentLog.getAmountPaid()));
+
+								additionalInfo = new AdditionalInfoPayInq(
+										request.getAdditionalInfo().getReserveField1(),
+										request.getAdditionalInfo().getReserveField2(),
+										request.getAdditionalInfo().getReserveField3(),
+										request.getAdditionalInfo().getReserveField4(),
+										request.getAdditionalInfo().getReserveField5(),
+										request.getAdditionalInfo().getReserveField6(),
+										request.getAdditionalInfo().getReserveField7(),
+										request.getAdditionalInfo().getReserveField8(),
+										request.getAdditionalInfo().getReserveField9(),
+										request.getAdditionalInfo().getReserveField10());
+
+								transactionStatus = Constants.Status.Success;
+								transAuthId = paymentLog.getTranAuthId();
+								amountInDueToDate = paymentLog.getAmountwithinduedate();
+								amountAfterDate = paymentLog.getAmountafterduedate();
+								billerName      = paymentLog.getName();
+								amountPaid = paymentLog.getAmountPaid();
+								dueDate =    paymentLog.getDuedate();
+								billingMonth = paymentLog.getBillingMonth();
+								
+								
+								response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
+								return response;
+							} else {
+								info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+										Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+								response = new PaymentInquiryResponse(info, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+						} catch (Exception ex) {
+
+							LOG.error("{}", ex);
+
+						}
+
+					} 
+					
+				}     else if (PithamGetVoucherResponse.getResponseCode().equals("404")) {
+					  info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+					 response = new PaymentInquiryResponse(info, null, null);
+					 transactionStatus = Constants.Status.Fail;
+					} 
+							
+				else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
+						info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new PaymentInquiryResponse(info, null, null);
+
+						return response;}
+			     
+			     
+			     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+
+						info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
+								PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new PaymentInquiryResponse(info, null, null);
+
+						return response;}
+			     
+			     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
+
+						info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
+								PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new PaymentInquiryResponse(info, null, null);
+
+						return response;}
+						
+				else {
+					info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+							Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+					response = new PaymentInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+				}
+
+			} else {
+				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.UNABLE_TO_PROCESS,
+						Constants.ResponseDescription.UNABLE_TO_PROCESS);
+				response = new PaymentInquiryResponse(info, null, null);
+				transactionStatus = Constants.Status.Fail;
+				return response;
+			}
+
+		} catch (Exception ex) {
+			LOG.error("{}", ex);
+
+		} finally {
+
+			LOG.info("Bill Payment Inquiry Response {}", response);
+			
+			try {
+
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
+
+				auditLoggingService.auditLog(Constants.ACTIVITY.BillInquiry, response.getInfo().getResponseCode(),
+						response.getInfo().getResponseDesc(), requestAsString, responseAsString, requestedDate, new Date(), rrn,
+						request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(), channel, username);
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+						
+			try {
+									
+				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+						response.getInfo().getResponseCode() ,response.getInfo().getResponseDesc(),billerName, 
+						request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), amountInDueToDate,amountAfterDate , 
+						Constants.ACTIVITY.PaymentInquiry,transactionStatus,channel, billStatus, "",
+						"", transAuthId,null,dueDate,billingMonth);
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+
+			LOG.info("----- Bill Inquiry Method End -----");
+			
+		
+		}
+
+		return response;
+
+	}
+
+	
+	
+	
+	///////////////////////////////////////////////////////////
+	
 
 }

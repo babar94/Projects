@@ -1737,7 +1737,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 							if (paymentLog != null) {
 								
-								billstatus = "paid";
+								billstatus = "P";
 								
 								transAuthId = paymentLog.getTranAuthId();
 								amountInDueToDate = paymentLog.getAmountwithinduedate();
@@ -1755,8 +1755,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							}
 							
 													
-							info = new Info(pithamgetVoucherResponse.getResponseCode(),
-									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+							info = new Info(Constants.ResponseCodes.OK,
+									Constants.ResponseDescription.OPERATION_SUCCESSFULL,rrn, stan);
 							
 							TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 									request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
@@ -1831,7 +1831,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 							
-							billstatus="UnPaid";
+							billstatus="U";
 
 						
 							transactionStatus = Constants.Status.Pending;
@@ -1841,24 +1841,33 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						
 						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
 							
-							billstatus="Expired";
+							billstatus="E";
 
 						
 							transactionStatus = Constants.Status.Expired;
 
 						} 
 						
+                         else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
+							
+							billstatus="B";
+						
+							transactionStatus = Constants.Status.Block;
+
+						} 
+						
+					 
 							
 		                 if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 							
 							
 		                	 info = new Info(pithamgetVoucherResponse.getResponseCode(),
-		                			 pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+		                			 Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 		                	 
 							TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(),
 							        pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName(),
-									pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc(),
+							        billstatus,
 									pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate(),
 									pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate(),
 									pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate()
@@ -1923,9 +1932,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
 			}
-			
-		
-				
+						
 			try {
 									
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
