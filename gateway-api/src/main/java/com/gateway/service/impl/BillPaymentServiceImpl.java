@@ -3084,8 +3084,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Override
 	public BillPaymentResponse billPaymentPitham(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
-		LOG.info("Inside billPayment Pitham method ");
 		
+		LOG.info("PITHAM Bill Payment Request {} ", request.toString());
+
 		BillPaymentResponse response = null;
 		PithamGetVoucherResponse pithamgetVoucherResponse = null;
 		PithamUpdateVoucherResponse  pithanUpdateVoucherResponse = null;
@@ -3106,11 +3107,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
-		String amountWithInDueDate="";
-		String amountAfterDueDateStr="";
-		String dueDateReq ="";
 		
 		String billerName="";
+		String billingMonth="";
 	    String duedate="";
 	    BigDecimal amountInDueToDate=null;
         BigDecimal amountAfterDate=null;
@@ -3122,11 +3121,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
         BigDecimal amounAfterDateRes=null;
         String billerNameRes="";
         String dueDateRes="";
-       
+        String billingMonthRes="";
+        String billStatusCodeRes="";
+        String billStatusDescRes="";
 		
 		try {
-			
-			
+					
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 		
 			username = result[0];
@@ -3146,8 +3146,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				return response;}
 			
 			}
-			
-			
+					
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());			
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());			
@@ -3157,7 +3156,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					Constants.ACTIVITY.BillInquiry);
 
 			
-			if (pithamgetVoucherResponse != null  || pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
+			if (pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
 
 		
 			     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)){
@@ -3173,6 +3172,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						amountInDueToDate = paymentLog.getAmountwithinduedate();
 						amountAfterDate = paymentLog.getAmountafterduedate();
 						billerName      = paymentLog.getName();
+						billingMonth    = paymentLog.getBillingMonth();
 						duedate =    paymentLog.getDuedate();
 				
 						
@@ -3183,84 +3183,85 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						
 					}
 			
-			
-			 	else if (pithamgetVoucherResponse.getResponseCode().equals("404")) {
-					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
-					transactionStatus = Constants.Status.Fail;
+					 	
+			     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
-				}
-				
-				else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("01")) {
+						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
 
-					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
-							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
+						return response;}
+			     
+			     
+			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
 
-					return response;
-					
-		     }
-		     
-		     
-		     
-		     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("14")) {
+						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
 
-					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
-							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
+						return response;}
+						
+			     
+			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
 
-					return response;
-					
-		            }
-		     
-		     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("03")) {
+						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
 
-					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
-							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
-
-					return response;
-					
-		            }
-
-				
+						return response;}
+			     
+							
 				billerNameRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
+				billingMonthRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
+			    billStatusCodeRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
+			    billStatusDescRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();						
 				dueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
 				amountWithInDueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
 				amountAfterDueDateRes= pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();												
-				amountDueDateRes= new BigDecimal(amountWithInDueDateRes);
-				amounAfterDateRes= new BigDecimal(amountAfterDueDateRes);
-	
-		    		
-		     				
-			paymentParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_PAYMENT);
-			paymentParams.add(request.getTxnInfo().getBillNumber().trim());
-			paymentParams.add(rrn);
-			paymentParams.add(request.getAdditionalInfo().getReserveField1());
-			paymentParams.add(request.getTxnInfo().getTranAmount().trim());
-			paymentParams.add(request.getTxnInfo().getTranDate().trim());
-			paymentParams.add(request.getAdditionalInfo().getReserveField2());
-			paymentParams.add(rrn);
 			
-			 amountWithInDueDate = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
-			
-			 amountAfterDueDateStr = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();
+				if(amountWithInDueDateRes==null) {
+					
+					amountDueDateRes=null;
+				}
+				
+				else {
+				
+					amountDueDateRes= new BigDecimal(amountWithInDueDateRes);
+				}
+				
+                if(amountAfterDueDateRes==null) {
+					
+                	amounAfterDateRes=null;
+				}
+				else {
 
-		     dueDateReq=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
+					amounAfterDateRes= new BigDecimal(amountAfterDueDateRes);
+
+				}
+				
+				 				
+				paymentParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_PAYMENT);
+				paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+				paymentParams.add(rrn);
+				paymentParams.add(request.getAdditionalInfo().getReserveField1());
+				paymentParams.add(request.getTxnInfo().getTranAmount().trim());
+				paymentParams.add(request.getTxnInfo().getTranDate().trim());
+				paymentParams.add(request.getAdditionalInfo().getReserveField2());
+				paymentParams.add(rrn);
 			
 				
-			if (utilMethods.isValidInput(dueDateReq)) {
+				
+			if (utilMethods.isValidInput(dueDateRes)) {
 				LocalDate currentDate = LocalDate.now();
 
 				try {
-					LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateReq);
+					LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateRes);
 
 					              ///// Check due date conditions///
 					
 					if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
 						if (Double.valueOf(request.getTxnInfo().getTranAmount())
-								.compareTo(Double.valueOf(amountWithInDueDate)) != 0) {
+								.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
 							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 							response = new BillPaymentResponse(infoPay, null, null);
@@ -3268,7 +3269,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						}
 					} else {
 						if (Double.valueOf(request.getTxnInfo().getTranAmount())
-								.compareTo(Double.valueOf(amountAfterDueDateStr)) != 0) {
+								.compareTo(Double.valueOf(amountAfterDueDateRes)) != 0) {
 							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 							response = new BillPaymentResponse(infoPay, null, null);
@@ -3281,7 +3282,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			} else {
 				LOG.info("Invalid due date input");
 				if (Double.valueOf(request.getTxnInfo().getTranAmount())
-						.compareTo(Double.valueOf(amountWithInDueDate)) != 0) {
+						.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
 					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 					response = new BillPaymentResponse(infoPay, null, null);
@@ -3315,13 +3316,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getAdditionalInfo().getReserveField10());
 				
             	response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-                
+                         	
+            	return response;}
             	
-            	return response;
-            	
-            }
-			
-            
+              
             else {
 			
             	infoPay = new InfoPay(pithanUpdateVoucherResponse.getResponseCode(),
@@ -3329,29 +3327,22 @@ public class BillPaymentServiceImpl implements BillPaymentService {
             			pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
 			
 			
-    			response = new BillPaymentResponse(infoPay, null, null);
-
-            }
-		
-		}
+    			response = new BillPaymentResponse(infoPay, null, null);}
 			
+			}
+	
 			else {
 				
 				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 						Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 				response = new BillPaymentResponse(infoPay, null, null);
 
-				return response;
-			}
-		
-	}
+				return response;}}
 		
 	
 		catch(Exception e) {
 			
-			LOG.info("Exception in bill payment ");
-			
-		}
+			LOG.info("Exception in bill payment ");}
 	
 		
 	finally {
@@ -3369,22 +3360,25 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(), channel, username);
 
 			} catch (Exception ex) {
-				LOG.error("{}", ex);
+				LOG.error("{Exception Audit Logs}", ex);
 			}
 			
 			try {
-
 				
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),billerNameRes==null ? billerName : billerNameRes, 
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),amountDueDateRes==null ? amountInDueToDate : amountDueDateRes ,amounAfterDateRes==null ? amountAfterDate : amounAfterDateRes , 
 						Constants.ACTIVITY.BillPayment,transactionStatus,channel,Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateReq==null ? duedate :dueDateReq );
+						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateRes==null ? duedate :dueDateRes, billingMonthRes==null ? billingMonth : billingMonthRes);
 				
 
+				LOG.info( "--- Ending billPayment pitham method --- ");
+
+
+				
 			} catch (Exception ex) {
-				LOG.error("{}", ex);
+				LOG.error("{Exception payment Logs}", ex);
 			}
 		
 	

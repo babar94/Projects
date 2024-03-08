@@ -1678,6 +1678,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
         BigDecimal amountPaid;
         String billerName="";
         String dueDate="";
+        String billingMonth="";
         
         String amountWithInDueDateRes="";
         BigDecimal amountDueDateRes=null;
@@ -1685,6 +1686,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
         BigDecimal amounAfterDateRes=null;
         String billerNameRes="";
         String dueDateRes="";
+        String billingMonthRes="";
+        String billStatusCodeRes="";
+        String billStatusDescRes="";
+
         
 		Date requestedDate = new Date();
 
@@ -1693,7 +1698,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 			username = result[0];
-			channel = result[1];
+			channel =  result[1];
 					
 			List<PaymentLog> rrnValue  = paymentloggingRepository.findByRrn(rrn);  
 						
@@ -1719,7 +1724,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					Constants.ACTIVITY.BillInquiry);
 
 			
-					if (pithamgetVoucherResponse != null || pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
+					if (pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
 
 
 						if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
@@ -1740,6 +1745,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								billerName      = paymentLog.getName();
 								amountPaid = paymentLog.getAmountPaid();
 								dueDate =    paymentLog.getDuedate();
+								billingMonth = paymentLog.getBillingMonth();
 						
 							} else {
 								info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
@@ -1764,60 +1770,66 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							
 							return response;
 						} 
-						
-									
-						
+											
 					billerNameRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
+					billingMonthRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
+				    billStatusCodeRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
+				    billStatusDescRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();				
 					dueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
 					amountWithInDueDateRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountWidDate();
 					amountAfterDueDateRes= pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getAmountAdDate();												
-					amountDueDateRes= new BigDecimal(amountWithInDueDateRes);
-					amounAfterDateRes= new BigDecimal(amountAfterDueDateRes);
+					
+					
+					if(amountWithInDueDateRes==null) {
 						
-					if (pithamgetVoucherResponse.getResponseCode().equals("404")) {
+						amountDueDateRes=null;
+					}
+					
+					else {
+					
+						amountDueDateRes= new BigDecimal(amountWithInDueDateRes);}
+									
+                    
+					if(amountAfterDueDateRes==null) {
+						
+                    	amounAfterDateRes=null;}
+					                    
+					else {
+
+						amounAfterDateRes= new BigDecimal(amountAfterDueDateRes);}
+
+	                  						
+					 if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
 							info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 							response = new BillInquiryResponse(info, null, null);
-							transactionStatus = Constants.Status.Fail;
 
-					}
-						
-					else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("01")) {
+							return response;}
+				     
+				     
+				     
+				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
 
 							info = new Info(pithamgetVoucherResponse.getResponseCode(),
 									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 							response = new BillInquiryResponse(info, null, null);
 
-							return response;
+							return response;}
 							
-				     }
+				      
 				     
-				     
-				     
-				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("14")) {
+				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
 
 							info = new Info(pithamgetVoucherResponse.getResponseCode(),
 									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 							response = new BillInquiryResponse(info, null, null);
 
-							return response;
+							return response;}
 							
-				            }
-				     
-				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase("03")) {
+				            
 
-							info = new Info(pithamgetVoucherResponse.getResponseCode(),
-									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-							response = new BillInquiryResponse(info, null, null);
-
-							return response;
-							
-				            }
-
-	
-			
-						else if (pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc()
-								.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 							
 							billstatus="UnPaid";
 
@@ -1827,8 +1839,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						} 
 						
 						
-						else if (pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc()
-								.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
+						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
 							
 							billstatus="Expired";
 
@@ -1888,7 +1899,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						
 					}
 								
-		}
+		      }
 				
 				catch (Exception ex) {
 
@@ -1914,21 +1925,22 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			}
 			
 		
-			
-		
+				
 			try {
 									
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),billerNameRes==null ? billerName : billerNameRes , 
+						response.getInfo().getResponseCode() ,response.getInfo().getResponseDesc(),billerNameRes==null ? billerName : billerNameRes , 
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountDueDateRes==null ? amountInDueToDate : amountDueDateRes,
 						amounAfterDateRes==null ? amountAfterDate : amounAfterDateRes, 
 						Constants.ACTIVITY.BillInquiry,transactionStatus,channel, billstatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), transAuthId,null,dueDateRes==null ? dueDate : dueDateRes);
+						request.getTxnInfo().getTranTime(), transAuthId,null,dueDateRes==null ? dueDate : dueDateRes,billingMonthRes==null ? billingMonth : billingMonthRes);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
 			}
+
+			LOG.info("----- Bill Inquiry Method End -----");
 
 			
 		}
