@@ -54,7 +54,6 @@ public class BillController extends ApiController {
 	@Autowired
 	private ValidationUtil validationUtil;
 
-//	@ApiOperation(value = "API Gateway - Bill Inquiry", notes = "Bill inquiry")
 	@RequestMapping(path = "/billinquiry", method = RequestMethod.POST)
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
 			throws IOException {
@@ -86,7 +85,6 @@ public class BillController extends ApiController {
 
 	}
 
-	// @ApiOperation(value = "API Gateway - Bill Payment", notes = "Bill Payment")
 	@RequestMapping(path = "/billpayment", method = RequestMethod.POST)
 	public BillPaymentResponse billPayment(@RequestBody BillPaymentRequest request, HttpServletRequest httpRequestData)
 			throws IOException {
@@ -119,8 +117,6 @@ public class BillController extends ApiController {
 
 	}
 
-	// @ApiOperation(value = "API Gateway - Payment Inquiry", notes = "Payment
-	// inquiry")
 	@RequestMapping(path = "/paymentinquiry", method = RequestMethod.POST)
 	public PaymentInquiryResponse paymentInquiry(@RequestBody PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData) throws IOException {

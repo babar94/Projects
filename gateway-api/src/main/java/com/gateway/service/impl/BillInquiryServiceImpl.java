@@ -1671,6 +1671,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String transAuthId = ""; // utilMethods.getStan();
 		String transactionStatus = "";
 		String billstatus = "";
+		String billStatus="";
         String username="";
         String channel="";
         BigDecimal amountInDueToDate=null;
@@ -1738,6 +1739,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							if (paymentLog != null) {
 								
 								billstatus = "P";
+								billStatus = "Paid";
 								
 								transAuthId = paymentLog.getTranAuthId();
 								amountInDueToDate = paymentLog.getAmountwithinduedate();
@@ -1832,7 +1834,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 							
 							billstatus="U";
-
+							billStatus= "Unpaid";
 						
 							transactionStatus = Constants.Status.Pending;
 
@@ -1842,6 +1844,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
 							
 							billstatus="E";
+							billStatus= "Expired";
 
 						
 							transactionStatus = Constants.Status.Expired;
@@ -1851,13 +1854,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
                          else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
 							
 							billstatus="B";
-						
+							billStatus= "Block";
+
 							transactionStatus = Constants.Status.Block;
 
 						} 
 						
-					 
-							
+					 							
 		                 if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 							
 							
@@ -1940,7 +1943,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountDueDateRes==null ? amountInDueToDate : amountDueDateRes,
 						amounAfterDateRes==null ? amountAfterDate : amounAfterDateRes, 
-						Constants.ACTIVITY.BillInquiry,transactionStatus,channel, billstatus, request.getTxnInfo().getTranDate(),
+						Constants.ACTIVITY.BillInquiry,transactionStatus,channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,null,dueDateRes==null ? dueDate : dueDateRes,billingMonthRes==null ? billingMonth : billingMonthRes);
 
 			} catch (Exception ex) {

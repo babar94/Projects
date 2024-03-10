@@ -85,6 +85,10 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private PaymentLogRepository paymentloggingRepository;
+
+	
 	@Override
 	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest request) {
 
@@ -864,8 +868,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		PaymentInquiryResponse response = null;
 
 		Date requestedDate = new Date();
-		String rrn = "";
-		String stan = "";
+		String rrn = request.getInfo().getRrn().substring(0,10); // utilMethods.getRRN();
+		String stan = request.getInfo().getStan(); // utilMethods.getStan();
+	
 		PithamGetVoucherResponse PithamGetVoucherResponse = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
@@ -882,7 +887,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String billerName="";
         String dueDate="";
         String billingMonth="";
-        BigDecimal amountPaid;
+        BigDecimal amountPaid=null;
         BigDecimal amountInDueToDate=null;
         BigDecimal amountAfterDate=null;
 		String transAuthId = ""; 
@@ -891,28 +896,45 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		try {
 			
 			UtilMethods.generalLog("IN - Payment Inquiry  " + requestedDate, LOG);
-			LOG.info("Calling Payment Inquiry");
+			LOG. info("Calling Payment Inquiry");
 			LOG.info("Payment Inquiry Request {}", request);
 
 
+			
+			//String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+		//	username = result[0];
+		//	channel =  result[1];
+					
+			List<PaymentLog> rrnValue  = paymentloggingRepository.findByRrn(rrn);  
+						
+			for(PaymentLog value : rrnValue) {
+			
+			if(value!=null) {
+					
+				info = new InfoPayInq(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
+				response = new PaymentInquiryResponse(info, null, null);
+
+				return response;}
+				
+			}
+
+			
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());			
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());			
 			inquiryParams.add(rrn);
 
-			
-			
+
 			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
 
 			if (PithamGetVoucherResponse != null) {
-				if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 
-					billStatus = PithamGetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();
 			
 
-					if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+					if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
 						
 						try {
 						
@@ -927,7 +949,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						
 							if (paymentLog != null && paymentLog.getID() != null) {
 
-								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
+								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn,
 										stan); // success
 
 								txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
@@ -935,18 +957,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										paymentLog.getTranDate(), paymentLog.getTranTime(),
 										String.valueOf(paymentLog.getAmountPaid()));
 
-								additionalInfo = new AdditionalInfoPayInq(
-										request.getAdditionalInfo().getReserveField1(),
-										request.getAdditionalInfo().getReserveField2(),
-										request.getAdditionalInfo().getReserveField3(),
-										request.getAdditionalInfo().getReserveField4(),
-										request.getAdditionalInfo().getReserveField5(),
-										request.getAdditionalInfo().getReserveField6(),
-										request.getAdditionalInfo().getReserveField7(),
-										request.getAdditionalInfo().getReserveField8(),
-										request.getAdditionalInfo().getReserveField9(),
-										request.getAdditionalInfo().getReserveField10());
+								billStatus = "Paid";
 
+								
 								transactionStatus = Constants.Status.Success;
 								transAuthId = paymentLog.getTranAuthId();
 								amountInDueToDate = paymentLog.getAmountwithinduedate();
@@ -957,7 +970,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								billingMonth = paymentLog.getBillingMonth();
 								
 								
-								response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
+								response = new PaymentInquiryResponse(info, txnInfo, null);
 								return response;
 							} else {
 								info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
@@ -976,13 +989,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 					} 
 					
-				}     else if (PithamGetVoucherResponse.getResponseCode().equals("404")) {
-					  info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-					 response = new PaymentInquiryResponse(info, null, null);
-					 transactionStatus = Constants.Status.Fail;
-					} 
-							
 				else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 						info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -1036,7 +1042,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				String requestAsString = objectMapper.writeValueAsString(request);
 				String responseAsString = objectMapper.writeValueAsString(response);
 
-				auditLoggingService.auditLog(Constants.ACTIVITY.BillInquiry, response.getInfo().getResponseCode(),
+				auditLoggingService.auditLog(Constants.ACTIVITY.PaymentInquiry, response.getInfo().getResponseCode(),
 						response.getInfo().getResponseDesc(), requestAsString, responseAsString, requestedDate, new Date(), rrn,
 						request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(), channel, username);
 
@@ -1050,8 +1056,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						response.getInfo().getResponseCode() ,response.getInfo().getResponseDesc(),billerName, 
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueToDate,amountAfterDate , 
-						Constants.ACTIVITY.PaymentInquiry,transactionStatus,channel, billStatus, "",
-						"", transAuthId,null,dueDate,billingMonth);
+						Constants.ACTIVITY.PaymentInquiry,transactionStatus,channel, billStatus, tranDate,
+						tranTime, transAuthId,amountPaid,dueDate,billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

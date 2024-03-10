@@ -13,12 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public class TxnInfoPayInqRequest implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 8396436785949897705L;
 	private String aggregatorId;
 	private String billerId;

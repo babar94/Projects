@@ -15,10 +15,9 @@ import lombok.ToString;
 @ToString
 public class AdditionalInfoPayInqRequest implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 8396436785949897705L;
+	
 	private String reserveField1;
 	private String reserveField2;
 	private String reserveField3;

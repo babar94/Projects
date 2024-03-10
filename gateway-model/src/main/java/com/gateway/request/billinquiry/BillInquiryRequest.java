@@ -15,9 +15,7 @@ import lombok.ToString;
 @ToString
 public class BillInquiryRequest implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 8396436785949897705L;
 	private InfoRequest info;
 	private TxnInfoRequest txnInfo;

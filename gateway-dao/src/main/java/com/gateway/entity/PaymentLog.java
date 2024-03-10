@@ -125,6 +125,9 @@ public class PaymentLog implements Serializable {
 	
 	@Column(name = "duedate")
 	private String duedate;
-	
+
+	@Column(name = "billing_month")
+	private String billingMonth;
+
 
 }
