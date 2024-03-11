@@ -301,7 +301,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							}
 						} else {
 							infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
-									Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+									Constants.ResponseDescription.BILLER_NOT_FOUND_DISABLED, rrn, stan);
 							billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 
 						}
@@ -3128,6 +3128,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
         String billStatusDescRes="";
 		String pattern = "\\d+\\.\\d{2}";
 
+		String paymentRefrence = utilMethods.getRRN();
+
 		try {
 					
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
@@ -3344,7 +3346,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
             		
             	txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-						request.getTxnInfo().getBillNumber(), null);
+						request.getTxnInfo().getBillNumber(), paymentRefrence);
             	
             	additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
             			request.getAdditionalInfo().getReserveField2(),
@@ -3412,7 +3414,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),amountDueDateRes==null ? amountInDueToDate : amountDueDateRes ,amounAfterDateRes==null ? amountAfterDate : amounAfterDateRes , 
 						Constants.ACTIVITY.BillPayment,transactionStatus,channel,Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateRes==null ? duedate :dueDateRes, billingMonthRes==null ? billingMonth : billingMonthRes);
+						request.getTxnInfo().getTranTime(),transAuthId,new BigDecimal(request.getTxnInfo().getTranAmount()),dueDateRes==null ? duedate :dueDateRes, billingMonthRes==null ? billingMonth : billingMonthRes,paymentRefrence);
 				
 
 				LOG.info( " --- Bill Payment Method End --- ");

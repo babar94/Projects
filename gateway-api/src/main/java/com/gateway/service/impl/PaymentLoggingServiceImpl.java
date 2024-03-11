@@ -119,7 +119,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 	public void paymentLog(Date requestedDate, Date responsedate,String rrn,String stan,String responseCode,
 			String responseDesc,String studentName,String billNumber,String billerId,
 			BigDecimal amountInDueDate,BigDecimal amountAfterDueDate,String billinquiry,
-			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth) {
+			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth,String paymentRefno) {
 
 	
 		PaymentLog paymentLog = new PaymentLog();
@@ -147,6 +147,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setAmountPaid(amountpaid);
 		paymentLog.setDuedate(duedate);
 		paymentLog.setBillingMonth(billingMonth);
+		paymentLog.setPaymentRefNo(paymentRefno);
 		
 
 		transactionDetialsLogRepository.save(paymentLog);

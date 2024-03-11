@@ -1944,7 +1944,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTxnInfo().getBillerId(), amountDueDateRes==null ? amountInDueToDate : amountDueDateRes,
 						amounAfterDateRes==null ? amountAfterDate : amounAfterDateRes, 
 						Constants.ACTIVITY.BillInquiry,transactionStatus,channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), transAuthId,null,dueDateRes==null ? dueDate : dueDateRes,billingMonthRes==null ? billingMonth : billingMonthRes);
+						request.getTxnInfo().getTranTime(), transAuthId,null,dueDateRes==null ? dueDate : dueDateRes,billingMonthRes==null ? billingMonth : billingMonthRes,"");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

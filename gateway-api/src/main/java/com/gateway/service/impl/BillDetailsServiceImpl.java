@@ -22,6 +22,7 @@ import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
+import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.BillPaymentInquiryValidationResponse;
 import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.billerlistresponse.Billers;
@@ -107,9 +108,12 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
 			BillPaymentInquiryValidationResponse billPaymentInquiryValidationResponse = null;
-			// billerDetail=billerListRepository.findByBillerId(request.getTxnInfo().getBillerId());
 
 			// TODO: here we have changed BillerId()
+
+			String billerId = request.getTxnInfo().getBillerId();
+
+			if (billerId != null && billerId.length() == 4) {
 			parentBillerId = request.getTxnInfo().getBillerId().substring(0, 2);
 			subBillerId = request.getTxnInfo().getBillerId().substring(2);
 			Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo.findByBillerId(parentBillerId);
@@ -170,7 +174,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 									switch (subBillerDetail.getSubBillerName()) {
 
 									case BillerConstant.Pithm.PITHM:
-										paymentInquiryResponse = paymentInquiryPITHAM(request,
+										paymentInquiryResponse = paymentInquiryPITHAM(request,httpRequestData,
 												billPaymentInquiryValidationResponse);
 										break;
 
@@ -271,7 +275,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 							} else {
 								info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-										Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+										billPaymentInquiryValidationResponse.getResponseDesc(), rrn, stan);
 								paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 							}
 						} else {
@@ -281,7 +285,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						}
 					} else {
 						info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-								Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+								Constants.ResponseDescription.BILLER_NOT_FOUND_DISABLED, rrn, stan);
 						paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 
 					}
@@ -290,8 +294,24 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
 					paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 				}
+				
+
+			} else {
+				info = new InfoPayInq(Constants.ResponseCodes.BILLER_NOT_FOUND_DISABLED,
+						Constants.ResponseDescription.BILLER_NOT_FOUND_DISABLED, rrn, stan);
+				paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+			    }
 
 			}
+			
+			else {
+			info = new InfoPayInq(Constants.ResponseCodes.INVALID_BILLER_ID,
+					Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+			paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+		}
+		
+			
+			
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
 
@@ -321,6 +341,15 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
 
+			
+			 if(request.getTxnInfo().getBillNumber()==null || request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
+	            	
+				 response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
+					return response;
+					
+	            }
+			
 			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 
 				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
@@ -794,7 +823,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-//			List<BillerConfiguration> billers = billerConfigurationRepo.findAll();
 			List<BillerConfiguration> billers = billerConfigurationRepo.findByIsActiveTrue();
 
 			if (billers != null) {
@@ -857,14 +885,16 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 	
+	
 	                  //////////////////////////////////////////////////////////////
 	
 	
 	
-	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,
+	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,HttpServletRequest httpRequestData,
 			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
 
-		LOG.info("Inside method Bill Inquiry");
+		LOG.info("Inside method PaymentInquiry");
+		
 		PaymentInquiryResponse response = null;
 
 		Date requestedDate = new Date();
@@ -891,7 +921,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
         BigDecimal amountInDueToDate=null;
         BigDecimal amountAfterDate=null;
 		String transAuthId = ""; 
-
+        String paymentRefrence="";
 		
 		try {
 			
@@ -901,9 +931,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 
 			
-			//String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
-		//	username = result[0];
-		//	channel =  result[1];
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+			username = result[0];
+			channel =  result[1];
 					
 			List<PaymentLog> rrnValue  = paymentloggingRepository.findByRrn(rrn);  
 						
@@ -930,7 +960,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
 
-			if (PithamGetVoucherResponse != null) {
+			if (PithamGetVoucherResponse.getPithmGetVoucher() != null) {
 
 			
 
@@ -956,6 +986,18 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										request.getTxnInfo().getBillNumber(), paymentLog.getPaymentRefNo(),
 										paymentLog.getTranDate(), paymentLog.getTranTime(),
 										String.valueOf(paymentLog.getAmountPaid()));
+								
+								additionalInfo = new AdditionalInfoPayInq(
+										request.getAdditionalInfo().getReserveField1(),
+										request.getAdditionalInfo().getReserveField2(),
+										request.getAdditionalInfo().getReserveField3(),
+										request.getAdditionalInfo().getReserveField4(),
+										request.getAdditionalInfo().getReserveField5(),
+										request.getAdditionalInfo().getReserveField6(),
+										request.getAdditionalInfo().getReserveField7(),
+										request.getAdditionalInfo().getReserveField8(),
+										request.getAdditionalInfo().getReserveField9(),
+										request.getAdditionalInfo().getReserveField10());
 
 								billStatus = "Paid";
 
@@ -968,9 +1010,10 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								amountPaid = paymentLog.getAmountPaid();
 								dueDate =    paymentLog.getDuedate();
 								billingMonth = paymentLog.getBillingMonth();
+								paymentRefrence = paymentLog.getPaymentRefNo();
+
 								
-								
-								response = new PaymentInquiryResponse(info, txnInfo, null);
+								response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 								return response;
 							} else {
 								info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
@@ -1023,8 +1066,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				}
 
 			} else {
-				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.UNABLE_TO_PROCESS,
-						Constants.ResponseDescription.UNABLE_TO_PROCESS);
+				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.SERVICE_FAIL,
+						Constants.ResponseDescription.SERVICE_FAIL);
 				response = new PaymentInquiryResponse(info, null, null);
 				transactionStatus = Constants.Status.Fail;
 				return response;
@@ -1057,13 +1100,13 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueToDate,amountAfterDate , 
 						Constants.ACTIVITY.PaymentInquiry,transactionStatus,channel, billStatus, tranDate,
-						tranTime, transAuthId,amountPaid,dueDate,billingMonth);
+						tranTime, transAuthId,amountPaid,dueDate,billingMonth,paymentRefrence);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
 			}
 
-			LOG.info("----- Bill Inquiry Method End -----");
+			LOG.info("----- Payment Inquiry Method End -----");
 			
 		
 		}
@@ -1075,7 +1118,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	
 	
 	
-	///////////////////////////////////////////////////////////
+	                           ///////////////////////////////////////////////////////////
 	
 
 }
