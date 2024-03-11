@@ -1057,6 +1057,14 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 					} 
 					
 
+		     else {
+					info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+							Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+					response = new PaymentInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+
+				}
 			} else {
 				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.SERVICE_FAIL,
 						Constants.ResponseDescription.SERVICE_FAIL);
