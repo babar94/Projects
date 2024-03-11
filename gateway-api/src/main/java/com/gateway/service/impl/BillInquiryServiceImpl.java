@@ -1721,14 +1721,45 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());			
 			inquiryParams.add(rrn);
 
+		
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
 
 			
-					if (pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
+					if(pithamgetVoucherResponse!=null) {
+						
+						
+					
+					 if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+			
+							info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+			
+							return response;}
+				     
+				     
+				     
+				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+			
+							info = new Info(pithamgetVoucherResponse.getResponseCode(),
+									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+			
+							return response;}
+							
+				      
+				     
+				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
+			
+							info = new Info(pithamgetVoucherResponse.getResponseCode(),
+									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+			
+							return response;}
+					
 
-
-						if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+				     else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 							PaymentLog paymentLog = paymentLogRepository
 									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 											request.getTxnInfo().getBillerId().trim(),
@@ -1801,37 +1832,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						amounAfterDateRes= new BigDecimal(amountAfterDueDateRes);}
 
 	                  						
-					 if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
-
-							info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-							response = new BillInquiryResponse(info, null, null);
-
-							return response;}
-				     
-				     
-				     
-				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
-
-							info = new Info(pithamgetVoucherResponse.getResponseCode(),
-									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-							response = new BillInquiryResponse(info, null, null);
-
-							return response;}
-							
-				      
-				     
-				     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
-
-							info = new Info(pithamgetVoucherResponse.getResponseCode(),
-									pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-							response = new BillInquiryResponse(info, null, null);
-
-							return response;}
-							
+					
 				            
 
-						else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+						 if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 							
 							billstatus="U";
 							billStatus= "Unpaid";
@@ -1903,13 +1907,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							}
 					}
 					
+					
 					else {
 						
-						info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
-								stan);
+						info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 						response = new BillInquiryResponse(info, null, null);
-						
-					}
+
+						return response;}
+					
 								
 		      }
 				

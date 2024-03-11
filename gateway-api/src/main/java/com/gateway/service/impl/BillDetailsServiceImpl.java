@@ -97,9 +97,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		PaymentInquiryResponse paymentInquiryResponse = null;
 
 		Date strDate = new Date();
-		String rrn = "";
-		String stan = "";
-
+		String rrn = request.getInfo().getRrn();
+		String stan = request.getInfo().getStan();
 		InfoPayInq info = null;
 		String parentBillerId = null;
 		String subBillerId = null;
@@ -960,11 +959,36 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry);
 
-			if (PithamGetVoucherResponse.getPithmGetVoucher() != null) {
+			if (PithamGetVoucherResponse != null) {
 
 			
+			if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
-					if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+					info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					response = new PaymentInquiryResponse(info, null, null);
+
+					return response;}
+		     
+		     
+		     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+
+					info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
+							PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new PaymentInquiryResponse(info, null, null);
+
+					return response;}
+		     
+		     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
+
+					info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
+							PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
+					response = new PaymentInquiryResponse(info, null, null);
+
+					return response;}
+				
+
+		     else if (PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
 						
 						try {
 						
@@ -1032,38 +1056,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 					} 
 					
-				else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
-
-						info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-						response = new PaymentInquiryResponse(info, null, null);
-
-						return response;}
-			     
-			     
-			     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
-
-						info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
-								PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
-						response = new PaymentInquiryResponse(info, null, null);
-
-						return response;}
-			     
-			     else if(PithamGetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
-
-						info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
-								PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
-						response = new PaymentInquiryResponse(info, null, null);
-
-						return response;}
-						
-				else {
-					info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
-							Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
-					response = new PaymentInquiryResponse(info, null, null);
-					transactionStatus = Constants.Status.Fail;
-					return response;
-				}
 
 			} else {
 				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.SERVICE_FAIL,

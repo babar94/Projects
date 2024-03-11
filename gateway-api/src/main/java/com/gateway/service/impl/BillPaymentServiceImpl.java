@@ -3161,8 +3161,38 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					Constants.ACTIVITY.BillInquiry);
 
 			
-			if (pithamgetVoucherResponse.getPithmGetVoucher()!=null) {
+			if (pithamgetVoucherResponse!=null) {
 
+				
+				   if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;}
+			     
+			     
+			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+
+						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;}
+						
+			     
+			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
+
+						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
+								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;}
+			     
+							
+				
+				
 				
 				billerNameRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
 				billingMonthRes=pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
@@ -3206,8 +3236,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					
 				}
 
-				
-				
 		
 				else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)){
 						
@@ -3234,33 +3262,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					}
 			
 					 	
-			     if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
-
-						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-
-						return response;}
-			     
-			     
-			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
-
-						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
-								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-
-						return response;}
-						
-			     
-			     else if(pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
-
-						infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
-								pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-
-						return response;}
-			     
-							
+			  
 			
 				if(amountWithInDueDateRes==null) {
 					
