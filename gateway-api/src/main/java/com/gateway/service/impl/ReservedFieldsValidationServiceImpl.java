@@ -40,7 +40,7 @@ public class ReservedFieldsValidationServiceImpl implements ReservedFieldsValida
                 })
                 .count();
 
-        boolean validationPassed = nonEmptyFieldsCount >= 6;
+        boolean validationPassed = nonEmptyFieldsCount >= 2;
 
         if (!validationPassed) {
             logger.error("Validation failed. At least six reserved fields must have non-empty values.");

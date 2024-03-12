@@ -19,6 +19,7 @@ D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\co
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\AdditionalInfoPayInq.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\AuthenticationRequest.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\BillInquiryRequest.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\BranchInfo.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\aiou\ResponseBillInquiry.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\PralFbrGetVoucher.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pitham\PithamGetVoucherResponse.java
@@ -42,6 +43,7 @@ D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\co
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pitham\GetInquiryResult.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\FbrGetVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\offline\OfflineUpdateVoucherResponse.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\BranchInfo.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\CredentialsListAttribute.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\pitham\PithamUpdateVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\offline\OfflineBillerGetvoucher.java
@@ -70,6 +72,7 @@ D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\co
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\InfoPayInq.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\UpdateVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\TerminalInfoRequest.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\BranchInfo.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pitham\PithmGetVoucher.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\InfoRequest.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\PtaGetVoucherResponse.java

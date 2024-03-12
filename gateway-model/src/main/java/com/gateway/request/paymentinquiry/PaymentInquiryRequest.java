@@ -2,6 +2,8 @@ package com.gateway.request.paymentinquiry;
 
 import java.io.Serializable;
 
+import org.springframework.lang.Nullable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +22,7 @@ public class PaymentInquiryRequest implements Serializable {
 	private InfoPayInqRequest info;
 	private TxnInfoPayInqRequest txnInfo;
 	private AdditionalInfoPayInqRequest additionalInfo;
+	@Nullable
+	private BranchInfo branchInfo;
 
 }

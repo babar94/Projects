@@ -128,6 +128,20 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "billing_month")
 	private String billingMonth;
+	
+	@Column(name = "bank_name")
+	private String bankName;
+
+	@Column(name = "bank_code")
+	private String bankCode;
+	
+	@Column(name = "branch_name")
+	private String branchName;
+	
+	@Column(name = "branch_code")
+	private String branchCode;
+	
+	
 
 
 }

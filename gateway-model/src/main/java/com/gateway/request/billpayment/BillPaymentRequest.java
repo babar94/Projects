@@ -2,6 +2,8 @@ package com.gateway.request.billpayment;
 
 import java.io.Serializable;
 
+import org.springframework.lang.Nullable;
+
 import com.gateway.request.billinquiry.AdditionalInfoRequest;
 
 import lombok.AllArgsConstructor;
@@ -17,14 +19,14 @@ import lombok.ToString;
 @ToString
 public class BillPaymentRequest implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 8396436785949897705L;
 
 	private InfoPayRequest info;
 	private TxnInfoPayRequest txnInfo;
 	private AdditionalInfoRequest additionalInfo;
 	private TerminalInfoPayRequest terminalInfo;
+	@Nullable
+	private BranchInfo branchInfo;
 
 }
