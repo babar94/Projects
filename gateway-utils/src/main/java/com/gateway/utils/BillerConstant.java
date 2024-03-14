@@ -31,9 +31,9 @@ public interface BillerConstant {
 		String PITHM = "PITHM";
 	}
 
-	interface THERDEEP {
+	interface THARDEEP {
 
-		String THERDEEP = "THERDEEP";
+		String THARDEEP = "THARDEEP";
 	}
 	interface ETANB {
 

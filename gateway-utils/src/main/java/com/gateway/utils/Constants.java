@@ -120,7 +120,11 @@ public class Constants {
 		public static final String PITHAM_BILL_INQUIRY = "pithm-getvoucher";
 		public static final String PITHAM_BILL_PAYMENT = "pithm-updatevoucher";
 
+		public static final String THARDEEP_BILL_INQUIRY = "thardeep-getvoucher";
+		public static final String THARDEEP_BILL_PAYMENT = "thardeep-updatevoucher";
+		public static final String THARDEEP_BILL_PAYMENT_CHECK = "thardeep-paymentinquiry";
 
+		
 	}
 
 	public static class BILL_STATUS {
@@ -132,6 +136,16 @@ public class Constants {
 
 	}
 
+	
+	public static class BILL_STATUS_SINGLE_ALPHABET {
+
+		public static final String BILL_PAID = "U"; 
+		public static final String BILL_UNPAID = "P"; 
+		public static final String BILL_BLOCK = "B"; 
+		public static final String BILL_EXPIRED = "E";
+
+	}
+	
 	public static class BillerType {
 
 		public static final String OFFLINE_BILLER = "offline";

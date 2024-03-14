@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -150,6 +151,24 @@ public class UtilMethods {
 		return dateFormat.parse(dateString);
 	}
 
+	/// formate date
+	
+	public String formatDueDate(String dueDate) {
+		
+     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+     DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+     String formattedDate ="";
+    try {
+        LocalDate date = LocalDate.parse(dueDate, inputFormatter);
+        formattedDate = date.format(outputFormatter);
+        System.out.println("Formatted date: " + formattedDate);
+    } catch (DateTimeParseException e) {
+        System.out.println("Error parsing date: " + e.getMessage());
+    }
+	        
+	return formattedDate;
+	}
+	
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {

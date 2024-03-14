@@ -128,6 +128,23 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 					}
 				}
 			}
+			if (requestObj.has("branchInfo") && !requestObj.isNull("branchInfo")) {
+				innerObject = requestObj.getJSONObject("branchInfo");
+				if (innerObject.has(parameter)) {
+					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
+					if (transactionParam.isRequired()) {
+						match = requestParamValue.matches(regex);
+						if (match) {
+							result = true;
+							LOG.info("Regex matches");
+						} else {
+							result = false;
+							LOG.info("Regex Not matches");
+							return result;
+						}
+					}
+				}
+			}
 
 		}
 
