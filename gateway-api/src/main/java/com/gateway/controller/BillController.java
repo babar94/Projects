@@ -1,7 +1,8 @@
 package com.gateway.controller;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,14 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.api.ApiController;
-import com.gateway.entity.PaymentLog;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
-import com.gateway.response.BillInquiryValidationResponse;
-import com.gateway.response.BillPaymentValidationResponse;
 import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
@@ -58,12 +57,30 @@ public class BillController extends ApiController {
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
 			throws IOException {
 		BillInquiryResponse response = null;
+		
 		LOG.info("Bill Controller - Bill Inquiry");
+		
 		try {
 
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
+	       
+	        String jsonString = toJsonString(request);
+	        
+	        String regex = "<[^>]+>";
 
+
+	        Pattern pattern = Pattern.compile(regex);
+
+	        Matcher matcher = pattern.matcher(jsonString);
+	        				
+			if(matcher.find()) {	
+				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
+						Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan), null, null);
+		
+			}
+			
+	
 			if (validationUtil.isNullOrEmpty(rrn)) {
 				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
@@ -172,10 +189,14 @@ public class BillController extends ApiController {
 
 	}
 
-//	private boolean isDuplicateRRN(String rrn) {
-//
-//		List<PaymentLog> paymentHistory = paymentLogRepository.findByRrn(rrn);
-//		return paymentHistory != null && !paymentHistory.isEmpty();
-//	}
+	public String toJsonString(Object object) {
+	    try {
+	        ObjectMapper mapper = new ObjectMapper();
+	        return mapper.writeValueAsString(object);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 }

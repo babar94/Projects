@@ -29,6 +29,10 @@ public class CustomCredentialsServiceImpl implements UserDetailsService {
 				LOG.info("CustomCredentialsServiceImpl - User not found with username:", username);
 				throw new UsernameNotFoundException("User not found with username: " + username);
 			}
+			else if (user != null && user.isEnable() == false) {
+				LOG.info("Token expired due to account blocked " + username);
+				throw new UsernameNotFoundException("Token expired due to account blocked " + username);
+			}
 			LOG.info("CustomCredentialsServiceImpl - User found with username:", username);
 //			return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 //					new ArrayList<>());
