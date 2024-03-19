@@ -328,11 +328,21 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		
 			// BillerList billersList = null;
 
-			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//				return response;
+//			}
+			
+			
+			if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
 				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 				return response;
 			}
+			
+			
+	
 
 			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
 				// billersList = billerListRepository.findByBillerId(billerId).orElse(null);//

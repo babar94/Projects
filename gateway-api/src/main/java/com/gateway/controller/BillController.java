@@ -64,21 +64,22 @@ public class BillController extends ApiController {
 
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
-	       
-	        String jsonString = toJsonString(request);
-	        
-	        String regex = "<[^>]+>";
-
-
-	        Pattern pattern = Pattern.compile(regex);
-
-	        Matcher matcher = pattern.matcher(jsonString);
-	        				
-			if(matcher.find()) {	
-				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan), null, null);
 		
-			}
+//	        String jsonString = toJsonString(request);
+//	        
+//	        String regex = "<[^>]+>";
+//	       // String regex = "[^!@#$%^&*()_+\\=?/>.<,\"':;\\\\|]";
+//
+//	        Pattern pattern = Pattern.compile(regex);
+//	        Matcher matcher = pattern.matcher(jsonString);
+//			rrn=  rrn.replaceAll("[^0-9]", "");
+//			stan =stan.replaceAll("[^0-9]", "");
+//			
+//			if(matcher.find()) {	
+//				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan), null, null);
+//		
+//			}
 			
 	
 			if (validationUtil.isNullOrEmpty(rrn)) {
@@ -91,7 +92,8 @@ public class BillController extends ApiController {
 						Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan), null, null);
 
 			}
-
+//			return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.OK,
+//					Constants.ResponseDescription.OK, rrn, stan), null, null);
 			response = billInquiryService.billInquiry(httpRequestData, request);
 
 		} catch (Exception ex) {

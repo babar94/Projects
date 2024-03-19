@@ -42,4 +42,7 @@ public class TransactionParams implements Serializable {
 	@Column(name = "is_required")
 	private boolean isRequired;
 
+	@Column(name = "is_escape_special_char_Exists")
+	private boolean isEscapeSpecialCharExists;
+
 }

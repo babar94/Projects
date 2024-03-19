@@ -71,10 +71,13 @@ D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\co
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billerlistresponse\TxnInfoBiller.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\InfoPayInq.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\UpdateVoucherResponse.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\thardeep\ThardeepResponse.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\thardeep\ThardeepGetVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\TerminalInfoRequest.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\BranchInfo.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pitham\PithmGetVoucher.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\InfoRequest.java
+D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\thardeep\ThardeepGetVoucher.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\PtaGetVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\aiou\AiouUpdateVoucherResponse.java
 D:\Projects\E-Payment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\TerminalInfoPayInqRequest.java
