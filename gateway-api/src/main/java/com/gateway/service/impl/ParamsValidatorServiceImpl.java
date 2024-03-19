@@ -31,7 +31,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 		JSONObject innerObject = null;
 		List<TransactionParams> transParamsList = getTransactionsParams();
 		JSONObject requestObj = new JSONObject(request);
-		LOG.info("REQUEST Object:",requestObj);
+		LOG.info("REQUEST Object:", requestObj);
 
 		for (TransactionParams transactionParam : transParamsList) {
 			String parameter = transactionParam.getParamName(); // list ka parameter ka naam
@@ -44,7 +44,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
 					if (transactionParam.isRequired()) {
 						match = requestParamValue.matches(regex);
-						
+
 						if (match) {
 							result = true;
 							LOG.info("Regex matches");
@@ -78,7 +78,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 				}
 			}
-			//second object 
+			// second object
 			if (requestObj.has("info")) {
 				innerObject = requestObj.getJSONObject("info");
 				if (innerObject.has(parameter)) {
@@ -153,11 +153,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 		return result;
 	}
 
-	
-	
-	                ///////////////////////////////////////
-	
-	
+	///////////////////////////////////////
+
 	@Override
 	public boolean validateRequestParamsSpecialCharacter(String request) {
 		LOG.info("Inside method validateRequestParams");
@@ -166,7 +163,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 		JSONObject innerObject = null;
 		List<TransactionParams> transParamsList = getTransactionsParams();
 		JSONObject requestObj = new JSONObject(request);
-		LOG.info("REQUEST Object:",requestObj);
+		LOG.info("REQUEST Object:", requestObj);
 
 		for (TransactionParams transactionParam : transParamsList) {
 			String parameter = transactionParam.getParamName(); // list ka parameter ka naam
@@ -178,9 +175,9 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 				if (innerObject.has(parameter)) {
 					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
 					if (transactionParam.isRequired()) {
-						
+
 						match = requestParamValue.matches(regex);
-						
+
 						if (match) {
 							result = true;
 							LOG.info("Regex matches");
@@ -214,7 +211,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 				}
 			}
-			//second object 
+			// second object
 			if (requestObj.has("info")) {
 				innerObject = requestObj.getJSONObject("info");
 				if (innerObject.has(parameter)) {
@@ -238,103 +235,22 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
 					if (transactionParam.isRequired()) {
 						match = requestParamValue.matches(regex);
-						
+
 						if (match) {
 							result = true;
 							LOG.info("Regex matches");
-							
-							
+
 						} else {
 							result = false;
 							LOG.info("Regex Not matches");
 							return result;
 						}
 					}
-					
-			    else if(!transactionParam.isRequired()) {
-						
-							Pattern pattern = Pattern.compile(regex);
-					        Matcher matcher = pattern.matcher(requestParamValue);
 
-							if (matcher.find()) {
-								result = false;
-								LOG.info("Regex matches");
-								return result;
+					else if (!transactionParam.isRequired()) {
 
-							} else {
-								result = true;
-								LOG.info("Regex Not matches");
-								
-								
-							}
-					
-				}
-					
-					
-					
-				}
-			}
-			if (requestObj.has("additionalInfo")) {
-				innerObject = requestObj.getJSONObject("additionalInfo");
-				if (innerObject.has(parameter)) {
-					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
-				
-					
-					if (transactionParam.isRequired()) {
-						match = requestParamValue.matches(regex);
-						if (match) {
-							result = true;
-							LOG.info("Regex matches");
-						} else {
-							result = false;
-							LOG.info("Regex Not matches");
-							return result;
-						}
-					}
-					
-					
-                     else if(!transactionParam.isRequired()) {
-						
-							Pattern pattern = Pattern.compile(regex);
-					        Matcher matcher = pattern.matcher(requestParamValue);
-
-							if (matcher.find()) {
-								result = false;
-								LOG.info("Regex matches");
-								return result;
-
-								
-							} else {
-								result = true;
-								LOG.info("Regex Not matches");
-								
-							}
-					
-				}
-					
-				}
-			}
-
-			if (requestObj.has("branchInfo") && !requestObj.isNull("branchInfo")) {
-				innerObject = requestObj.getJSONObject("branchInfo");
-				if (innerObject.has(parameter)) {
-					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
-					if (transactionParam.isRequired()) {
-						match = requestParamValue.matches(regex);
-						if (match) {
-							result = true;
-							LOG.info("Regex matches");
-						} else {
-							result = false;
-							LOG.info("Regex Not matches");
-							return result;
-						}
-					}
-					
-				    else if(!transactionParam.isRequired()) {
-						
 						Pattern pattern = Pattern.compile(regex);
-				        Matcher matcher = pattern.matcher(requestParamValue);
+						Matcher matcher = pattern.matcher(requestParamValue);
 
 						if (matcher.find()) {
 							result = false;
@@ -344,13 +260,85 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 						} else {
 							result = true;
 							LOG.info("Regex Not matches");
-							
-							
+
 						}
-				
+
+					}
+
+				}
+			}
+			if (requestObj.has("additionalInfo")) {
+				innerObject = requestObj.getJSONObject("additionalInfo");
+				if (innerObject.has(parameter)) {
+					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
+
+					if (transactionParam.isRequired()) {
+						match = requestParamValue.matches(regex);
+						if (match) {
+							result = true;
+							LOG.info("Regex matches");
+						} else {
+							result = false;
+							LOG.info("Regex Not matches");
+							return result;
+						}
+					}
+
+					else if (!transactionParam.isRequired()) {
+
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher = pattern.matcher(requestParamValue);
+
+						if (matcher.find()) {
+							result = false;
+							LOG.info("Regex matches");
+							return result;
+
+						} else {
+							result = true;
+							LOG.info("Regex Not matches");
+
+						}
+
+					}
+
+				}
 			}
 
-					
+			if (requestObj.has("branchInfo") && !requestObj.isNull("branchInfo")) {
+				innerObject = requestObj.getJSONObject("branchInfo");
+				if (innerObject.has(parameter)) {
+					requestParamValue = innerObject.optString(parameter); // request ka parameter ka naam
+					if (transactionParam.isRequired()) {
+						match = requestParamValue.matches(regex);
+						if (match) {
+							result = true;
+							LOG.info("Regex matches");
+						} else {
+							result = false;
+							LOG.info("Regex Not matches");
+							return result;
+						}
+					}
+
+					else if (!transactionParam.isRequired()) {
+
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher = pattern.matcher(requestParamValue);
+
+						if (matcher.find()) {
+							result = false;
+							LOG.info("Regex matches");
+							return result;
+
+						} else {
+							result = true;
+							LOG.info("Regex Not matches");
+
+						}
+
+					}
+
 				}
 			}
 
@@ -358,9 +346,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 		return result;
 	}
-	
-	
-	
+
 	// It will return Transactions Params Lists
 	public List<TransactionParams> getTransactionsParams() {
 
