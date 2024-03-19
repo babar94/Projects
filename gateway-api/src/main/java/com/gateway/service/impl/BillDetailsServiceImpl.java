@@ -25,6 +25,7 @@ import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
 import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.BillPaymentInquiryValidationResponse;
+import com.gateway.response.BillPaymentValidationResponse;
 import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.billerlistresponse.Billers;
 import com.gateway.response.billerlistresponse.InfoBiller;
@@ -104,6 +105,10 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String parentBillerId = null;
 		String subBillerId = null;
 
+		rrn=rrn.replaceAll("[^0-9]", "");
+		stan=stan.replaceAll("[^0-9]", "");
+
+		
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
@@ -353,9 +358,14 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 
+		rrn=rrn.replaceAll("[^0-9]", "");
+		stan=stan.replaceAll("[^0-9]", "");
+
+		
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
 		try {
+
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 			LOG.info("Calling Payment Inquiry");
 			LOG.info("Payment Inquiry Request {}", request);
@@ -365,6 +375,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
 
+			
+			
 			if (request.getTxnInfo().getBillNumber() == null
 					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
 
@@ -374,12 +386,23 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			}
 
-			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//
+//				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//				return response;
+//			}
+		
 
+			if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
 				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
 				return response;
 			}
+		
+			
+			
+			
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 				username = result[0];

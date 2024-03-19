@@ -102,6 +102,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 
+		rrn=rrn.replaceAll("[^0-9]", "");
+		stan=stan.replaceAll("[^0-9]", "");
+	
 		try {
 
 			String billerId = request.getTxnInfo().getBillerId();
@@ -311,6 +314,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String username = "";
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
+
+		rrn=rrn.replaceAll("[^0-9]", "");
+		stan=stan.replaceAll("[^0-9]", "");
+	
+			
 		try {
 			
 			ObjectMapper reqMapper = new ObjectMapper();
@@ -326,8 +334,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					
 	            }
 		
-			// BillerList billersList = null;
-
+						
 //			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 //				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 //						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
@@ -337,7 +344,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			
 			if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
 				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
 				return response;
 			}
 			

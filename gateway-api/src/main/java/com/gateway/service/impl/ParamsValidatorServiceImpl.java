@@ -251,10 +251,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 						}
 					}
 					
-			else if(!transactionParam.isRequired()) {
+			    else if(!transactionParam.isRequired()) {
 						
-						boolean isEscapeSpecialCharExists = transactionParam.isEscapeSpecialCharExists();
-						if(isEscapeSpecialCharExists) {
 							Pattern pattern = Pattern.compile(regex);
 					        Matcher matcher = pattern.matcher(requestParamValue);
 
@@ -266,10 +264,9 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 							} else {
 								result = true;
 								LOG.info("Regex Not matches");
-								return result;
+								
+								
 							}
-						
-					}
 					
 				}
 					
@@ -298,8 +295,6 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 					
                      else if(!transactionParam.isRequired()) {
 						
-						boolean isEscapeSpecialCharExists = transactionParam.isEscapeSpecialCharExists();
-						if(isEscapeSpecialCharExists) {
 							Pattern pattern = Pattern.compile(regex);
 					        Matcher matcher = pattern.matcher(requestParamValue);
 
@@ -312,18 +307,14 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 							} else {
 								result = true;
 								LOG.info("Regex Not matches");
-								return result;
+								
 							}
-						
-					}
 					
 				}
-					
-					
-								
 					
 				}
 			}
+
 			if (requestObj.has("branchInfo") && !requestObj.isNull("branchInfo")) {
 				innerObject = requestObj.getJSONObject("branchInfo");
 				if (innerObject.has(parameter)) {
@@ -339,6 +330,27 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 							return result;
 						}
 					}
+					
+				    else if(!transactionParam.isRequired()) {
+						
+						Pattern pattern = Pattern.compile(regex);
+				        Matcher matcher = pattern.matcher(requestParamValue);
+
+						if (matcher.find()) {
+							result = false;
+							LOG.info("Regex matches");
+							return result;
+
+						} else {
+							result = true;
+							LOG.info("Regex Not matches");
+							
+							
+						}
+				
+			}
+
+					
 				}
 			}
 

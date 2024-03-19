@@ -39,6 +39,7 @@ import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
+import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.BillPaymentValidationResponse;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
@@ -122,6 +123,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String parentBillerId = null;
 		String subBillerId = null;
 
+		rrn=rrn.replaceAll("[^0-9]", "");
+		stan=stan.replaceAll("[^0-9]", "");
+
+		
 		try {
 			String billerId = request.getTxnInfo().getBillerId();
 
@@ -375,9 +380,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String  pattern = "^(\\d{6})?$";
 		
 		try {
+			
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
 
+			
+			rrn=rrn.replaceAll("[^0-9]", "");
+			stan=stan.replaceAll("[^0-9]", "");
+
+			
 			UtilMethods.generalLog("IN - BillPayment  " + strDate, LOG);
 			LOG.info("Bill Payment Request {}", request);
 			LOG.info("Calling GetVoucher");
@@ -405,12 +416,20 @@ public class BillPaymentServiceImpl implements BillPaymentService {
              }
 			
 		
-			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//				return response;
+//			}
+
+         	if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
 				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
 				return response;
 			}
-
+		
+             
+			
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 				username = result[0];
