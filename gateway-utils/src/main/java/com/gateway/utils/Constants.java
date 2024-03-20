@@ -139,8 +139,8 @@ public class Constants {
 	
 	public static class BILL_STATUS_SINGLE_ALPHABET {
 
-		public static final String BILL_PAID = "U"; 
-		public static final String BILL_UNPAID = "P"; 
+		public static final String BILL_PAID = "P"; 
+		public static final String BILL_UNPAID = "U"; 
 		public static final String BILL_BLOCK = "B"; 
 		public static final String BILL_EXPIRED = "E";
 

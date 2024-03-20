@@ -94,6 +94,9 @@ public class PaymentLog implements Serializable {
 	@Column(name = "tax_Amount")
 	private double taxAmount;
 
+	@Column(name = "amount")
+	private String amount;
+	
 	@Column(name = "total")
 	private double total;
 

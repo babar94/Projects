@@ -127,7 +127,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 	public void paymentLog(Date requestedDate, Date responsedate,String rrn,String stan,String responseCode,
 			String responseDesc,String studentName,String billNumber,String billerId,
 			BigDecimal amountInDueDate,BigDecimal amountAfterDueDate,String billinquiry,
-			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth,String paymentRefno,String bankName,String bankCode,String branchName,String branchCode) {
+			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth,String paymentRefno,
+			String bankName,String bankCode,String branchName,String branchCode, String billerAuthId,String amount) {
 
 	
 		PaymentLog paymentLog = new PaymentLog();
@@ -160,6 +161,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBankCode(bankCode);
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
+		paymentLog.setBillerAuthId(billerAuthId);
+		paymentLog.setAmount(amount);
 
 
 		transactionDetialsLogRepository.save(paymentLog);
