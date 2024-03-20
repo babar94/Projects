@@ -7,14 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import com.gateway.entity.TransactionParams;
 
-
 @Repository
 public interface TransactionParamsDao extends JpaRepository<TransactionParams, Long> {
-	
+
 //	@Query(value = "SELECT * FROM api_gw_transaction_params a", nativeQuery = true)
 //	public List<TransactionParams> getTransactionParams();
 //	
-	
+
 	public List<TransactionParams> findAll();
-	
+
+	public TransactionParams findByParamName(String rrn);
 }

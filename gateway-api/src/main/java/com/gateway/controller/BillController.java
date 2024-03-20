@@ -65,13 +65,7 @@ public class BillController extends ApiController {
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
-			
-			rrn=rrn.replaceAll("[^0-9]", "");
-			stan=stan.replaceAll("[^0-9]", "");
-			
-	
-			System.out.print("rrn"+rrn);
-			
+		
 			if (validationUtil.isNullOrEmpty(rrn)) {
 				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
@@ -160,9 +154,6 @@ public class BillController extends ApiController {
 
 	}
 
-	// @ApiOperation(value = "API Gateway - Get Biller List", notes = "Get Biller
-	// List")
-//	@RequestMapping(path = "/getbillerlist", method = RequestMethod.GET)
 	@RequestMapping(path = "/billers", method = RequestMethod.GET)
 	public BillerListResponse getBillerList(HttpServletRequest httpRequestData) throws IOException {
 		BillerListResponse response = null;

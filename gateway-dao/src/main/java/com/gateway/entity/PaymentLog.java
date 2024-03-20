@@ -141,7 +141,10 @@ public class PaymentLog implements Serializable {
 	@Column(name = "branch_code")
 	private String branchCode;
 	
-	
+	// new added on 20-03-2024
+
+	@Column(name = "biller_auth_id")
+	private String billerAuthId;
 
 
 }

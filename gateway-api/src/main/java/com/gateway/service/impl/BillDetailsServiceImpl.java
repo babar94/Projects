@@ -200,7 +200,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 									
 									
 									
-                                  ////////// PITHAM ///////
+                                  ////////// THARDEEP ///////
 
 									else if (billerDetail.getBillerName()
 											.equalsIgnoreCase(BillerConstant.THARDEEP.THARDEEP)) {
@@ -223,7 +223,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									}
 
-									////////// PITHAM ///////
+									////////// THARDEEP ///////
 		
 
 //								//add new 
@@ -386,15 +386,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			}
 
-//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
-//
-//				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-//				return response;
-//			}
-		
 
-			if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
+			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
 				return response;
@@ -1006,38 +999,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			username = result[0];
 			channel = result[1];
 
-			List<PaymentLog> rrnValue = paymentloggingRepository.findByRrn(rrn);
-
-			for (PaymentLog value : rrnValue) {
-
-				if (value != null) {
-
-					info = new InfoPayInq(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-							Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
-			
-					
-					txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "",
-							"","","");
-
-					additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-					
-
-					response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
-					
-					return response;
-				}
-
-			}
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);

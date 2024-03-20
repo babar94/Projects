@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.SubBillersList;
+import com.gateway.entity.TransactionParams;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
@@ -31,6 +33,7 @@ import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherRe
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.SubBillerListRepository;
+import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.billinquiryresponse.AdditionalInfo;
@@ -88,6 +91,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Autowired
 	private PaymentLogRepository paymentloggingRepository;
 
+	@Autowired
+	private TransactionParamsDao transactionParamsDao;
+
+	@Autowired
+	private ParamsValidatorServiceImpl validatorServiceImpl;
+
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
 
@@ -101,8 +110,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 
-		rrn = rrn.replaceAll("[^0-9]", "");
-		stan = stan.replaceAll("[^0-9]", "");
 
 		try {
 
@@ -265,8 +272,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										billInquiryResponse = new BillInquiryResponse(info, null, null);
 									}
 								} else {
+
 									info = new Info(Constants.ResponseCodes.INVALID_DATA,
-											billInquiryValidationResponse.getResponseDesc(), rrn, stan);
+											billInquiryValidationResponse.getResponseDesc(),
+											billInquiryValidationResponse.getRrn(),
+											billInquiryValidationResponse.getStan());
 									billInquiryResponse = new BillInquiryResponse(info, null, null);
 								}
 							} else {
@@ -313,8 +323,33 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 
-		rrn = rrn.replaceAll("[^0-9]", "");
-		stan = stan.replaceAll("[^0-9]", "");
+		TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
+		TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
+
+		
+		
+		////// rrn regex match
+		
+		String regexRrn = paramsDaoRrn.getRegex();
+
+		boolean matchRrn = rrn.matches(regexRrn);
+
+		if (!matchRrn) {
+			if (!StringUtils.isNumeric(rrn))
+				rrn = "";
+		}
+		
+		
+		///// stan regex match
+		
+		String regexStan = paramsDaoStan.getRegex();
+
+		boolean matchStan = rrn.matches(regexStan);
+
+		if (!matchStan) {
+			if (!StringUtils.isNumeric(stan))
+				stan = "";
+		}
 
 		try {
 
@@ -331,13 +366,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			}
 
-//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
-//				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-//				return response;
-//			}
-
-			if (!paramsValidatorService.validateRequestParamsSpecialCharacter(requestAsString)) {
+			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 				return response;
@@ -1803,37 +1832,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
-			List<PaymentLog> rrnValue = paymentloggingRepository.findByRrn(rrn);
-
-			for (PaymentLog value : rrnValue) {
-
-				if (value != null) {
-
-					info = new Info(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-							Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
-
-					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDate), transAuthId, "");
-
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
-
-					return response;
-				}
-
-			}
-
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());
@@ -2204,9 +2202,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal amountDueDateRes = null;
 		String amountAfterDueDateRes;
 		BigDecimal amounAfterDateRes = null;
+		BigDecimal requestAmount = null;
 
 		String billerNameRes = "", billInquiryCode = "", billInquiryDesc = "", dueDateRes = "", billingMonthRes = "",
 				billStatusRes = "", tranAuthIdRes = "", amountRes = "", cnicRes = "";
+
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		Date requestedDate = new Date();
@@ -2225,37 +2225,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
-			List<PaymentLog> rrnValue = paymentloggingRepository.findByRrn(rrn);
-
-			for (PaymentLog value : rrnValue) {
-
-				if (value != null) {
-
-					info = new Info(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-							Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
-
-					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerName, billStatus, dueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDate), tranAuthIdRes, "");
-
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
-
-					return response;
-				}
-
-			}
-
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.THARDEEP_BILL_INQUIRY);
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -2267,6 +2236,26 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			if (thardeepgetVoucherResponse != null) {
 
+			
+				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
+				billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth();
+				billInquiryCode = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getResponseCode();
+				billInquiryDesc = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getStatusResponse();
+				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
+				dueDateRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getDueDate();
+
+				formattedDueDate = utilMethods.formatDueDate(dueDateRes);
+
+				tranAuthIdRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getAuthId();
+				amountRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getAmount();
+				
+				requestAmount = new BigDecimal(amountRes.replaceFirst("^\\+?0+", ""));
+				amountInDueToDate = requestAmount.setScale(2, RoundingMode.UP);
+
+				cnicRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getCnicNo();
+
+
+				
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
@@ -2293,6 +2282,34 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
+				
+				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK)) {
+
+					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
+							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
+
+					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate, "",
+							"", tranAuthIdRes, "");
+
+					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+							request.getAdditionalInfo().getReserveField2(),
+							request.getAdditionalInfo().getReserveField3(),
+							request.getAdditionalInfo().getReserveField4(),
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
+
+					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+					return response;
+				}
+				
+				
 				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
 
@@ -2318,9 +2335,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					return response;
 				}
+				
+				
 
-				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
-						.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID)) {
+					
+					
 					PaymentLog paymentLog = paymentLogRepository
 							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 									request.getTxnInfo().getBillerId().trim(),
@@ -2390,19 +2410,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
-				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
-				billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth();
-				billInquiryCode = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getResponseCode();
-				billInquiryDesc = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getStatusResponse();
-				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
-				dueDateRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getDueDate();
-
-				formattedDueDate = utilMethods.formatDueDate(dueDateRes);
-
-				tranAuthIdRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getAuthId();
-				amountRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getAmount();
-				cnicRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getCnicNo();
-
+						
+				
 				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID)) {
 
 					billStatus = "Unpaid";
@@ -2430,8 +2439,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate, "",
-							"", tranAuthIdRes, "");
+							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate,
+							String.valueOf(amountInDueToDate), "", tranAuthIdRes, "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
