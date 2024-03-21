@@ -312,7 +312,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 								} else {
 									info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-											billPaymentInquiryValidationResponse.getResponseDesc(), rrn, stan);
+											billPaymentInquiryValidationResponse.getResponseDesc(), billPaymentInquiryValidationResponse.getRrn(), billPaymentInquiryValidationResponse.getStan());
 									paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 								}
 							} else {
@@ -1325,14 +1325,10 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		LOG.info("Inside method PaymentInquiry");
 
 		PaymentInquiryResponse response = null;
-
 		Date requestedDate = new Date();
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
-
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
-
 		ThardeepGetVoucherResponse thardeepgetVoucherResponse = null;
-
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -1652,4 +1648,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		
 	}
 
+		
+		
 }

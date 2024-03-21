@@ -2246,7 +2246,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate, "",
+							request.getTxnInfo().getBillNumber(), billerNameRes, "", formattedDueDate, "",
 							"", transAuthId, "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -2273,7 +2273,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate, "",
+							request.getTxnInfo().getBillNumber(), billerNameRes, "", formattedDueDate, "",
 							"", transAuthId, "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -2300,7 +2300,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate, "",
+							request.getTxnInfo().getBillNumber(), billerNameRes, "", formattedDueDate, "",
 							"", transAuthId, "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -2336,7 +2336,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						transAuthId = paymentLog.getTranAuthId();          /// our system
 						amountInDueToDate = paymentLog.getAmountwithinduedate();
-						amountAfterDate = paymentLog.getAmountafterduedate();
 						billerName = paymentLog.getName();
 						amountPaid = paymentLog.getAmountPaid();
 						dueDate = paymentLog.getDuedate();

@@ -316,7 +316,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								else {
 									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-											billPaymentValidationResponse.getResponseDesc(), rrn, stan);
+											billPaymentValidationResponse.getResponseDesc(), billPaymentValidationResponse.getRrn(), billPaymentValidationResponse.getStan());
 									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 								}
 							} else {
