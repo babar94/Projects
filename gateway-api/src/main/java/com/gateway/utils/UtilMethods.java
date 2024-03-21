@@ -152,27 +152,32 @@ public class UtilMethods {
 	}
 
 	/// formate date
-	
+
 	public String formatDueDate(String dueDate) {
-		
-     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
-     DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-     String formattedDate ="";
-    try {
-        LocalDate date = LocalDate.parse(dueDate, inputFormatter);
-        formattedDate = date.format(outputFormatter);
-        System.out.println("Formatted date: " + formattedDate);
-    } catch (DateTimeParseException e) {
-        System.out.println("Error parsing date: " + e.getMessage());
-    }
-	        
-	return formattedDate;
+
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		String formattedDate = "";
+		try {
+			LocalDate date = LocalDate.parse(dueDate, inputFormatter);
+			formattedDate = date.format(outputFormatter);
+			System.out.println("Formatted date: " + formattedDate);
+		} catch (DateTimeParseException e) {
+			System.out.println("Error parsing date: " + e.getMessage());
+		}
+
+		return formattedDate;
 	}
-	
+
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
 		return currentDate.isEqual(dueDate) || currentDate.isBefore(dueDate);
+	}
+
+	// Muhammad Said
+	public static String formatString(String value) {
+		return value != null && !value.isEmpty() ? String.format("%-30s", value) : "Please Fill";
 	}
 
 	public String getClientIp(HttpServletRequest request) {
@@ -286,39 +291,37 @@ public class UtilMethods {
 
 		return resultAmount.toString();
 	}
-	
-	
+
 	public String convertAmountToISOFormatWithoutPlusSign(String amount) {
-	    StringBuilder resultAmount = new StringBuilder();
-	    int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
+		StringBuilder resultAmount = new StringBuilder();
+		int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
 
-	    if (decimalPlaces < 2) {
-	        amount = amount.replace(".", "0");
-	    } else {
-	        amount = amount.replace(".", "");
-	    }
+		if (decimalPlaces < 2) {
+			amount = amount.replace(".", "0");
+		} else {
+			amount = amount.replace(".", "");
+		}
 
-	    int additionalZerosLength = 14 - amount.length(); // Adjusted to account for the sign
+		int additionalZerosLength = 14 - amount.length(); // Adjusted to account for the sign
 
-	    try {
-	        if (amount.startsWith("-")) {
-	            resultAmount.append("-");
-	            additionalZerosLength -= 1; // Adjust for the negative sign
-	        }
+		try {
+			if (amount.startsWith("-")) {
+				resultAmount.append("-");
+				additionalZerosLength -= 1; // Adjust for the negative sign
+			}
 
-	        for (int j = 0; j < additionalZerosLength; j++) {
-	            resultAmount.append("0");
-	        }
+			for (int j = 0; j < additionalZerosLength; j++) {
+				resultAmount.append("0");
+			}
 
-	        resultAmount.append(amount.charAt(0)); // Append the sign
-	        resultAmount.append(amount.substring(1)); // Exclude the leading zeros and the sign
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	    }
+			resultAmount.append(amount.charAt(0)); // Append the sign
+			resultAmount.append(amount.substring(1)); // Exclude the leading zeros and the sign
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-	    return resultAmount.toString();
+		return resultAmount.toString();
 	}
-
 
 	// muhammad updated on 23-02-24 for AIOU in 13 digit format
 	public String formatAmountAn13(double amount) {
@@ -415,14 +418,14 @@ public class UtilMethods {
 		return formattedString.substring(formattedString.length() - length);
 
 	}
+
 	public boolean isJSON(String data) {
-        try {
-            new JSONObject(data);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-	
+		try {
+			new JSONObject(data);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 }

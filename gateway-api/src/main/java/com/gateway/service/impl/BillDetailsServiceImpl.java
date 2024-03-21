@@ -1,7 +1,6 @@
 package com.gateway.service.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +31,6 @@ import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.billerlistresponse.Billers;
 import com.gateway.response.billerlistresponse.InfoBiller;
 import com.gateway.response.billerlistresponse.TxnInfoBiller;
-import com.gateway.response.billinquiryresponse.AdditionalInfo;
-import com.gateway.response.billinquiryresponse.BillInquiryResponse;
-import com.gateway.response.billinquiryresponse.Info;
-import com.gateway.response.billinquiryresponse.TxnInfo;
 import com.gateway.response.paymentinquiryresponse.AdditionalInfoPayInq;
 import com.gateway.response.paymentinquiryresponse.InfoPayInq;
 import com.gateway.response.paymentinquiryresponse.PaymentInquiryResponse;
