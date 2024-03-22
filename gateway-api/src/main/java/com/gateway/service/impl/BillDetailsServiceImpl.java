@@ -307,7 +307,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 								} else {
 									info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-											billPaymentInquiryValidationResponse.getResponseDesc(), billPaymentInquiryValidationResponse.getRrn(), billPaymentInquiryValidationResponse.getStan());
+											billPaymentInquiryValidationResponse.getResponseDesc(),rrn,stan);
 									paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 								}
 							} else {
@@ -375,35 +375,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
 
-			
-			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
-			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
-
-			////// rrn regex match
-			
-			String regexRrn = paramsDaoRrn.getRegex();
-
-			boolean matchRrn = rrn.matches(regexRrn);
-
-			if (!matchRrn) {
-				if (!StringUtils.isNumeric(rrn))
-					rrn = "";
-			}
-			
-			
-			///// stan regex match
-			
-			String regexStan = paramsDaoStan.getRegex();
-
-			boolean matchStan = rrn.matches(regexStan);
-
-			if (!matchStan) {
-				if (!StringUtils.isNumeric(stan))
-					stan = "";
-			}
-
-			
-			
 			
 			if (request.getTxnInfo().getBillNumber() == null
 					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
@@ -970,7 +941,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	     //////////////////////////////////////////////////////////////
 
 	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData,

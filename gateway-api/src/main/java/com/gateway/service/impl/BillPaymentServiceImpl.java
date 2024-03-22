@@ -316,7 +316,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								else {
 									infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-											billPaymentValidationResponse.getResponseDesc(), billPaymentValidationResponse.getRrn(), billPaymentValidationResponse.getStan());
+											billPaymentValidationResponse.getResponseDesc(), rrn,stan);
 									billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
 								}
 							} else {
@@ -370,36 +370,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String pattern = "^(\\d{6})?$";
 
 		try {
-
-			rrn = request.getInfo().getRrn();
-			stan = request.getInfo().getStan();
-
-		
-			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
-			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
-
-			////// rrn regex match
-			
-			String regexRrn = paramsDaoRrn.getRegex();
-
-			boolean matchRrn = rrn.matches(regexRrn);
-
-			if (!matchRrn) {
-				if (!StringUtils.isNumeric(rrn))
-					rrn = "";
-			}
-			
-			
-			///// stan regex match
-			
-			String regexStan = paramsDaoStan.getRegex();
-
-			boolean matchStan = rrn.matches(regexStan);
-
-			if (!matchStan) {
-				if (!StringUtils.isNumeric(stan))
-					stan = "";
-			}
 			
 			
 			UtilMethods.generalLog("IN - BillPayment  " + strDate, LOG);

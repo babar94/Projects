@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.api.ApiController;
+import com.gateway.entity.TransactionParams;
 import com.gateway.repository.PaymentLogRepository;
+import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.request.paymentinquiry.PaymentInquiryRequest;
@@ -52,6 +55,10 @@ public class BillController extends ApiController {
 
 	@Autowired
 	private ValidationUtil validationUtil;
+	
+	@Autowired
+	private TransactionParamsDao transactionParamsDao;
+
 
 	@RequestMapping(path = "/billinquiry", method = RequestMethod.POST)
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
@@ -65,8 +72,34 @@ public class BillController extends ApiController {
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
+			
+			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
+			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
+
+			////// rrn regex match
+
+			String regexRrn = paramsDaoRrn.getRegex();
+
+			boolean matchRrn = rrn.matches(regexRrn);
+
+			if (!matchRrn) {
+				if (!StringUtils.isNumeric(rrn))
+					rrn = "";
+			}
+
+			///// stan regex match
+
+			String regexStan = paramsDaoStan.getRegex();
+
+			boolean matchStan = stan.matches(regexStan);
+
+			if (!matchStan) {
+				if (!StringUtils.isNumeric(stan))
+					stan = "";
+			}
+
 		
-			if (validationUtil.isNullOrEmpty(rrn)) {
+			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
 			}
@@ -101,7 +134,34 @@ public class BillController extends ApiController {
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
-			if (validationUtil.isNullOrEmpty(rrn)) {
+			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
+			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
+
+			////// rrn regex match
+
+			String regexRrn = paramsDaoRrn.getRegex();
+
+			boolean matchRrn = rrn.matches(regexRrn);
+
+			if (!matchRrn) {
+				if (!StringUtils.isNumeric(rrn))
+					rrn = "";
+			}
+
+			///// stan regex match
+
+			String regexStan = paramsDaoStan.getRegex();
+
+			boolean matchStan = stan.matches(regexStan);
+
+			if (!matchStan) {
+				if (!StringUtils.isNumeric(stan))
+					stan = "";
+			}
+
+			
+			
+			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new BillPaymentResponse(new InfoPay(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
 			}
@@ -126,12 +186,41 @@ public class BillController extends ApiController {
 		PaymentInquiryResponse response = null;
 
 		LOG.info("Bill Controller - Payment Inquiry");
+
 		try {
 
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
-			if (validationUtil.isNullOrEmpty(rrn)) {
+			
+			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
+			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
+
+			////// rrn regex match
+
+			String regexRrn = paramsDaoRrn.getRegex();
+
+			boolean matchRrn = rrn.matches(regexRrn);
+
+			if (!matchRrn) {
+				if (!StringUtils.isNumeric(rrn))
+					rrn = "";
+			}
+
+			///// stan regex match
+
+			String regexStan = paramsDaoStan.getRegex();
+
+			boolean matchStan = stan.matches(regexStan);
+
+			if (!matchStan) {
+				if (!StringUtils.isNumeric(stan))
+					stan = "";
+			}
+
+			
+			
+			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new PaymentInquiryResponse(new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
 			}

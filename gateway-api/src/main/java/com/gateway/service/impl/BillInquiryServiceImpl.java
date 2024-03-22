@@ -274,9 +274,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								} else {
 
 									info = new Info(Constants.ResponseCodes.INVALID_DATA,
-											billInquiryValidationResponse.getResponseDesc(),
-											billInquiryValidationResponse.getRrn(),
-											billInquiryValidationResponse.getStan());
+											billInquiryValidationResponse.getResponseDesc(), rrn, stan);
 									billInquiryResponse = new BillInquiryResponse(info, null, null);
 								}
 							} else {
@@ -322,31 +320,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String username = "";
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
-
-		TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
-		TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
-
-		////// rrn regex match
-
-		String regexRrn = paramsDaoRrn.getRegex();
-
-		boolean matchRrn = rrn.matches(regexRrn);
-
-		if (!matchRrn) {
-			if (!StringUtils.isNumeric(rrn))
-				rrn = "";
-		}
-
-		///// stan regex match
-
-		String regexStan = paramsDaoStan.getRegex();
-
-		boolean matchStan = rrn.matches(regexStan);
-
-		if (!matchStan) {
-			if (!StringUtils.isNumeric(stan))
-				stan = "";
-		}
 
 		try {
 
@@ -2169,7 +2142,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-
 	public BillInquiryResponse billInquiryTHARDEEP(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("PITHAM Bill Inquiry Request {} ", request.toString());
@@ -2308,7 +2280,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					return response;
 				}
-				
 
 //				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID)) {
 //
