@@ -2169,7 +2169,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	/////////////////////////////////////
 
 	public BillInquiryResponse billInquiryTHARDEEP(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
