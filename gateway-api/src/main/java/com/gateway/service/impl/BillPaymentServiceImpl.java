@@ -3915,41 +3915,41 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						Constants.ACTIVITY.BillPayment);
 
 				
-				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID)) {
-
-					PaymentLog paymentLog = paymentLogRepository
-							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-									request.getTxnInfo().getBillerId().trim(),
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
-
-					billerName = paymentLog.getName();
-					billingMonth = paymentLog.getBillingMonth();
-					duedate = paymentLog.getDuedate();
-					billerNumber = paymentLog.getBillerNumber();
-					billerId = paymentLog.getBillerId();
-
-					infoPay = new InfoPay(thardeepgetVoucherResponse.getResponse().getResponseCode(),
-							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-					return response;
-
-				}
-				
+//				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID)) {
+//
+//					PaymentLog paymentLog = paymentLogRepository
+//							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+//									request.getTxnInfo().getBillerId().trim(),
+//									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
+//									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
+//
+//					billerName = paymentLog.getName();
+//					billingMonth = paymentLog.getBillingMonth();
+//					duedate = paymentLog.getDuedate();
+//					billerNumber = paymentLog.getBillerNumber();
+//					billerId = paymentLog.getBillerId();
+//
+//					infoPay = new InfoPay(thardeepgetVoucherResponse.getResponse().getResponseCode(),
+//							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+//
+//					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+//
+//					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+//							request.getAdditionalInfo().getReserveField2(),
+//							request.getAdditionalInfo().getReserveField3(),
+//							request.getAdditionalInfo().getReserveField4(),
+//							request.getAdditionalInfo().getReserveField5(),
+//							request.getAdditionalInfo().getReserveField6(),
+//							request.getAdditionalInfo().getReserveField7(),
+//							request.getAdditionalInfo().getReserveField8(),
+//							request.getAdditionalInfo().getReserveField9(),
+//							request.getAdditionalInfo().getReserveField10());
+//
+//					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+//					return response;
+//
+//				}
+//				
 				
 				if (thardeepUpdateVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
