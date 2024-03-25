@@ -55,24 +55,22 @@ public class BillController extends ApiController {
 
 	@Autowired
 	private ValidationUtil validationUtil;
-	
+
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
-
 
 	@RequestMapping(path = "/billinquiry", method = RequestMethod.POST)
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
 			throws IOException {
 		BillInquiryResponse response = null;
-		
+
 		LOG.info("Bill Controller - Bill Inquiry");
-		
+
 		try {
 
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
-			
 			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
 			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
 
@@ -98,7 +96,6 @@ public class BillController extends ApiController {
 					stan = "";
 			}
 
-		
 			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new BillInquiryResponse(new Info(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
@@ -110,7 +107,6 @@ public class BillController extends ApiController {
 
 			}
 
-			
 			response = billInquiryService.billInquiry(httpRequestData, request);
 
 		} catch (Exception ex) {
@@ -159,8 +155,6 @@ public class BillController extends ApiController {
 					stan = "";
 			}
 
-			
-			
 			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new BillPaymentResponse(new InfoPay(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
@@ -192,7 +186,6 @@ public class BillController extends ApiController {
 			String rrn = request.getInfo().getRrn();
 			String stan = request.getInfo().getStan();
 
-			
 			TransactionParams paramsDaoRrn = transactionParamsDao.findByParamName("rrn");
 			TransactionParams paramsDaoStan = transactionParamsDao.findByParamName("stan");
 
@@ -218,8 +211,6 @@ public class BillController extends ApiController {
 					stan = "";
 			}
 
-			
-			
 			if (validationUtil.isNullOrEmpty(rrn) || validationUtil.isNullOrEmpty(stan)) {
 				return response = new PaymentInquiryResponse(new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
 						Constants.ResponseDescription.INVALID_DATA, rrn, stan), null, null);
@@ -262,13 +253,13 @@ public class BillController extends ApiController {
 	}
 
 	public String toJsonString(Object object) {
-	    try {
-	        ObjectMapper mapper = new ObjectMapper();
-	        return mapper.writeValueAsString(object);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return null;
-	    }
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.writeValueAsString(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

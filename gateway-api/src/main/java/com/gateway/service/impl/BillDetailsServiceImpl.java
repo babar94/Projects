@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.SubBillersList;
-import com.gateway.entity.TransactionParams;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
-import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.ProvinceTransactionDao;
@@ -91,7 +89,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
-	
+
 	@Override
 	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest request) {
 
@@ -105,10 +103,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String parentBillerId = null;
 		String subBillerId = null;
 
-		rrn=rrn.replaceAll("[^0-9]", "");
-		stan=stan.replaceAll("[^0-9]", "");
+		rrn = rrn.replaceAll("[^0-9]", "");
+		stan = stan.replaceAll("[^0-9]", "");
 
-		
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
@@ -197,10 +194,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 									}
 
 									////////// PITHAM ///////
-									
-									
-									
-                                  ////////// THARDEEP ///////
+
+									////////// THARDEEP ///////
 
 //									else if (billerDetail.getBillerName()
 //											.equalsIgnoreCase(BillerConstant.THARDEEP.THARDEEP)) {
@@ -224,7 +219,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 //									}
 
 									////////// THARDEEP ///////
-		
 
 //								//add new 
 //								else if (billerDetail.getBillerName().equalsIgnoreCase("PRAL")
@@ -307,7 +301,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 								} else {
 									info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-											billPaymentInquiryValidationResponse.getResponseDesc(),rrn,stan);
+											billPaymentInquiryValidationResponse.getResponseDesc(), rrn, stan);
 									paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
 								}
 							} else {
@@ -358,10 +352,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 
-		rrn=rrn.replaceAll("[^0-9]", "");
-		stan=stan.replaceAll("[^0-9]", "");
+		rrn = rrn.replaceAll("[^0-9]", "");
+		stan = stan.replaceAll("[^0-9]", "");
 
-		
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
 		try {
@@ -375,7 +368,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			rrn = request.getInfo().getRrn();
 			stan = request.getInfo().getStan();
 
-			
 			if (request.getTxnInfo().getBillNumber() == null
 					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
 
@@ -385,16 +377,20 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			}
 
+//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
+//				return response;
+//			}
+//		
 
-			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+			Pair<Boolean, String> validationResponse = paramsValidatorService.validateRequestParams(requestAsString);
+			if (!validationResponse.getLeft()) {
 				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA,rrn,stan);
+						validationResponse.getRight(), rrn, stan);
 				return response;
 			}
-		
-			
-			
-			
+
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 				username = result[0];
@@ -680,7 +676,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String username = "";
 		BigDecimal amountInDueDate = null;
 		BigDecimal amountAfterDueDate = null;
-		String bankName ="",bankCode="",branchName="",branchCode="";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
@@ -941,7 +937,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-
 	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData,
 			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
@@ -977,18 +972,17 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		BigDecimal amountAfterDate = null;
 		String transAuthId = "";
 		String paymentRefrence = "";
-		String bankName ="",bankCode="",branchName="",branchCode="";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
-		
 		try {
 
-			if(request.getBranchInfo()!=null) {
+			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
 				branchName = request.getBranchInfo().getBranchName();
 				branchCode = request.getBranchInfo().getBranchCode();
 			}
-			
+
 			UtilMethods.generalLog("IN - Payment Inquiry  " + requestedDate, LOG);
 			LOG.info("Calling Payment Inquiry");
 			LOG.info("Payment Inquiry Request {}", request);
@@ -996,7 +990,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 			username = result[0];
 			channel = result[1];
-
 
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
@@ -1014,11 +1007,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 					info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-				
-					
+
 					txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "",
-							"","","");
+							request.getTxnInfo().getBillNumber(), "", "", "", "");
 
 					additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -1030,11 +1021,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
-					
 
 					response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-					
 					return response;
 				}
 
@@ -1043,11 +1032,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 					info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
 							PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
-				
-					
+
 					txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "",
-							"","","");
+							request.getTxnInfo().getBillNumber(), "", "", "", "");
 
 					additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -1059,11 +1046,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
-					
 
 					response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-					
 					return response;
 				}
 
@@ -1073,10 +1058,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 					info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
 							PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
 
-					
 					txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "",
-							"","","");
+							request.getTxnInfo().getBillNumber(), "", "", "", "");
 
 					additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -1088,11 +1071,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
-					
 
 					response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-					
 					return response;
 				}
 
@@ -1147,7 +1128,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						} else {
 							info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
 									Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
-							
+
 							txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
 									request.getTxnInfo().getBillNumber(), paymentLog.getPaymentRefNo(),
 									paymentLog.getTranDate(), paymentLog.getTranTime(),
@@ -1163,11 +1144,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 									request.getAdditionalInfo().getReserveField8(),
 									request.getAdditionalInfo().getReserveField9(),
 									request.getAdditionalInfo().getReserveField10());
-							
-				
+
 							response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-							
 							transactionStatus = Constants.Status.Fail;
 							return response;
 
@@ -1184,10 +1163,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				else {
 					info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
 							Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
-					
+
 					txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "",
-							"","","");
+							request.getTxnInfo().getBillNumber(), "", "", "", "");
 
 					additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -1199,11 +1177,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
-					
 
 					response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-					
 					transactionStatus = Constants.Status.Fail;
 					return response;
 
@@ -1211,27 +1187,19 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			} else {
 				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.SERVICE_FAIL,
 						Constants.ResponseDescription.SERVICE_FAIL);
-				
-				
-				txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(),
-						request.getTxnInfo().getBillNumber(), "",
-						"","","");
+
+				txnInfo = new TxnInfoPayInq(request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
+						"", "", "", "");
 
 				additionalInfo = new AdditionalInfoPayInq(request.getAdditionalInfo().getReserveField1(),
-						request.getAdditionalInfo().getReserveField2(),
-						request.getAdditionalInfo().getReserveField3(),
-						request.getAdditionalInfo().getReserveField4(),
-						request.getAdditionalInfo().getReserveField5(),
-						request.getAdditionalInfo().getReserveField6(),
-						request.getAdditionalInfo().getReserveField7(),
-						request.getAdditionalInfo().getReserveField8(),
-						request.getAdditionalInfo().getReserveField9(),
+						request.getAdditionalInfo().getReserveField2(), request.getAdditionalInfo().getReserveField3(),
+						request.getAdditionalInfo().getReserveField4(), request.getAdditionalInfo().getReserveField5(),
+						request.getAdditionalInfo().getReserveField6(), request.getAdditionalInfo().getReserveField7(),
+						request.getAdditionalInfo().getReserveField8(), request.getAdditionalInfo().getReserveField9(),
 						request.getAdditionalInfo().getReserveField10());
-				
 
 				response = new PaymentInquiryResponse(info, txnInfo, additionalInfo);
 
-				
 				transactionStatus = Constants.Status.Fail;
 				return response;
 			}
@@ -1263,8 +1231,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						amountAfterDate, Constants.ACTIVITY.PaymentInquiry, transactionStatus, channel, billStatus,
-						tranDate, tranTime, transAuthId, amountPaid, dueDate, billingMonth, paymentRefrence,bankName,
-						bankCode,branchName,branchCode,"","");
+						tranDate, tranTime, transAuthId, amountPaid, dueDate, billingMonth, paymentRefrence, bankName,
+						bankCode, branchName, branchCode, "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1278,10 +1246,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	                    ///////////////////////////////////////////////////////////
-	
-	
-		
+	///////////////////////////////////////////////////////////
+
 //		public PaymentInquiryResponse payementInquiryTHARDEEP(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
 //		
 //		LOG.info("THARDEEP Bill Inquiry Request {} ", request.toString());
@@ -1613,6 +1579,4 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 //		
 //	}
 
-		
-		
 }

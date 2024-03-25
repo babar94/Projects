@@ -2,15 +2,11 @@ package com.gateway.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.SubBillersList;
-import com.gateway.entity.TransactionParams;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
@@ -335,12 +330,22 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				return response;
 
 			}
+			
 
-			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
-				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-				return response;
+//			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
+//				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//				return response;
+//			}
+			
+			Pair<Boolean, String> validationResponse = paramsValidatorService.validateRequestParams(requestAsString);
+			if (!validationResponse.getLeft()) {
+			    response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+			            validationResponse.getRight(), rrn, stan);
+			    return response;
 			}
+
+			
 
 			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
 				// billersList = billerListRepository.findByBillerId(billerId).orElse(null);//

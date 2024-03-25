@@ -2,9 +2,10 @@ package com.gateway.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,12 +155,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 //	}
 //
 
-	
-	
-	
-	
 	@Override
-	public boolean validateRequestParams(String request) {
+	public Pair<Boolean, String> validateRequestParams(String request) {
 		LOG.info("Inside method validateRequestParams");
 		boolean result = false;
 		String requestParamValue = null;
@@ -170,7 +167,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 		for (TransactionParams transactionParam : transParamsList) {
 			String parameter = transactionParam.getParamName(); // list ka parameter ka naam
-
+			String invalidDescription = transactionParam.getInvalidDescription();
 			String regex = transactionParam.getRegex();
 			boolean match = false;
 			if (requestObj.has("txnInfo")) {
@@ -191,7 +188,9 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 									f.parse(requestParamValue);
 									// good
 								} catch (Exception e) {
-									return false;
+
+									return Pair.of(result, invalidDescription);
+									// return false;
 								}
 							}
 							if (parameter.equalsIgnoreCase("tranTime")) {
@@ -201,14 +200,19 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 									f.parse(requestParamValue);
 									// good
 								} catch (Exception e) {
-									return false;
+
+									return Pair.of(result, invalidDescription);
+									// return false;
 								}
 							}
 
 						} else {
 							result = false;
 							LOG.info("Regex Not matches");
-							return result;
+
+							return Pair.of(result, invalidDescription);
+
+							// return result;
 						}
 					}
 
@@ -225,10 +229,11 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 							result = true;
 							LOG.info("Regex matches");
 						} else {
-							
+
 							result = false;
 							LOG.info("Regex Not matches");
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 						}
 					}
 				}
@@ -247,7 +252,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 						} else {
 							result = false;
 							LOG.info("Regex Not matches");
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 						}
 					}
 
@@ -258,7 +264,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 						if (matcher.find()) {
 							result = false;
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 
 						} else {
 							result = true;
@@ -282,7 +289,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 						} else {
 							result = false;
 							LOG.info("Regex Not matches");
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 						}
 					}
 
@@ -293,7 +301,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 						if (matcher.find()) {
 							result = false;
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 
 						} else {
 							result = true;
@@ -317,7 +326,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 						} else {
 							result = false;
 							LOG.info("Regex Not matches");
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 						}
 					}
 
@@ -328,7 +338,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 						if (matcher.find()) {
 							result = false;
-							return result;
+							return Pair.of(result, invalidDescription);
+							// return result;
 
 						} else {
 							result = true;
@@ -342,7 +353,8 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 		}
 
-		return result;
+		return Pair.of(result, "Invalid Data");
+
 	}
 
 	// It will return Transactions Params Lists

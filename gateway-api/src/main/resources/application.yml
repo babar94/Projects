@@ -38,7 +38,7 @@ spring:
     open-in-view: false
     hibernate:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-      ddl-auto: none #none update, create-drop
+      ddl-auto: update #none update, create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
