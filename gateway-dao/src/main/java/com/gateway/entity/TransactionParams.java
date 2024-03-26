@@ -12,15 +12,12 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "api_gw_transaction_params")
-//@Table(name = "nbp_pgw_api_gw_transaction_params npagtp")
 @Data
 @NoArgsConstructor
 
 public class TransactionParams implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -2516248315446279127L;
 
 	@Id
@@ -45,7 +42,6 @@ public class TransactionParams implements Serializable {
 	@Column(name = "invalid_description")
 	private String invalidDescription;
 
-//	@Column(name = "is_escape_special_char_Exists")
-//	private boolean isEscapeSpecialCharExists;
+
 
 }

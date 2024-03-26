@@ -103,9 +103,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String parentBillerId = null;
 		String subBillerId = null;
 
-		rrn = rrn.replaceAll("[^0-9]", "");
-		stan = stan.replaceAll("[^0-9]", "");
-
+		
 		try {
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
@@ -347,16 +345,15 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	public BillPaymentInquiryValidationResponse billPaymentInquiryValidations(HttpServletRequest httpRequestData,
 			PaymentInquiryRequest request, String billerId) {
 		BillPaymentInquiryValidationResponse response = new BillPaymentInquiryValidationResponse();
+		
 		String channel = "";
 		String username = "";
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
-
-		rrn = rrn.replaceAll("[^0-9]", "");
-		stan = stan.replaceAll("[^0-9]", "");
-
 		Date strDate = new Date();
+		
 		List<PaymentLog> paymentHistory = null;
+		
 		try {
 
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
@@ -365,17 +362,15 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			ObjectMapper reqMapper = new ObjectMapper();
 			String requestAsString = reqMapper.writeValueAsString(request);
-			rrn = request.getInfo().getRrn();
-			stan = request.getInfo().getStan();
-
-			if (request.getTxnInfo().getBillNumber() == null
-					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
-
-				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
-				return response;
-
-			}
+		
+//			if (request.getTxnInfo().getBillNumber() == null
+//					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
+//
+//				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
+//				return response;
+//
+//			}
 
 //			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 //				response = new BillPaymentInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,

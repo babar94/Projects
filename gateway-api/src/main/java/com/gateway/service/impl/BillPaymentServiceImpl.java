@@ -366,8 +366,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
-		String pattern = "^(\\d{6})?$";
-
+	
 		try {
 
 			UtilMethods.generalLog("IN - BillPayment  " + strDate, LOG);
@@ -379,24 +378,24 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			ProvinceTransaction provinceTransaction = null;
 
-			if (request.getTxnInfo().getBillNumber() == null
-					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
-
-				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
-				return response;
-
-			}
-
-			if (request.getTxnInfo().getTranAuthId() == null
-					|| request.getTxnInfo().getTranAuthId().equalsIgnoreCase("")
-					|| !Pattern.matches(pattern, request.getTxnInfo().getTranAuthId())) {
-
-				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_AUTH_ID, rrn, stan);
-				return response;
-
-			}
+//			if (request.getTxnInfo().getBillNumber() == null
+//					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
+//
+//				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
+//				return response;
+//
+//			}
+//
+//			if (request.getTxnInfo().getTranAuthId() == null
+//					|| request.getTxnInfo().getTranAuthId().equalsIgnoreCase("")
+//					|| !Pattern.matches(pattern, request.getTxnInfo().getTranAuthId())) {
+//
+//				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_AUTH_ID, rrn, stan);
+//				return response;
+//
+//			}
 
 			Pair<Boolean, String> validationResponse = paramsValidatorService.validateRequestParams(requestAsString);
 			if (!validationResponse.getLeft()) {

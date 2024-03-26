@@ -322,14 +322,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			String requestAsString = reqMapper.writeValueAsString(request);
 			ProvinceTransaction provinceTransaction = null;
 
-			if (request.getTxnInfo().getBillNumber() == null
-					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
-
-				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
-				return response;
-
-			}
+//			if (request.getTxnInfo().getBillNumber() == null
+//					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
+//
+//				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//						Constants.ResponseDescription.INVALID_BILLER_NUMBER, rrn, stan);
+//				return response;
+//
+//			}
 			
 
 //			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
