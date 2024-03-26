@@ -330,33 +330,30 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 //				return response;
 //
 //			}
-			
 
 //			if (!paramsValidatorService.validateRequestParams(requestAsString)) {
 //				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
 //						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
 //				return response;
 //			}
-			
+
 			Pair<Boolean, String> validationResponse = paramsValidatorService.validateRequestParams(requestAsString);
 			if (!validationResponse.getLeft()) {
-			    response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-			            validationResponse.getRight(), rrn, stan);
-			    return response;
+				response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+						validationResponse.getRight(), rrn, stan);
+				return response;
 			}
 
-			
-
-			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
-				// billersList = billerListRepository.findByBillerId(billerId).orElse(null);//
-				// biller id
-				Optional<BillerConfiguration> billersList = billerConfigurationRepo.findByBillerId(parentBillerId);
-				if (!billersList.isPresent()) {
-					response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-					return response;
-				}
-			}
+//			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
+//				// billersList = billerListRepository.findByBillerId(billerId).orElse(null);//
+//				// biller id
+//				Optional<BillerConfiguration> billersList = billerConfigurationRepo.findByBillerId(parentBillerId);
+//				if (!billersList.isPresent()) {
+//					response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//					return response;
+//				}
+//			}
 
 			try {
 				String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
@@ -368,14 +365,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				ex.printStackTrace();
 			}
 
-			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
-				Optional<BillerConfiguration> billersList = billerConfigurationRepo.findByBillerId(parentBillerId);
-				if (!billersList.isPresent()) {
-					response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-					return response;
-				}
-			}
+//			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
+//				Optional<BillerConfiguration> billersList = billerConfigurationRepo.findByBillerId(parentBillerId);
+//				if (!billersList.isPresent()) {
+//					response = new BillInquiryValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//					return response;
+//				}
+//			}
 
 			response = new BillInquiryValidationResponse("00", "SUCCESS", username, channel, provinceTransaction, rrn,
 					stan);

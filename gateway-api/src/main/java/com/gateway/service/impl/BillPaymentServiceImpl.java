@@ -425,24 +425,24 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			paymentHistory = paymentLogRepository.findByTranAuthIdAndActivity(request.getTxnInfo().getTranAuthId(),
 					Constants.ACTIVITY.BillPayment);
 			if (paymentHistory != null && !paymentHistory.isEmpty()) {
-				LOG.info("Duplicate/Invalid Tran-Auth Id ");
+				LOG.info("Duplicate Tran-Auth Id ");
 				response = new BillPaymentValidationResponse(Constants.ResponseCodes.DUPLICATE_TRANSACTION_AUTH_ID,
 						Constants.ResponseDescription.DUPLICATE_TRANSACTION_AUTH_ID, rrn, stan);
 				return response;
 			}
 
-			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
-
-				Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo
-						.findByBillerId(request.getTxnInfo().getBillerId().substring(0, 2));
-
-				if (!billerConfiguration.isPresent()) {
-
-					response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
-							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-					return response;
-				}
-			}
+//			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {
+//
+//				Optional<BillerConfiguration> billerConfiguration = billerConfigurationRepo
+//						.findByBillerId(request.getTxnInfo().getBillerId().substring(0, 2));
+//
+//				if (!billerConfiguration.isPresent()) {
+//
+//					response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
+//							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+//					return response;
+//				}
+//			}
 
 //			if (request.getTerminalInfo().getProvince() == null || request.getTerminalInfo().getProvince().isEmpty()) {
 //				response = new BillPaymentValidationResponse(Constants.ResponseCodes.INVALID_DATA,
