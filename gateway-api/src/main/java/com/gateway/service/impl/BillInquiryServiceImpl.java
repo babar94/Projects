@@ -93,20 +93,24 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Autowired
 	private ParamsValidatorServiceImpl validatorServiceImpl;
 
+	@Autowired
+	private ObjectMapper mapper;
+
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
 
 		LOG.info("================ REQUEST billInquiry ================");
-		LOG.info("===>> REQUEST ::" + request.toString());
 		BillInquiryResponse billInquiryResponse = null;
 		BillInquiryValidationResponse billInquiryValidationResponse = null;
-		Info info = null;
-		String parentBillerId = null;
-		String subBillerId = null;
-		String rrn = request.getInfo().getRrn();
-		String stan = request.getInfo().getStan();
 
 		try {
+			LOG.info("===>> REQUEST ::" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
+
+			Info info = null;
+			String parentBillerId = null;
+			String subBillerId = null;
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
 
 			String billerId = request.getTxnInfo().getBillerId();
 

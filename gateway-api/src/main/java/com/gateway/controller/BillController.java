@@ -58,6 +58,8 @@ public class BillController extends ApiController {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
+	@Autowired
+	private ObjectMapper mapper;
 
 	@RequestMapping(path = "/billinquiry", method = RequestMethod.POST)
 	public BillInquiryResponse billInquiry(@RequestBody BillInquiryRequest request, HttpServletRequest httpRequestData)
@@ -108,6 +110,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billInquiryService.billInquiry(httpRequestData, request);
+			LOG.info("Bill Inquiry Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 		} catch (Exception ex) {
 			LOG.error("Exception in billInquiry method{}", ex);
@@ -166,6 +169,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billPaymentService.billPayment(httpRequestData, request);
+			LOG.info("Bill Payment Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
@@ -180,6 +184,7 @@ public class BillController extends ApiController {
 		PaymentInquiryResponse response = null;
 
 		LOG.info("Bill Controller - Payment Inquiry");
+		
 
 		try {
 
@@ -224,6 +229,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billDetailsService.paymentInquiry(httpRequestData, request);
+			LOG.info("Payment Inquiry Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 			return response;
 

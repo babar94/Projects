@@ -110,6 +110,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
@@ -117,15 +119,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("Inside method Bill Payment");
 		BillPaymentResponse billPaymentResponse = null;
 		BillPaymentValidationResponse billPaymentValidationResponse = null;
-
-		InfoPay infoPay = null;
-
-		String rrn = request.getInfo().getRrn();
-		String stan = request.getInfo().getStan();
-		String parentBillerId = null;
-		String subBillerId = null;
-
 		try {
+			LOG.info("Request =>:", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
+
+			InfoPay infoPay = null;
+
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
+			String parentBillerId = null;
+			String subBillerId = null;
+
 			String billerId = request.getTxnInfo().getBillerId();
 
 			if (billerId != null && billerId.length() == 4) {
@@ -366,7 +369,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		Date strDate = new Date();
 		List<PaymentLog> paymentHistory = null;
-	
+
 		try {
 
 			UtilMethods.generalLog("IN - BillPayment  " + strDate, LOG);

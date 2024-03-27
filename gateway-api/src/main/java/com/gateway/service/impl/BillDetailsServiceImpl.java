@@ -89,22 +89,24 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Override
 	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest request) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse paymentInquiryResponse = null;
-
-		Date strDate = new Date();
-		String rrn = request.getInfo().getRrn();
-		String stan = request.getInfo().getStan();
-		InfoPayInq info = null;
-		String parentBillerId = null;
-		String subBillerId = null;
-
-		
 		try {
+			LOG.info("Request =>", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
+
+			Date strDate = new Date();
+			String rrn = request.getInfo().getRrn();
+			String stan = request.getInfo().getStan();
+			InfoPayInq info = null;
+			String parentBillerId = null;
+			String subBillerId = null;
+
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
 
 			BillPaymentInquiryValidationResponse billPaymentInquiryValidationResponse = null;
@@ -345,15 +347,15 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	public BillPaymentInquiryValidationResponse billPaymentInquiryValidations(HttpServletRequest httpRequestData,
 			PaymentInquiryRequest request, String billerId) {
 		BillPaymentInquiryValidationResponse response = new BillPaymentInquiryValidationResponse();
-		
+
 		String channel = "";
 		String username = "";
 		String rrn = request.getInfo().getRrn();
 		String stan = request.getInfo().getStan();
 		Date strDate = new Date();
-		
+
 		List<PaymentLog> paymentHistory = null;
-		
+
 		try {
 
 			UtilMethods.generalLog("IN - Payment Inquiry  " + strDate, LOG);
@@ -362,7 +364,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 			ObjectMapper reqMapper = new ObjectMapper();
 			String requestAsString = reqMapper.writeValueAsString(request);
-		
+
 //			if (request.getTxnInfo().getBillNumber() == null
 //					|| request.getTxnInfo().getBillNumber().equalsIgnoreCase("")) {
 //
