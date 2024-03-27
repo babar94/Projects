@@ -213,13 +213,14 @@ public class UtilMethods {
 	}
 
 	@Async
-	public void insertMpayLog(String type, Date date, String userName, String rrn, String reqRes) {
+	public void insertMpayLog(String type, Date date, String userName, String rrn, String reqRes,String billername) {
 		MPAYLog temp = new MPAYLog();
 		temp.setType(type);
 		temp.setStampDate(date);
 		temp.setReqRes(reqRes);
 		temp.setRrn(rrn);
 		temp.setUserName(userName);
+		temp.setBillername(billername);
 		mpayLogRepository.save(temp);
 	}
 

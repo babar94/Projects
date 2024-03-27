@@ -527,7 +527,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, stan,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Beoe.BEOE);
 
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
@@ -578,7 +578,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							ubpsBillParams.add(stan);
 
 							updateVoucherResponse = serviceCaller.get(ubpsBillParams, UpdateVoucherResponse.class, rrn,
-									Constants.ACTIVITY.BillPayment);
+									Constants.ACTIVITY.BillPayment,BillerConstant.Beoe.BEOE);
 
 							if (updateVoucherResponse != null) {
 								infoPay = new InfoPay(updateVoucherResponse.getResponse().getResponse_code(),
@@ -645,7 +645,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										// success
 
 								getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, stan,
-										Constants.ACTIVITY.BillInquiry);
+										Constants.ACTIVITY.BillInquiry,BillerConstant.Beoe.BEOE);
 
 								if (getVoucherResponse != null) {
 									if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
@@ -920,7 +920,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, stan,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.KPPSC);
 
 			if (getVoucherResponse != null) {
 				if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
@@ -970,7 +970,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							ubpsBillParams.add(stan);
 
 							updateVoucherResponse = serviceCaller.get(ubpsBillParams, UpdateVoucherResponse.class, rrn,
-									Constants.ACTIVITY.BillPayment);
+									Constants.ACTIVITY.BillPayment,BillerConstant.Pral.KPPSC);
 
 							if (updateVoucherResponse != null) {
 								infoPay = new InfoPay(updateVoucherResponse.getResponse().getResponse_code(),
@@ -1010,7 +1010,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										// success
 
 								getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, stan,
-										Constants.ACTIVITY.BillInquiry);
+										Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.KPPSC);
 
 								if (getVoucherResponse != null) {
 									if (getVoucherResponse.getResponse().getResponse_code().equals(ResponseCodes.OK)) {
@@ -1203,7 +1203,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, OfflineGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,"");
 
 			if (getVoucherResponse != null) {
 
@@ -1317,7 +1317,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ubpsBillParams.add(stan);
 
 								OfflineUpdateVoucherResponse = serviceCaller.get(ubpsBillParams,
-										OfflineUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment);
+										OfflineUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,"");
 
 								if (OfflineUpdateVoucherResponse != null) {
 									infoPay = new InfoPay(OfflineUpdateVoucherResponse.getResponse().getResponse_code(),
@@ -1387,7 +1387,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									getVoucherResponse = serviceCaller.get(inquiryParams,
-											OfflineGetVoucherResponse.class, stan, Constants.ACTIVITY.BillInquiry);
+											OfflineGetVoucherResponse.class, stan, Constants.ACTIVITY.BillInquiry,"");
 
 									if (getVoucherResponse != null) {
 										if (getVoucherResponse.getResponse().getResponseCode()
@@ -1701,7 +1701,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, PtaGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Pta.PTA);
 
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
@@ -1760,7 +1760,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ubpsBillParams.add(stan);
 
 								ptaUpdateVoucherResponse = serviceCaller.get(ubpsBillParams,
-										PtaUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment);
+										PtaUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,BillerConstant.Pta.PTA);
 
 								if (ptaUpdateVoucherResponse != null) {
 									infoPay = new InfoPay(ptaUpdateVoucherResponse.getResponse().getResponseCode(),
@@ -1828,7 +1828,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									getVoucherResponse = serviceCaller.get(inquiryParams, PtaGetVoucherResponse.class,
-											stan, Constants.ACTIVITY.BillInquiry);
+											stan, Constants.ACTIVITY.BillInquiry,BillerConstant.Pta.PTA);
 
 									if (getVoucherResponse != null) {
 										if (getVoucherResponse.getResponse().getResponseCode()
@@ -2128,7 +2128,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			fbrGetVoucherResponse = serviceCaller.get(inquiryParams, FbrGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.FBR);
 
 			if (fbrGetVoucherResponse != null) {
 				if (fbrGetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
@@ -2240,7 +2240,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ubpsBillParams.add(stan);
 
 								updateVoucherResponse = serviceCaller.get(ubpsBillParams,
-										FbrUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment);
+										FbrUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,BillerConstant.Pral.FBR);
 
 								if (updateVoucherResponse != null) {
 									infoPay = new InfoPay(updateVoucherResponse.getResponse().getResponse_code(),
@@ -2309,7 +2309,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									fbrGetVoucherResponse = serviceCaller.get(inquiryParams,
-											FbrGetVoucherResponse.class, rrn, Constants.ACTIVITY.BillInquiry);
+											FbrGetVoucherResponse.class, rrn, Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.FBR);
 									if (fbrGetVoucherResponse != null) {
 										if (fbrGetVoucherResponse.getResponse().getResponseCode()
 												.equals(ResponseCodes.OK)) {
@@ -2678,7 +2678,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			// Bank_Mnemonic,ChallanNumber,ContactNumber,PaymentDate,AmountPaid,Semester,Programme,BankName,BankCode,BranchName,BranchCode,rrn,stan
 
 			aiouGetVoucherResponse = serviceCaller.get(inquiryParams, AiouGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Aiou.AIOU);
 
 			if (aiouGetVoucherResponse != null) {
 				info = new Info(aiouGetVoucherResponse.getResponse().getResponseCode(),
@@ -2814,7 +2814,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ubpsBillParams.add(stan);
 
 								updateVoucherResponse = serviceCaller.get(ubpsBillParams,
-										AiouUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment);
+										AiouUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,BillerConstant.Aiou.AIOU);
 
 								if (updateVoucherResponse != null) {
 									infoPay = new InfoPay(updateVoucherResponse.getResponse().getResponse_code(),
@@ -2883,7 +2883,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									aiouGetVoucherResponse = serviceCaller.get(inquiryParams,
-											AiouGetVoucherResponse.class, rrn, Constants.ACTIVITY.BillInquiry);
+											AiouGetVoucherResponse.class, rrn, Constants.ACTIVITY.BillInquiry,BillerConstant.Aiou.AIOU);
 
 									if (aiouGetVoucherResponse != null) {
 										if (aiouGetVoucherResponse.getResponse().getResponseCode()
@@ -3253,9 +3253,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(rrnReq);
 
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
 
-			if (pithamgetVoucherResponse != null) {
+			if (pithamgetVoucherResponse.getPithmGetVoucher()!= null) {
 
 				if (pithamgetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
@@ -3263,21 +3263,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+				
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3288,21 +3275,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+				
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3313,21 +3287,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+				
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3355,22 +3316,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
 							rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 
@@ -3381,21 +3328,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.BLOCK,
 							rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 
@@ -3506,7 +3439,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 
 				pithanUpdateVoucherResponse = serviceCaller.get(paymentParams, PithamUpdateVoucherResponse.class, rrn,
-						Constants.ACTIVITY.BillPayment);
+						Constants.ACTIVITY.BillPayment,BillerConstant.Pithm.PITHM);
 
 				if (pithanUpdateVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
@@ -3566,17 +3499,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
 						rrn, stan);
 
-				txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
-						paymentRefrence);
 
-				additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-						request.getAdditionalInfo().getReserveField2(), request.getAdditionalInfo().getReserveField3(),
-						request.getAdditionalInfo().getReserveField4(), request.getAdditionalInfo().getReserveField5(),
-						request.getAdditionalInfo().getReserveField6(), request.getAdditionalInfo().getReserveField7(),
-						request.getAdditionalInfo().getReserveField8(), request.getAdditionalInfo().getReserveField9(),
-						request.getAdditionalInfo().getReserveField10());
-
-				response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+				response = new BillPaymentResponse(infoPay,null,null);
 
 				return response;
 			}
@@ -3698,7 +3622,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry);
+					Constants.ACTIVITY.BillInquiry,BillerConstant.THARDEEP.THARDEEP);
 
 			if (thardeepgetVoucherResponse != null) {
 
@@ -3708,21 +3632,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3732,22 +3642,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
 							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3758,21 +3654,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(thardeepgetVoucherResponse.getResponse().getResponseCode(),
 							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 				}
@@ -3803,22 +3685,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
 							rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+			
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 
@@ -3829,21 +3697,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.BLOCK,
 							rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					return response;
 
@@ -3876,43 +3730,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 
 				thardeepUpdateVoucherResponse = serviceCaller.get(paymentParams, ThardeepUpdateVoucherResponse.class,
-						rrn, Constants.ACTIVITY.BillPayment);
+						rrn, Constants.ACTIVITY.BillPayment,BillerConstant.THARDEEP.THARDEEP);
 
-//				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID)) {
-//
-//					PaymentLog paymentLog = paymentLogRepository
-//							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-//									request.getTxnInfo().getBillerId().trim(),
-//									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-//									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
-//
-//					billerName = paymentLog.getName();
-//					billingMonth = paymentLog.getBillingMonth();
-//					duedate = paymentLog.getDuedate();
-//					billerNumber = paymentLog.getBillerNumber();
-//					billerId = paymentLog.getBillerId();
-//
-//					infoPay = new InfoPay(thardeepgetVoucherResponse.getResponse().getResponseCode(),
-//							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-//
-//					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-//
-//					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-//							request.getAdditionalInfo().getReserveField2(),
-//							request.getAdditionalInfo().getReserveField3(),
-//							request.getAdditionalInfo().getReserveField4(),
-//							request.getAdditionalInfo().getReserveField5(),
-//							request.getAdditionalInfo().getReserveField6(),
-//							request.getAdditionalInfo().getReserveField7(),
-//							request.getAdditionalInfo().getReserveField8(),
-//							request.getAdditionalInfo().getReserveField9(),
-//							request.getAdditionalInfo().getReserveField10());
-//
-//					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-//					return response;
-//
-//				}
-//				
+
 
 				if (thardeepUpdateVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
@@ -3944,21 +3764,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					infoPay = new InfoPay(thardeepUpdateVoucherResponse.getResponse().getResponseCode(),
 							thardeepUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 				}
 
@@ -3969,17 +3775,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
 						rrn, stan);
 
-				txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
-						paymentRefrence);
-
-				additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-						request.getAdditionalInfo().getReserveField2(), request.getAdditionalInfo().getReserveField3(),
-						request.getAdditionalInfo().getReserveField4(), request.getAdditionalInfo().getReserveField5(),
-						request.getAdditionalInfo().getReserveField6(), request.getAdditionalInfo().getReserveField7(),
-						request.getAdditionalInfo().getReserveField8(), request.getAdditionalInfo().getReserveField9(),
-						request.getAdditionalInfo().getReserveField10());
-
-				response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+				response = new BillPaymentResponse(infoPay,null,null);
 
 				return response;
 			}

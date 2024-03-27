@@ -110,7 +110,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billInquiryService.billInquiry(httpRequestData, request);
-			LOG.info("Bill Inquiry Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
+			LOG.info("Bill Inquiry Response: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 		} catch (Exception ex) {
 			LOG.error("Exception in billInquiry method{}", ex);
@@ -169,7 +169,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billPaymentService.billPayment(httpRequestData, request);
-			LOG.info("Bill Payment Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
+			LOG.info("Bill Payment Response: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
@@ -184,7 +184,6 @@ public class BillController extends ApiController {
 		PaymentInquiryResponse response = null;
 
 		LOG.info("Bill Controller - Payment Inquiry");
-		
 
 		try {
 
@@ -229,7 +228,7 @@ public class BillController extends ApiController {
 			}
 
 			response = billDetailsService.paymentInquiry(httpRequestData, request);
-			LOG.info("Payment Inquiry Response", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
+			LOG.info("Payment Inquiry Response: "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
 
 			return response;
 

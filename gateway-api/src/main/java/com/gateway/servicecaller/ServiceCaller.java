@@ -58,7 +58,7 @@ public class ServiceCaller {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServiceCaller.class);
 
-	public <T> T get(List<String> params, Class<T> type, String rrn, String userName) {
+	public <T> T get(List<String> params, Class<T> type, String rrn, String userName,String billername) {
 		String result = null;
 		T obj = null;
 		
@@ -70,7 +70,7 @@ public class ServiceCaller {
 			
 			String query = prepareQueryStringWithSignature(params);
 
-			utilMethods.insertMpayLog("Request", new Date(), userName, rrn, endPoint + query);
+			utilMethods.insertMpayLog("Request", new Date(), userName, rrn, endPoint + query,billername);
 			if (query == null)
 				throw new Exception("Invalid Request Params");
 
@@ -86,10 +86,10 @@ public class ServiceCaller {
 
 			if (result == null || result.toString().isEmpty()) {
 				LOG.info("MPAY Response: " + "Response null: timeout");
-				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout");
+				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout",billername);
 				return null;
 			}
-			utilMethods.insertMpayLog("Response", new Date(), userName, rrn, result);
+			utilMethods.insertMpayLog("Response", new Date(), userName, rrn, result,billername);
 			LOG.info("\n\n[ MPAY RESPONSE #{} ]\n\n{}\n\n", result);
 			
 			boolean isJsonObject = utilMethods.isJSON(result);
