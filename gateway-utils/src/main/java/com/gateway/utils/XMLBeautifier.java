@@ -54,7 +54,7 @@ public class XMLBeautifier {
 			final Document document = parseXmlFile(unformattedXml);
 
 			/*
-			 * NodeList ns = document.getElementsByTagName("cnic"); if (ns != null) { if
+			 * NodeList ns = document.getElementsByTagName("cnic"); if (ns != null)  if
 			 * (ns.getLength() > 0) { Node node = ns.item(0);
 			 * node.setTextContent(maskCCNumberCommons(node.getTextContent())); } }
 			 */

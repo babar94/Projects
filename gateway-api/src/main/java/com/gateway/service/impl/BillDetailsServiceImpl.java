@@ -29,6 +29,8 @@ import com.gateway.response.billerlistresponse.BillerListResponse;
 import com.gateway.response.billerlistresponse.Billers;
 import com.gateway.response.billerlistresponse.InfoBiller;
 import com.gateway.response.billerlistresponse.TxnInfoBiller;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
+import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.paymentinquiryresponse.AdditionalInfoPayInq;
 import com.gateway.response.paymentinquiryresponse.InfoPayInq;
 import com.gateway.response.paymentinquiryresponse.PaymentInquiryResponse;
@@ -958,8 +960,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String tranTime = "";
 		String channel = "";
 		String username = "";
-		BigDecimal amountInDueDate = null;
-		BigDecimal amountAfterDueDate = null;
 
 		String billerName = "";
 		String dueDate = "";
@@ -997,8 +997,20 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
 
-			if (PithamGetVoucherResponse.getPithmGetVoucher() != null) {
+			if (PithamGetVoucherResponse != null) {
 
+				if(PithamGetVoucherResponse.getPithmGetVoucher()==null) {
+					
+					info = new InfoPayInq(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new PaymentInquiryResponse(info,null,null);
+
+					return response;
+					
+				}
+
+						
 				if (PithamGetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 

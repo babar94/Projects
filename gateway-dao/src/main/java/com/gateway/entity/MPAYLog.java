@@ -41,6 +41,8 @@ public class MPAYLog implements Serializable {
 	@Column(name = "req_res", columnDefinition = "text")
 	private String reqRes;
 
+	// newly added babar 28-03-24
+	
 	@Column(name = "billername", length = 100)
 	private String billername;
 	

@@ -44,6 +44,7 @@ import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillInquiryValidationResponse;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -3196,7 +3197,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		TxnInfoPay txnInfoPay = null;
 		AdditionalInfoPay additionalInfoPay = null;
 		String transactionStatus = "";
-		String billStatus = "";
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String rrnReq = request.getInfo().getRrn().substring(0, 10); // utilMethods.getRRN();
 
@@ -3255,8 +3255,21 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
 
-			if (pithamgetVoucherResponse.getPithmGetVoucher()!= null) {
+			if (pithamgetVoucherResponse != null) {
 
+				if(pithamgetVoucherResponse.getPithmGetVoucher()==null) {
+					
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay,null,null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+					
+				}
+				
 				if (pithamgetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
@@ -3319,6 +3332,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					
 					response = new BillPaymentResponse(infoPay,null,null);
 
+					transactionStatus = Constants.Status.Expired;
+
 					return response;
 
 				}
@@ -3329,6 +3344,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							rrn, stan);
 
 					response = new BillPaymentResponse(infoPay,null,null);
+
+					transactionStatus = Constants.Status.Block;
 
 					return response;
 
@@ -3365,6 +3382,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
+
+					transactionStatus = Constants.Status.Success;
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 					return response;
@@ -3412,7 +3431,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 									.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
 								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-								response = new BillPaymentResponse(infoPay, null, null);
+								response = new BillPaymentResponse(infoPay,null,null);
 								return response;
 							}
 						} else {
@@ -3420,7 +3439,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 									.compareTo(Double.valueOf(amountAfterDueDateRes)) != 0) {
 								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-								response = new BillPaymentResponse(infoPay, null, null);
+								response = new BillPaymentResponse(infoPay,null,null);
 								return response;
 							}
 						}
@@ -3433,7 +3452,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
 						infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 								Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
+						response = new BillPaymentResponse(infoPay,null,null);
 						return response;
 					}
 				}
@@ -3466,6 +3485,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
+					transactionStatus = Constants.Status.Success;
+
 					return response;
 				}
 
@@ -3475,21 +3496,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
 
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);
 
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					response = new BillPaymentResponse(infoPay,null,null);
 
 				}
 			}
@@ -3501,6 +3509,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 
 				response = new BillPaymentResponse(infoPay,null,null);
+
+				transactionStatus = Constants.Status.Fail;
 
 				return response;
 			}
@@ -3566,14 +3576,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		TxnInfoPay txnInfoPay = null;
 		AdditionalInfoPay additionalInfoPay = null;
 		String transactionStatus = "";
-		String billStatus = "";
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
 		String transAuthId = request.getTxnInfo().getTranAuthId();
-		String amountPaidInDueDate = "";
-		String amountPaid = "";
 		String channel = "";
 		String username = "";
 
@@ -3586,13 +3593,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		BigDecimal amountInDueToDate = null;
 		BigDecimal amountAfterDate = null;
 
-		String amountWithInDueDateRes = "";
 		BigDecimal amountDueDateRes = null;
-		String amountAfterDueDateRes;
 		BigDecimal amounAfterDateRes = null;
 		String pattern = "\\d+\\.\\d{2}";
-		String billerId;
-		String billerNumber;
 		String paymentRefrence = utilMethods.getRRN();
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
@@ -3624,7 +3627,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry,BillerConstant.THARDEEP.THARDEEP);
 
-			if (thardeepgetVoucherResponse != null) {
+			if (thardeepgetVoucherResponse.getResponse() != null) {
 
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
@@ -3676,7 +3679,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
+					response = new BillPaymentResponse(infoPay,null,null);
 					return response;
 
 				}
@@ -3688,6 +3691,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			
 					response = new BillPaymentResponse(infoPay,null,null);
 
+					transactionStatus = Constants.Status.Expired;
+
 					return response;
 
 				}
@@ -3698,6 +3703,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							rrn, stan);
 
 					response = new BillPaymentResponse(infoPay,null,null);
+
+					transactionStatus = Constants.Status.Block;
 
 					return response;
 
@@ -3725,7 +3732,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (Double.valueOf(request.getTxnInfo().getTranAmount()).compareTo(Double.valueOf(amountRes)) != 0) {
 					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
+					response = new BillPaymentResponse(infoPay,null,null);
 					return response;
 				}
 
@@ -3756,6 +3763,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
+					transactionStatus = Constants.Status.Success;
+
 					return response;
 				}
 
@@ -3776,6 +3785,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						rrn, stan);
 
 				response = new BillPaymentResponse(infoPay,null,null);
+
+				transactionStatus = Constants.Status.Fail;
 
 				return response;
 			}

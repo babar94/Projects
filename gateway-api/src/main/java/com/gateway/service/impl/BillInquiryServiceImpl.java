@@ -1761,7 +1761,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BillInquiryResponse response = null;
 		PithamGetVoucherResponse pithamgetVoucherResponse = null;
 		Info info = null;
-		Date strDate = new Date();
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String rrnReq = request.getInfo().getRrn().substring(0, 10); // utilMethods.getRRN();
 
@@ -1814,9 +1813,21 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
 
-			if (pithamgetVoucherResponse.getPithmGetVoucher()!= null) {
+					
+			if (pithamgetVoucherResponse != null) {
 
-				if (pithamgetVoucherResponse.getResponseCode()
+				if(pithamgetVoucherResponse.getPithmGetVoucher()==null) {
+					
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillInquiryResponse(info,null,null);
+
+					return response;
+					
+				}
+								
+				else if (pithamgetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -1869,6 +1880,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dueDate = paymentLog.getDuedate();
 						billingMonth = paymentLog.getBillingMonth();
 
+						transactionStatus = Constants.Status.Success;
+
+						
 					} else {
 
 						info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
@@ -1876,6 +1890,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 
 						response = new BillInquiryResponse(info,null,null);
+
+						transactionStatus = Constants.Status.Fail;
 
 						return response;
 					}
@@ -1989,18 +2005,21 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					response = new BillInquiryResponse(info,txnInfo,additionalInfo);
 
-				}
+					transactionStatus = Constants.Status.Success;
 
+					
+				}
+				
 				else {
 
 					info = new Info(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 
-
 					response = new BillInquiryResponse(info,null,null);
 
 					return response;
 				}
+								
 			}
 
 			else {
@@ -2121,8 +2140,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry,BillerConstant.THARDEEP.THARDEEP);
 
-			if (thardeepgetVoucherResponse != null) {
+			if (thardeepgetVoucherResponse.getResponse() != null) {
 
+				
 				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
 
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
@@ -2132,7 +2152,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
 					
-					response = new BillInquiryResponse(info, null, null);
+					response = new BillInquiryResponse(info,null,null);
 
 					return response;
 				}
@@ -2144,7 +2164,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
 
 				
-					response = new BillInquiryResponse(info, null, null);
+					response = new BillInquiryResponse(info,null,null);
 
 					return response;
 				}
@@ -2155,7 +2175,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(thardeepgetVoucherResponse.getResponse().getResponseCode(),
 							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
-					response = new BillInquiryResponse(info, null, null);
+					response = new BillInquiryResponse(info,null,null);
 
 					return response;
 				}
@@ -2219,6 +2239,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+					transactionStatus = Constants.Status.Success;
 
 				}
 
