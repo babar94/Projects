@@ -2227,7 +2227,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate,
 							String.valueOf(amountInDueToDate), "", transAuthId, "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth(),
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
