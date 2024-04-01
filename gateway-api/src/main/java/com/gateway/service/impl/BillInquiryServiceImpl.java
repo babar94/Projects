@@ -1111,10 +1111,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								String.valueOf(amountInDueToDate), amountAfterDueDate, transAuthId, oneBillNumber);
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
-								request.getAdditionalInfo().getReserveField1(),
-
-								request.getAdditionalInfo().getReserveField2(),
-								request.getAdditionalInfo().getReserveField3(),
+								mobile,
+								dataWrapper.getFeeTypesListWrapper().get(0).getFeeTypeName(),
+								dataWrapper.getFeeTypesListWrapper().get(0).getPeriodPaid(),
 								request.getAdditionalInfo().getReserveField4(),
 								request.getAdditionalInfo().getReserveField5(),
 								request.getAdditionalInfo().getReserveField6(),
