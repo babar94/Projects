@@ -1671,8 +1671,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(semester,
-
-							Programme, name, fatherName, cnic, rollNumber, contactNumber,
+							Programme,fatherName,cnic,rollNumber,contactNumber,request.getAdditionalInfo().getReserveField7(),
 							request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
