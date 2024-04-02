@@ -444,7 +444,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Beoe.BEOE);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Beoe.BEOE);
 
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponse_code(),
@@ -661,7 +661,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, GetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.KPPSC);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Pral.KPPSC);
 
 		} catch (Exception ex) {
 
@@ -767,7 +767,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, OfflineGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,"");
+					Constants.ACTIVITY.BillInquiry, "");
 
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
@@ -1029,7 +1029,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			getVoucherResponse = serviceCaller.get(inquiryParams, PtaGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Pta.PTA);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Pta.PTA);
 
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
@@ -1110,8 +1110,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								request.getTxnInfo().getBillNumber(), depostiroName, status, dueDAte,
 								String.valueOf(amountInDueToDate), amountAfterDueDate, transAuthId, oneBillNumber);
 
-						AdditionalInfo additionalInfo = new AdditionalInfo(
-								mobile,
+						AdditionalInfo additionalInfo = new AdditionalInfo(mobile,
 								dataWrapper.getFeeTypesListWrapper().get(0).getFeeTypeName(),
 								dataWrapper.getFeeTypesListWrapper().get(0).getPeriodPaid(),
 								request.getAdditionalInfo().getReserveField4(),
@@ -1261,7 +1260,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			fbrGetVoucherResponse = serviceCaller.get(inquiryParams, FbrGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Pral.FBR);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Pral.FBR);
 
 			if (fbrGetVoucherResponse != null) {
 				info = new Info(fbrGetVoucherResponse.getResponse().getResponseCode(),
@@ -1538,7 +1537,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			aiouGetVoucherResponse = serviceCaller.get(inquiryParams, AiouGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Aiou.AIOU);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Aiou.AIOU);
 
 			if (aiouGetVoucherResponse != null) {
 				info = new Info(aiouGetVoucherResponse.getResponse().getResponseCode(),
@@ -1669,9 +1668,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDueDate), transAuthId,
 							oneBillNumber);
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(semester,
-							Programme,fatherName,cnic,rollNumber,contactNumber,request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(semester, Programme, name, fatherName, cnic,
+							rollNumber, contactNumber, request.getAdditionalInfo().getReserveField8(),
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
 
@@ -1809,29 +1807,28 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(rrnReq);
 
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Pithm.PITHM);
 
-					
 			if (pithamgetVoucherResponse != null) {
 
-				if(pithamgetVoucherResponse.getPithmGetVoucher()==null) {
-					
-					info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
-							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+				if (pithamgetVoucherResponse.getPithmGetVoucher() == null) {
 
-					response = new BillInquiryResponse(info,null,null);
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
-					
+
 				}
-								
+
 				else if (pithamgetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -1842,7 +1839,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -1852,8 +1849,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					info = new Info(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
-				
-					response = new BillInquiryResponse(info,null,null);
+
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -1880,14 +1877,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						transactionStatus = Constants.Status.Success;
 
-						
 					} else {
 
 						info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
 								Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
 
-
-						response = new BillInquiryResponse(info,null,null);
+						response = new BillInquiryResponse(info, null, null);
 
 						transactionStatus = Constants.Status.Fail;
 
@@ -2001,23 +1996,22 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
 
-					response = new BillInquiryResponse(info,txnInfo,additionalInfo);
+					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 					transactionStatus = Constants.Status.Success;
 
-					
 				}
-				
+
 				else {
 
 					info = new Info(pithamgetVoucherResponse.getResponseCode(),
 							pithamgetVoucherResponse.getResponseDesc(), rrn, stan);
 
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
-								
+
 			}
 
 			else {
@@ -2025,8 +2019,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
 						stan);
 
-				
-				response = new BillInquiryResponse(info,null,null);
+				response = new BillInquiryResponse(info, null, null);
 
 				return response;
 			}
@@ -2136,11 +2129,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.THARDEEP.THARDEEP);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
 
 			if (thardeepgetVoucherResponse.getResponse() != null) {
 
-				
 				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
 
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
@@ -2149,8 +2141,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 
-					
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -2161,8 +2152,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
 							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
 
-				
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -2173,11 +2163,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(thardeepgetVoucherResponse.getResponse().getResponseCode(),
 							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
-
 
 				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
 				billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth();
@@ -2225,7 +2214,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate,
 							String.valueOf(amountInDueToDate), "", transAuthId, "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(
+							thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth(),
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
@@ -2247,7 +2237,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(thardeepgetVoucherResponse.getResponse().getResponseCode(),
 							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
-					response = new BillInquiryResponse(info,null,null);
+					response = new BillInquiryResponse(info, null, null);
 
 					return response;
 				}
@@ -2257,8 +2247,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
 						stan);
-				
-				response = new BillInquiryResponse(info,null,null);
+
+				response = new BillInquiryResponse(info, null, null);
 
 				return response;
 			}
