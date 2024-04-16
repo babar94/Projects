@@ -15,10 +15,7 @@ import lombok.ToString;
 @ToString
 public class InfoPay implements Serializable {
 
-	/**
-	 * 
-	 */
-
+	
 	private static final long serialVersionUID = 8396436785949897705L;
 	private String responseCode;
 	private String responseDesc;

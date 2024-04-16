@@ -1,5 +1,4 @@
-package com.gateway.model.mpay.response.billinquiry.thardeep;
-
+package com.gateway.model.mpay.response.billpayment.uom;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,9 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ThardeepGetVoucherResponse  {
+public class UomResponse {
 	
-	@JsonProperty("response")
-    private ThardeepResponse response;
-   
+	@JsonProperty("uom-updatevoucher")
+    private UomUpdateVoucher uomUpdateVoucher;
+  
 }

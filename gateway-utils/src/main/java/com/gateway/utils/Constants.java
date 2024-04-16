@@ -124,6 +124,10 @@ public class Constants {
 		public static final String THARDEEP_BILL_PAYMENT = "thardeep-updatevoucher";
 		public static final String THARDEEP_BILL_PAYMENT_CHECK = "thardeep-paymentinquiry";
 
+		public static final String UOM_BILL_INQUIRY = "uom-getvoucher";
+		public static final String UOM_BILL_PAYMENT = "uom-updatevoucher";
+
+		
 		
 	}
 
