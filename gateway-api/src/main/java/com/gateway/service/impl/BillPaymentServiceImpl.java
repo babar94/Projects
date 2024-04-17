@@ -3381,19 +3381,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 
-					PaymentLog paymentLog = paymentLogRepository
-							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-									request.getTxnInfo().getBillerId().trim(),
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
 
-					amountInDueToDate = paymentLog.getAmountwithinduedate();
-					amountAfterDate = paymentLog.getAmountafterduedate();
-					billerName = paymentLog.getName();
-					billingMonth = paymentLog.getBillingMonth();
-					duedate = paymentLog.getDuedate();
-					billerNumber = paymentLog.getBillerNumber();
-					billerId = paymentLog.getBillerId();
+					billerId = request.getTxnInfo().getBillerId();
+					billerNumber = request.getTxnInfo().getBillNumber();
 
 					infoPay = new InfoPay(pithamgetVoucherResponse.getResponseCode(),
 							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
@@ -3972,6 +3962,35 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 
 				
+				else if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+
+					    billerId =request.getTxnInfo().getBillerId();
+						billerNumber = request.getTxnInfo().getBillNumber(); 
+						
+						infoPay = new InfoPay(uomgetVoucherResponse.getResponse().getResponseCode(),
+								Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+						txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+						additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+								request.getAdditionalInfo().getReserveField2(),
+								request.getAdditionalInfo().getReserveField3(),
+								request.getAdditionalInfo().getReserveField4(),
+								request.getAdditionalInfo().getReserveField5(),
+								request.getAdditionalInfo().getReserveField6(),
+								request.getAdditionalInfo().getReserveField7(),
+								request.getAdditionalInfo().getReserveField8(),
+								request.getAdditionalInfo().getReserveField9(),
+								request.getAdditionalInfo().getReserveField10());
+
+						transactionStatus = Constants.Status.Success;
+
+						response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+						return response;
+
+					}
+
+				
 				billerNameRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getConsumerDetail();
 				billingMonthRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBilling_Month();
 				billStatusRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBillStatus();
@@ -3988,47 +4007,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				}
 
-				
-				 if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
-
-					PaymentLog paymentLog = paymentLogRepository
-							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-									request.getTxnInfo().getBillerId().trim(),
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
-
-					amountInDueToDate = paymentLog.getAmountwithinduedate();
-					amountAfterDate = paymentLog.getAmountafterduedate();
-					billerName = paymentLog.getName();
-					billingMonth = paymentLog.getBillingMonth();
-					duedate = paymentLog.getDuedate();
-					billerNumber = paymentLog.getBillerNumber();
-					billerId = paymentLog.getBillerId();
-
-					infoPay = new InfoPay(uomgetVoucherResponse.getResponse().getResponseCode(),
-							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					transactionStatus = Constants.Status.Success;
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-					return response;
-
-				}
-
-				
 				
 				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
@@ -4158,15 +4136,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-				else {
-
-					infoPay = new InfoPay(uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode(),
-
-							"", rrn, stan);
-
-					response = new BillPaymentResponse(infoPay, null, null);
-
-				}
+				
 			}
 
 			else {

@@ -2359,7 +2359,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal requestAmountAfterDueDate = null;
 
 		String billerNameRes = "", billInquiryCode = "", billInquiryDesc = "", dueDateRes = "", billingMonthRes = "",
-			   billStatusRes = "", tranAuthIdRes = "", amountResWithInDueDate = "",amountResWithAfterDueDate = "",dueDate="";
+			   billStatusRes = "", tranAuthIdRes = "", amountResWithInDueDate = "",amountResAfterDueDate = "",dueDate="";
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
@@ -2485,14 +2485,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				tranAuthIdRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getTran_auth_Id();
 				
 				amountResWithInDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_Within_DueDate();
-				amountResWithAfterDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
+				amountResAfterDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
 
 				
 				requestAmountWithInDueDate = new BigDecimal(amountResWithInDueDate.replaceFirst("^\\+?0+", ""));
 				amountInDueToDate = requestAmountWithInDueDate.setScale(2, RoundingMode.UP);
 
-				requestAmountAfterDueDate=new BigDecimal(amountResWithAfterDueDate.replaceFirst("^\\+?0+", ""));
-				amountAfterDate = requestAmountWithInDueDate.setScale(2, RoundingMode.UP);
+				requestAmountAfterDueDate=new BigDecimal(amountResAfterDueDate.replaceFirst("^\\+?0+", ""));
+				amountAfterDate = requestAmountAfterDueDate.setScale(2, RoundingMode.UP);
 
 				
 				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID)) {
@@ -2543,15 +2543,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				else {
-
-					info = new Info(uomgetVoucherResponse.getResponse().getResponseCode(),
-							uomgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-
-					response = new BillInquiryResponse(info, null, null);
-
-					return response;
-				}
+				
 			}
 
 			else {
