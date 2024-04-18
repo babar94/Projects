@@ -38,6 +38,8 @@ import com.gateway.response.billinquiryresponse.AdditionalInfo;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billinquiryresponse.TxnInfo;
+import com.gateway.response.billpaymentresponse.BillPaymentResponse;
+import com.gateway.response.billpaymentresponse.InfoPay;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.BillInquiryService;
 import com.gateway.service.ParamsValidatorService;
@@ -2165,10 +2167,19 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
 
-			if (thardeepgetVoucherResponse.getResponse() != null) {
+			if (thardeepgetVoucherResponse != null) {
+		
+				if (thardeepgetVoucherResponse.getResponse() == null) {
 
-				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
 
+					response = new BillInquiryResponse(info, null, null);
+
+					return response;
+
+				}
+			
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
@@ -2202,6 +2213,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
+				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
 				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
 				billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth();
 				billInquiryCode = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getResponseCode();
@@ -2390,8 +2402,21 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			uomgetVoucherResponse = serviceCaller.get(inquiryParams, UomGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.UOM.UOM);
 			
-			if (uomgetVoucherResponse.getResponse() != null) {
+			if (uomgetVoucherResponse != null) {
+		
+				if (uomgetVoucherResponse.getResponse() == null) {
 
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillInquiryResponse(info, null, null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+
+				}
+				
 
 				if (uomgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {

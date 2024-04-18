@@ -3643,7 +3643,22 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
 
-			if (thardeepgetVoucherResponse.getResponse() != null) {
+			if (thardeepgetVoucherResponse != null) {
+				
+				if (thardeepgetVoucherResponse.getResponse() == null) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+
+				}
+				
+				
 
 				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {

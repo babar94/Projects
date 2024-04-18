@@ -976,11 +976,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 		Date requestedDate = new Date();
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
-		String rrnReq = request.getInfo().getRrn().substring(0, 10); // utilMethods.getRRN();
 
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 
-		PithamGetVoucherResponse PithamGetVoucherResponse = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -1018,72 +1016,16 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			username = result[0];
 			channel = result[1];
 
-			ArrayList<String> inquiryParams = new ArrayList<String>();
-			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_INQUIRY);
-			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());
-			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
-			inquiryParams.add(rrnReq);
 
-			PithamGetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry,BillerConstant.Pithm.PITHM);
+			try {
 
-			if (PithamGetVoucherResponse != null) {
+				LOG.info("Calling Payment Inquiry");
 
-				if(PithamGetVoucherResponse.getPithmGetVoucher()==null) {
-					
-					info = new InfoPayInq(Constants.ResponseCodes.SERVICE_FAIL,
-							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-
-					response = new PaymentInquiryResponse(info,null,null);
-
-					return response;
-					
-				}
-
-						
-				if (PithamGetVoucherResponse.getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
-
-					info = new InfoPayInq(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-
-					response = new PaymentInquiryResponse(info,null,null);
-
-					return response;
-				}
-
-				else if (PithamGetVoucherResponse.getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
-
-					info = new InfoPayInq(PithamGetVoucherResponse.getResponseCode(),
-							PithamGetVoucherResponse.getResponseDesc(), rrn, stan);
-
-					response = new PaymentInquiryResponse(info,null,null);
-
-					return response;
-				}
-
-				else if (PithamGetVoucherResponse.getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.UNAUTHORISED_USER)) {
-
-
-					response = new PaymentInquiryResponse(info,null,null);
-
-					return response;
-				}
-
-				else if (PithamGetVoucherResponse.getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
-
-					try {
-
-						LOG.info("Calling Payment Inquiry");
-
-						PaymentLog paymentLog = paymentLogRepository
-								.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-										request.getTxnInfo().getBillerId().trim(),
-										request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-										Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
+				PaymentLog paymentLog = paymentLogRepository
+						.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+								request.getTxnInfo().getBillerId().trim(),
+								request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
+								Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
 
 						if (paymentLog != null && paymentLog.getID() != null) {
 
@@ -1136,29 +1078,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						LOG.error("{}", ex);
 
 					}
-
-				}
-
-				else {
-					info = new InfoPayInq(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
-							Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
-
-					response = new PaymentInquiryResponse(info,null,null);
-
-					transactionStatus = Constants.Status.Fail;
-					return response;
-
-				}
-			} else {
-				info = new InfoPayInq(rrn, stan, Constants.ResponseCodes.SERVICE_FAIL,
-						Constants.ResponseDescription.SERVICE_FAIL);
-
-				response = new PaymentInquiryResponse(info,null,null);
-
-				transactionStatus = Constants.Status.Fail;
-				return response;
-			}
-
+	
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
 
@@ -1475,8 +1395,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			return response;
 
 		}
-
-		
+	
 	} catch (Exception ex) {
 		LOG.error("{}", ex);
 
@@ -1519,8 +1438,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	
 	
 }
-
-
 
 
 }
