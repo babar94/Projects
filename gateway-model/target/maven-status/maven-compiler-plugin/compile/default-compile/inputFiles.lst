@@ -1,3 +1,4 @@
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\uom\UomUpdateVoucher.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\TxnInfoPayInqRequest.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billinquiryresponse\BillInquiryResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\paymentinquiryresponse\PaymentInquiryResponse.java
@@ -21,12 +22,15 @@ D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\pitham\PithmUpdateVoucher.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\thardeep\ThardeepGetVoucher.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\Getvoucher.java
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\uom\UomResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\AdditionalInfoPayInqRequest.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\AdditionalInfoPay.java
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\uom\UomGetVoucher.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\thardeep\ThardeepResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\offline\Getvoucher.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\fbr\Response.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\TerminalInfoPayInqRequest.java
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\uom\UomResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\PaymentInquiryRequest.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billerlistresponse\InfoBiller.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\FeeType.java
@@ -40,6 +44,7 @@ D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\TxnInfoRequest.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\paymentinquiry\BranchInfo.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billerlistresponse\Billers.java
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\uom\UomUpdateVoucherResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billpayment\BranchInfo.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\offline\OfflineGetVoucherResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\AdditionalInfoRequest.java
@@ -65,6 +70,7 @@ D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billpayment\pta\PtaUpdateVoucherResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\request\billinquiry\InfoRequest.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\BillPaymentResponse.java
+D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\uom\UomGetVoucherResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\ValidateParamResponse.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\model\mpay\response\billinquiry\pta\CollectionInfo.java
 D:\Projects\Epayment Service\epayment-appservice\gateway-model\src\main\java\com\gateway\response\billpaymentresponse\InfoPay.java

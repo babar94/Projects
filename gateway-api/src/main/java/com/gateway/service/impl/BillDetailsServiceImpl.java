@@ -1016,9 +1016,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			username = result[0];
 			channel = result[1];
 
-
-			try {
-
 				LOG.info("Calling Payment Inquiry");
 
 				PaymentLog paymentLog = paymentLogRepository
@@ -1072,13 +1069,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							return response;
 
 						}
-
-					} catch (Exception ex) {
-
-						LOG.error("{}", ex);
-
-					}
-	
+						
 		} catch (Exception ex) {
 			LOG.error("{}", ex);
 
@@ -1122,8 +1113,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	}
 	
 	
-	
-
 	public PaymentInquiryResponse payementInquiryTHARDEEP(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
 	
 	LOG.info("THARDEEP Bill Inquiry Request {} ", request.toString());
@@ -1135,7 +1124,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	Date requestedDate = new Date();
 	String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 	String stan = request.getInfo().getStan(); // utilMethods.getStan();
-	ThardeepGetVoucherResponse thardeepgetVoucherResponse = null;
 	InfoPayInq info = null;
 	TxnInfoPayInq txnInfo = null;
 	AdditionalInfoPayInq additionalInfo = null;
