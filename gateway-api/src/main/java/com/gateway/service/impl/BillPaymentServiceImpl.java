@@ -2838,7 +2838,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								//////// Babar Work New - End ///////
 
-								ubpsBillParams.add("123456");// Stan
+								//ubpsBillParams.add("123456");// Stan
 
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
