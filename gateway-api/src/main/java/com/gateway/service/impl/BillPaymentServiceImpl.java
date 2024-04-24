@@ -2811,10 +2811,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ubpsBillParams.add(request.getAdditionalInfo().getReserveField3());// name
 								ubpsBillParams.add(request.getAdditionalInfo().getReserveField4());// fname
 								ubpsBillParams.add(request.getAdditionalInfo().getReserveField5());// cnic
-								ubpsBillParams.add(request.getAdditionalInfo().getReserveField2());// programme
-								ubpsBillParams.add("");// rollNumber
-								ubpsBillParams.add("");// registrationNumber
-								ubpsBillParams.add(request.getTerminalInfo().getMobile());//
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField2());// programme//								
+															
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField6());// rollNumber
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField8());// registrationNumber
+								ubpsBillParams.add(request.getAdditionalInfo().getReserveField7());// Contact No
+
+								
+
+//								ubpsBillParams.add(request.getTerminalInfo().getMobile());//
 								ubpsBillParams.add(request.getTxnInfo().getTranDate());// dueDate
 								ubpsBillParams.add(utilMethods.formatAmountAn13(
 										Double.parseDouble(request.getTxnInfo().getTranAmount().trim())));// AmountPaid

@@ -68,6 +68,8 @@ public class ServiceCaller {
 
 		try {
 			
+			LOG.info("\n\n[MPAY REQUEST without signature: " + params.toString());
+
 			String query = prepareQueryStringWithSignature(params);
 
 			utilMethods.insertMpayLog("Request", new Date(), userName, rrn, endPoint + query,billername);

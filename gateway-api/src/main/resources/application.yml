@@ -59,6 +59,8 @@ api:
   name: Paysys Labs
   link: http://www.paysyslabs.com/
   email: info@paysyslabs.com
+  url-patterns: /api/v1/*
+
 
 mpay:
    external:

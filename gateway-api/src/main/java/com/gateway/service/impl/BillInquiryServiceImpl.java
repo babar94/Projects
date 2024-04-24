@@ -1551,7 +1551,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal amountAfterDueDate = null;
 		String semester = "";
 		String Programme;
-		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "",registrationNo="";
 
 		try {
 			if (request.getBranchInfo() != null) {
@@ -1591,16 +1591,17 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					dueDate = aiouGetVoucher.getDueDate();
 					semester = aiouGetVoucher.getSemester();
 					Programme = aiouGetVoucher.getProgramme();
-
+					registrationNo=aiouGetVoucher.getRegistrationNumber();
+					
 					BigDecimal requestAmountafterduedate = null;
 					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
 
-						if (semester == null || semester.isBlank() || semester.isEmpty()) {
-							semester = request.getAdditionalInfo().getReserveField1();
-						}
-						if (Programme == null || Programme.isBlank() || Programme.isEmpty()) {
-							Programme = request.getAdditionalInfo().getReserveField2();
-						}
+//						if (semester == null || semester.isBlank() || semester.isEmpty()) {
+//							semester = request.getAdditionalInfo().getReserveField1();
+//						}
+//						if (Programme == null || Programme.isBlank() || Programme.isEmpty()) {
+//							Programme = request.getAdditionalInfo().getReserveField2();
+//						}
 
 						billStatus = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
 								.getBillStatus().trim().equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
@@ -1705,7 +1706,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							oneBillNumber);
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(semester, Programme, name, fatherName, cnic,
-							rollNumber, contactNumber, request.getAdditionalInfo().getReserveField8(),
+							rollNumber, contactNumber, registrationNo,
 							request.getAdditionalInfo().getReserveField9(),
 							request.getAdditionalInfo().getReserveField10());
 
