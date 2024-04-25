@@ -179,7 +179,16 @@ public class UtilMethods {
 	public static String formatString(String value) {
 		return value != null && !value.isEmpty() ? String.format("%-30s", value) : "Please Fill";
 	}
+	//Ahmed Ashraf
+	public static String padRight(String s, int n) {
+	     return String.format("%-" + n + "s", s);  
+	}
 
+	public static String padLeft(String s, int n) {
+	    return String.format("%" + n + "s", s);  
+	}
+
+	
 	public String getClientIp(HttpServletRequest request) {
 
 		String remoteAddr = "";

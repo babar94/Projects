@@ -1582,16 +1582,16 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					ResponseBillInquiry aiouGetVoucher = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
 							.getResponseBillInquiry();
-					name = UtilMethods.formatString(aiouGetVoucher.getName());
-					fatherName = UtilMethods.formatString(aiouGetVoucher.getFatherName());
-					cnic = UtilMethods.formatString(aiouGetVoucher.getCnic());
-					rollNumber = UtilMethods.formatString(aiouGetVoucher.getRollNumber());
-					contactNumber = UtilMethods.formatString(aiouGetVoucher.getContactNumber());
+					name = UtilMethods.padRight(aiouGetVoucher.getName(),30);
+					fatherName = UtilMethods.padRight(aiouGetVoucher.getFatherName(),30);
+					cnic = aiouGetVoucher.getCnic();
+					rollNumber = UtilMethods.padRight(aiouGetVoucher.getRollNumber(),10);
+					contactNumber = UtilMethods.padRight(aiouGetVoucher.getContactNumber(),13);
 
 					dueDate = aiouGetVoucher.getDueDate();
 					semester = aiouGetVoucher.getSemester();
 					Programme = aiouGetVoucher.getProgramme();
-					registrationNo=aiouGetVoucher.getRegistrationNumber();
+					registrationNo=UtilMethods.padRight(aiouGetVoucher.getRegistrationNumber(),10);
 					
 					BigDecimal requestAmountafterduedate = null;
 					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
