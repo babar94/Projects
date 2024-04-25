@@ -50,6 +50,7 @@ import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.UtilMethods;
+import com.gateway.utils.BillerConstant.Aiou;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -1582,16 +1583,21 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					ResponseBillInquiry aiouGetVoucher = aiouGetVoucherResponse.getResponse().getAiouGetVoucher()
 							.getResponseBillInquiry();
-					name = UtilMethods.padRight(aiouGetVoucher.getName(),30);
-					fatherName = UtilMethods.padRight(aiouGetVoucher.getFatherName(),30);
-					cnic = aiouGetVoucher.getCnic();
-					rollNumber = UtilMethods.padRight(aiouGetVoucher.getRollNumber(),10);
-					contactNumber = UtilMethods.padRight(aiouGetVoucher.getContactNumber(),13);
+					
+										
+					name = UtilMethods.padRight(aiouGetVoucher.getName(),30,true,BillerConstant.Aiou.AIOU); //					
+					fatherName = UtilMethods.padRight(aiouGetVoucher.getFatherName(),30,true,BillerConstant.Aiou.AIOU);
+					
+					cnic = aiouGetVoucher.getCnic(); //
+					cnic=(cnic != null && !cnic.isEmpty() ? cnic : "Please Fill");
+					
+					rollNumber = UtilMethods.padRight(aiouGetVoucher.getRollNumber(),10,true,BillerConstant.Aiou.AIOU);					
+					contactNumber = UtilMethods.padRight(aiouGetVoucher.getContactNumber(),13,true,BillerConstant.Aiou.AIOU);
 
 					dueDate = aiouGetVoucher.getDueDate();
 					semester = aiouGetVoucher.getSemester();
 					Programme = aiouGetVoucher.getProgramme();
-					registrationNo=UtilMethods.padRight(aiouGetVoucher.getRegistrationNumber(),10);
+					registrationNo=UtilMethods.padRight(aiouGetVoucher.getRegistrationNumber(),10,false,"NA");
 					
 					BigDecimal requestAmountafterduedate = null;
 					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
