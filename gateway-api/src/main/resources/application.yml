@@ -19,7 +19,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
-    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true  
+    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
     username: app_user
     password: $3cUrity&6496
     #username: paysys

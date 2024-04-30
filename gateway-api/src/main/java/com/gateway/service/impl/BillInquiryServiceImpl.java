@@ -1591,7 +1591,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					cnic = aiouGetVoucher.getCnic(); //
 					cnic=(cnic != null && !cnic.isEmpty() ? cnic : "Please Fill");
 					
-					rollNumber = UtilMethods.padRight(aiouGetVoucher.getRollNumber(),10,true,BillerConstant.Aiou.AIOU);					
+					rollNumber = UtilMethods.padRight(aiouGetVoucher.getRollNumber(),10,false,"NA");					
 					contactNumber = UtilMethods.padRight(aiouGetVoucher.getContactNumber(),13,true,BillerConstant.Aiou.AIOU);
 
 					dueDate = aiouGetVoucher.getDueDate();
