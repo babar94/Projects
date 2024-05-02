@@ -1957,6 +1957,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
+				
+				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
+
+				
 				billerNameRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
 				billingMonthRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
 				billStatusCodeRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
@@ -1989,8 +1993,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
-					billstatus = "U";
-					billStatus = "Unpaid";
+					billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
+					billStatus = Constants.BILL_STATUS.BILL_UNPAID;
 
 					transactionStatus = Constants.Status.Pending;
 
@@ -1998,8 +2002,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
 
-					billstatus = "E";
-					billStatus = "Expired";
+					billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED;
+					billStatus = Constants.Status.Expired;
 
 					transactionStatus = Constants.Status.Expired;
 
@@ -2007,14 +2011,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
 
-					billstatus = "B";
-					billStatus = "Block";
+					billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_BLOCK;
+					billStatus = Constants.Status.Block;
 
 					transactionStatus = Constants.Status.Block;
 
 				}
 
-				if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 
 					info = new Info(pithamgetVoucherResponse.getResponseCode(),
 							Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
@@ -2198,7 +2201,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
-				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
+				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK)) {
 
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
@@ -2219,6 +2222,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					return response;
 				}
+				
+				else if (thardeepgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
+
 
 				billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
 				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
@@ -2239,33 +2245,32 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID)) {
 
-					billStatus = "Unpaid";
+					billStatus = Constants.BILL_STATUS.BILL_UNPAID;
 
 					transactionStatus = Constants.Status.Pending;
 				}
 
 				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
-					billStatus = "Expired";
+					billStatus = Constants.Status.Expired;
 
 					transactionStatus = Constants.Status.Expired;
 				}
 
 				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_BLOCK)) {
 
-					billStatus = "Block";
+					billStatus = Constants.Status.Block;
 
 					transactionStatus = Constants.Status.Block;
 				}
 
-				if (thardeepgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 
 					info = new Info(thardeepgetVoucherResponse.getResponse().getResponseCode(),
 							Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate,
-							String.valueOf(amountInDueToDate), "", transAuthId, "");
+							String.valueOf(amountInDueToDate), String.valueOf(amountInDueToDate), transAuthId, "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(
 							thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth(),
@@ -2287,9 +2292,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else {
 
-					info = new Info(thardeepgetVoucherResponse.getResponse().getResponseCode(),
-							thardeepgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-
+				
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
+							stan);
+					
 					response = new BillInquiryResponse(info, null, null);
 
 					return response;
@@ -2425,7 +2431,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				}
 				
 
-				if (uomgetVoucherResponse.getResponse().getResponseCode()
+				else if (uomgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -2507,49 +2513,56 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 
+				else if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 
-				billStatusRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBillStatus();
-				billerNameRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getConsumerDetail();
-				billingMonthRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBilling_Month();
-				billInquiryCode = uomgetVoucherResponse.getResponse().getUomgetvoucher().getResponseCode();
-				billInquiryDesc = uomgetVoucherResponse.getResponse().getResponseDesc();
-				dueDateRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getDueDate();
-				tranAuthIdRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getTran_auth_Id();
-				
-				amountResWithInDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_Within_DueDate();
-				amountResAfterDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
+					
+					billStatusRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBillStatus();
+					billerNameRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getConsumerDetail();
+					billingMonthRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBilling_Month();
+					billInquiryCode = uomgetVoucherResponse.getResponse().getUomgetvoucher().getResponseCode();
+					billInquiryDesc = uomgetVoucherResponse.getResponse().getResponseDesc();
+					dueDateRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getDueDate();
+					tranAuthIdRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getTran_auth_Id();
+					
+					amountResWithInDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_Within_DueDate();
+					amountResAfterDueDate = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
 
-				
-				requestAmountWithInDueDate = new BigDecimal(amountResWithInDueDate.replaceFirst("^\\+?0+", ""));
-				amountInDueToDate = requestAmountWithInDueDate.setScale(2, RoundingMode.UP);
+					
+					requestAmountWithInDueDate = new BigDecimal(amountResWithInDueDate.replaceFirst("^\\+?0+", ""));
+					amountInDueToDate = requestAmountWithInDueDate.setScale(2, RoundingMode.UP);
 
-				requestAmountAfterDueDate=new BigDecimal(amountResAfterDueDate.replaceFirst("^\\+?0+", ""));
-				amountAfterDate = requestAmountAfterDueDate.setScale(2, RoundingMode.UP);
+					requestAmountAfterDueDate=new BigDecimal(amountResAfterDueDate.replaceFirst("^\\+?0+", ""));
+					amountAfterDate = requestAmountAfterDueDate.setScale(2, RoundingMode.UP);
 
-				
-				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID)) {
+					
+					if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID)) {
 
-					billStatus = "Unpaid";
+						billStatus =  Constants.BILL_STATUS.BILL_UNPAID;
+						
+						transactionStatus = Constants.Status.Pending;
 
-					transactionStatus = Constants.Status.Pending;
-				}
+					
+					}
 
-				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
+					else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
-					billStatus = "Expired";
+						billStatus = Constants.Status.Expired;
 
-					transactionStatus = Constants.Status.Expired;
-				}
+						transactionStatus = Constants.Status.Expired;
 
-				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_BLOCK)) {
+						
+					}
 
-					billStatus = "Block";
+					else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_BLOCK)) {
 
-					transactionStatus = Constants.Status.Block;
-				}
+						billStatus = Constants.Status.Block;
+						
+						transactionStatus = Constants.Status.Block;
 
-				if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
 
+					}
+
+										
 					info = new Info(uomgetVoucherResponse.getResponse().getResponseCode(),
 							Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
@@ -2572,9 +2585,22 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 					transactionStatus = Constants.Status.Success;
+					
+					
 
 				}
 
+				
+				else {
+
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
+							stan);
+
+					response = new BillInquiryResponse(info, null, null);
+
+					return response;
+				}
+				
 				
 			}
 
@@ -2587,6 +2613,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				return response;
 			}
+			
+			
 
 		}
 
@@ -2596,6 +2624,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		}
 
+		
+		
 		finally {
 
 			try {

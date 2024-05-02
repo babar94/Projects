@@ -85,7 +85,7 @@ public class ServiceCaller {
 			long endTime = System.currentTimeMillis();
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;
-
+      //result="{\"response\":{\"response_code\":\"501\",\"response_desc\":\"Connect Timeout Exception\"}}";
 			if (result == null || result.toString().isEmpty()) {
 				LOG.info("MPAY Response: " + "Response null: timeout");
 				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout",billername);

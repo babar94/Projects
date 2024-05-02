@@ -3306,7 +3306,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				}
 
-				if (pithamgetVoucherResponse.getResponseCode()
+			  else if (pithamgetVoucherResponse.getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -3515,11 +3515,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				else {
 
-					infoPay = new InfoPay(pithanUpdateVoucherResponse.getResponseCode(),
 
-							pithanUpdateVoucherResponse.getResponseDesc(), rrn, stan);
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
 
 					response = new BillPaymentResponse(infoPay, null, null);
+					
+					return response;
+
 
 				}
 			}
@@ -3648,6 +3651,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
 
+			
+			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
+
+				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+				return response;
+
+			}
+			
 			if (thardeepgetVoucherResponse != null) {
 				
 				if (thardeepgetVoucherResponse.getResponse() == null) {
@@ -3664,8 +3677,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 				
 				
-
-				if (thardeepgetVoucherResponse.getResponse().getResponseCode()
+				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -3698,6 +3710,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
+				
+				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
+							.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+
+					
 				billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
 				billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth();
 				billInquiryCode = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getResponseCode();
@@ -3711,15 +3728,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				amountRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getAmount();
 				cnicRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getCnicNo();
 
-				if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
-					return response;
-
-				}
-
+			
 				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
@@ -3771,10 +3780,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					response = new BillPaymentResponse(infoPay, null, null);
 					return response;
 				}
-
+				
+				
 				thardeepUpdateVoucherResponse = serviceCaller.get(paymentParams, ThardeepUpdateVoucherResponse.class,
 						rrn, Constants.ACTIVITY.BillPayment, BillerConstant.THARDEEP.THARDEEP);
+	
+			}		
+				
+				if(thardeepUpdateVoucherResponse!=null) {
 
+				
 				if (thardeepUpdateVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
@@ -3802,12 +3817,18 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
+				}
+				
 				else {
 
-					infoPay = new InfoPay(thardeepUpdateVoucherResponse.getResponse().getResponseCode(),
-							thardeepUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					
 					response = new BillPaymentResponse(infoPay, null, null);
+					
+					return response;
+
 
 				}
 
@@ -3944,6 +3965,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			uomgetVoucherResponse = serviceCaller.get(inquiryParams, UomGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.UOM.UOM);
 
+			
+			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
+
+				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+				return response;
+
+			}
+		
 			if (uomgetVoucherResponse != null) {
 
 				if (uomgetVoucherResponse.getResponse() == null) {
@@ -3959,7 +3990,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				}
 
-				if (uomgetVoucherResponse.getResponse().getResponseCode()
+				else if (uomgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
@@ -4011,6 +4042,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					}
 
 				
+				else if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+	
+				
 				billerNameRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getConsumerDetail();
 				billingMonthRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBilling_Month();
 				billStatusRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getBillStatus();
@@ -4018,17 +4052,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				amountWithInDueDateRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_Within_DueDate();
 				amountAfterDueDateRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
 
-				if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
-					return response;
-
-				}
-
 				
-				else if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
+
+				 if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
 							rrn, stan);
@@ -4128,6 +4154,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				uomUpdateVoucherResponse = serviceCaller.get(paymentParams, UomUpdateVoucherResponse.class, rrn,
 						Constants.ACTIVITY.BillPayment, BillerConstant.UOM.UOM);
 
+				
+				}	
+				
+				if(uomUpdateVoucherResponse!=null) {
+				
 				if (uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 					infoPay = new InfoPay(
@@ -4154,8 +4185,20 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					transactionStatus = Constants.Status.Success;
 
 					return response;
+				
+				  }
 				}
+				else {
 
+				
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					
+					response = new BillPaymentResponse(infoPay, null, null);
+					
+					return response;
+
+				}
 				
 			}
 

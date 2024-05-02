@@ -35,7 +35,7 @@ public class ReservedFieldsValidationServiceImpl implements ReservedFieldsValida
 	        long matchedFieldsCount = reservedFieldsMap.entrySet().stream()
 	                .filter(entry -> {
 	                    String reservedField = entry.getKey();
-	                    String requestValue = getRequestValue(billPaymentRequest, reservedField);
+	                    String requestValue = getRequestValue(billPaymentRequest, reservedField.trim());
 	                    String regex = entry.getValue();
 	                    return requestValue != null && Pattern.matches(regex, requestValue);
 	                })
