@@ -106,11 +106,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${fbr.identification.type}")
 	private String identificationType;
 
-	@Value("${fbr.bank.mnemonic}")
+	@Value("${uom.bank.mnemonic}")
 	private String bankMnemonic;
+
+	@Value("${uom.reserved}")
+	private String reserved;
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
+
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -3239,32 +3243,18 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
 		String transAuthId = request.getTxnInfo().getTranAuthId();
-		String amountPaidInDueDate = "";
-		String amountPaid = "";
+		String amountPaidInDueDate = "" , amountPaid = "";
 		String channel = "";
 		String username = "";
 
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		String billerName = "";
-		String billingMonth = "";
-		String duedate = "";
-		BigDecimal amountInDueToDate = null;
-		BigDecimal amountAfterDate = null;
-
-		String amountWithInDueDateRes = "";
-		BigDecimal amountDueDateRes = null;
-		String amountAfterDueDateRes;
-		BigDecimal amounAfterDateRes = null;
-		String billerNameRes = "";
-		String dueDateRes = "";
-		String billingMonthRes = "";
-		String billStatusCodeRes = "";
-		String billStatusDescRes = "";
+		
+		String amountWithInDueDateRes = "" , amountAfterDueDateRes= "";
+		String billerNameRes = "" , dueDateRes = "" , billingMonthRes = "" , billStatusCodeRes = "" , billStatusDescRes = "";
 		String pattern = "\\d+\\.\\d{2}";
-		String billerId;
-		String billerNumber;
+		String billerId = "" , billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
@@ -3287,7 +3277,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(rrnReq);
+			
+			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
 
+				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+				return response;
+
+			}
+			
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.Pithm.PITHM);
 
@@ -3339,51 +3338,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-				billerNameRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
-				billingMonthRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
-				billStatusCodeRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
-				billStatusDescRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();
-				dueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
-				amountWithInDueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
-						.getAmountWidDate();
-				amountAfterDueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
-						.getAmountAdDate();
-
-				if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-					infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-							Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-					response = new BillPaymentResponse(infoPay, null, null);
-					return response;
-
-				}
-
-				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
-
-					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
-							rrn, stan);
-
-					response = new BillPaymentResponse(infoPay, null, null);
-
-					transactionStatus = Constants.Status.Expired;
-
-					return response;
-
-				}
-
-				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
-
-					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.BLOCK,
-							rrn, stan);
-
-					response = new BillPaymentResponse(infoPay, null, null);
-
-					transactionStatus = Constants.Status.Block;
-
-					return response;
-
-				}
-
+				
 				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 
 
@@ -3412,25 +3367,46 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 
 				}
+				
+				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
-				if (amountWithInDueDateRes == null) {
+				
+				billerNameRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStudentName();
+				billingMonthRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getBillingMonth();
+				billStatusCodeRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatus();
+				billStatusDescRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getStatusDesc();
+				dueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult().getDueDate();
+				amountWithInDueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
+						.getAmountWidDate();
+				amountAfterDueDateRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
+						.getAmountAdDate();
 
-					amountDueDateRes = null;
+				 if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
+							rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Expired;
+
+					return response;
+
 				}
 
-				else {
+				else if (billStatusDescRes.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
 
-					amountDueDateRes = new BigDecimal(amountWithInDueDateRes);
+					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.BLOCK,
+							rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Block;
+
+					return response;
+
 				}
 
-				if (amountAfterDueDateRes == null) {
-
-					amounAfterDateRes = null;
-				} else {
-
-					amounAfterDateRes = new BigDecimal(amountAfterDueDateRes);
-
-				}
 
 				paymentParams.add(Constants.MPAY_REQUEST_METHODS.PITHAM_BILL_PAYMENT);
 				paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -3483,7 +3459,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				pithanUpdateVoucherResponse = serviceCaller.get(paymentParams, PithamUpdateVoucherResponse.class, rrn,
 						Constants.ACTIVITY.BillPayment, BillerConstant.Pithm.PITHM);
 
-				if (pithanUpdateVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 					infoPay = new InfoPay(
 							pithanUpdateVoucherResponse.getPithmUpdateVoucher().getGetpayvoucherresult()
@@ -3567,14 +3542,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
+						billerNameRes, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),
-						amountDueDateRes == null ? amountInDueToDate : amountDueDateRes,
-						amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes, Constants.ACTIVITY.BillPayment,
+						new BigDecimal(amountWithInDueDateRes),
+						new BigDecimal(amountAfterDueDateRes), Constants.ACTIVITY.BillPayment,
 						transactionStatus, channel, Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDateRes == null ? duedate : dueDateRes,
-						billingMonthRes == null ? billingMonth : billingMonthRes, paymentRefrence, bankName, bankCode,
+						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDateRes,
+						billingMonthRes, paymentRefrence, bankName, bankCode,
 						branchName, branchCode, "", "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
@@ -3611,23 +3586,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		String billerName = "";
-		String billingMonth = "";
-		String duedate = "";
-		BigDecimal amountInDueToDate = null;
-		BigDecimal amountAfterDate = null;
-
-		BigDecimal amountDueDateRes = null;
-		BigDecimal amounAfterDateRes = null;
-		String pattern = "\\d+\\.\\d{2}";
+	
+		BigDecimal amountInDueToDate = null , amountAfterDate = null ;
+		String pattern = "\\d+\\.\\d{2}" ; 
 		String paymentRefrence = utilMethods.getRRN();
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		String billerNameRes = "", billInquiryCode = "", billInquiryDesc = "", dueDateRes = "", billingMonthRes = "",
-				billStatusRes = "", tranAuthIdRes = "", amountRes = "", cnicRes = "";
-
-		String formattedDueDate = "";
+				billStatusRes = "", tranAuthIdRes = "", amountRes = "", cnicRes = "" , formattedDueDate = "";
 
 		try {
 
@@ -3755,15 +3722,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				}
 
-				if (amountRes == null) {
-
-					amountDueDateRes = null;
-				}
-
-				else {
-
-					amountDueDateRes = new BigDecimal(amountRes);
-				}
 
 				paymentParams.add(Constants.MPAY_REQUEST_METHODS.THARDEEP_BILL_PAYMENT);
 				paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -3785,13 +3743,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				thardeepUpdateVoucherResponse = serviceCaller.get(paymentParams, ThardeepUpdateVoucherResponse.class,
 						rrn, Constants.ACTIVITY.BillPayment, BillerConstant.THARDEEP.THARDEEP);
 	
-			}		
-				
-				if(thardeepUpdateVoucherResponse!=null) {
-
-				
-				if (thardeepUpdateVoucherResponse.getResponse().getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 					infoPay = new InfoPay(thardeepUpdateVoucherResponse.getResponse().getResponseCode(),
 							thardeepUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
@@ -3815,7 +3766,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					transactionStatus = Constants.Status.Success;
 
 					return response;
-				}
+				
 
 				}
 				
@@ -3874,15 +3825,13 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(),
-						amountDueDateRes == null ? amountInDueToDate : amountDueDateRes,
-						amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes, Constants.ACTIVITY.BillPayment,
+						billerNameRes, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(),amountInDueToDate,amountAfterDate, Constants.ACTIVITY.BillPayment,
 						transactionStatus, channel, Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()),
-						formattedDueDate == null ? duedate : formattedDueDate,
-						billingMonthRes == null ? billingMonth : billingMonthRes, paymentRefrence, bankName, bankCode,
+					    formattedDueDate,
+						billingMonthRes, paymentRefrence, bankName, bankCode,
 						branchName, branchCode, tranAuthIdRes, "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
@@ -3920,25 +3869,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		String billerName = "";
-		String billingMonth = "";
-		String duedate = "";
-		BigDecimal amountInDueToDate = null;
-		BigDecimal amountAfterDate = null;
-
-		String amountWithInDueDateRes = "";
-		BigDecimal amountDueDateRes = null;
-		String amountAfterDueDateRes;
-		BigDecimal amounAfterDateRes = null;
-		String billerNameRes = "";
-		String dueDateRes = "";
-		String billingMonthRes = "";
-		String billStatusRes = "";
+		BigDecimal amountInDueToDate = null ,amountAfterDate = null , requestAmountWithinDueDate=null , requestAmountafterduedate=null , txnAmount = null;
+		String amountWithInDueDateRes = "" , amountAfterDueDateRes , billerNameRes = "" , dueDateRes = "" , billingMonthRes = "" , billStatusRes = "";
 		String pattern = "\\d+\\.\\d{2}";
-		String billerId;
-		String billerNumber;
+		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
-
+		LocalDate dueDate = null;
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
@@ -4053,8 +3989,32 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				amountAfterDueDateRes = uomgetVoucherResponse.getResponse().getUomgetvoucher().getAmount_After_DueDate();
 
 				
+				
+				////////// Within due date conversion
+				
+				if (!amountWithInDueDateRes.isEmpty()) {
+					
+					requestAmountWithinDueDate = new BigDecimal(amountWithInDueDateRes.replaceFirst("^\\+?0+", ""));
+					requestAmountWithinDueDate = requestAmountWithinDueDate.divide(BigDecimal.valueOf(100));
 
-				 if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
+					// Set scale to 2 and round up
+					amountInDueToDate = requestAmountWithinDueDate.setScale(2, RoundingMode.UP);
+
+				}
+				
+
+				//////// After due date conversion
+				
+				if (!amountAfterDueDateRes.isEmpty()) {
+					
+					requestAmountafterduedate = new BigDecimal(amountAfterDueDateRes.replaceFirst("^\\+?0+", ""));
+					requestAmountafterduedate = requestAmountafterduedate.divide(BigDecimal.valueOf(100));
+
+					// Set scale to 2 and round up
+					amountAfterDate = requestAmountafterduedate.setScale(2, RoundingMode.UP);
+				}
+
+				if (billStatusRes.equalsIgnoreCase(Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_EXPIRED)) {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA, Constants.ResponseDescription.EXPIRED,
 							rrn, stan);
@@ -4081,26 +4041,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 
 
-
-				if (amountWithInDueDateRes == null) {
-
-					amountDueDateRes = null;
-				}
-
-				else {
-
-					amountDueDateRes = new BigDecimal(amountWithInDueDateRes);
-				}
-
-				if (amountAfterDueDateRes == null) {
-
-					amounAfterDateRes = null;
-				} else {
-
-					amounAfterDateRes = new BigDecimal(amountAfterDueDateRes);
-
-				}
-
 				paymentParams.add(Constants.MPAY_REQUEST_METHODS.UOM_BILL_PAYMENT);
 				paymentParams.add(request.getTxnInfo().getBillNumber().trim());
 				paymentParams.add(request.getTxnInfo().getTranAmount().trim());
@@ -4112,25 +4052,28 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentParams.add(rrn);
 				paymentParams.add(stan);
 
+
+				txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());				
+
+				
 				if (utilMethods.isValidInput(dueDateRes)) {
 					LocalDate currentDate = LocalDate.now();
 
 					try {
-						LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateRes);
+						
+						dueDate = utilMethods.parseDueDateWithoutDashes(dueDateRes);
 
 						///// Check due date conditions///
 
 						if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
-							if (Double.valueOf(request.getTxnInfo().getTranAmount())
-									.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
+							if (txnAmount.compareTo(amountInDueToDate) != 0) {
 								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 								response = new BillPaymentResponse(infoPay, null, null);
 								return response;
 							}
 						} else {
-							if (Double.valueOf(request.getTxnInfo().getTranAmount())
-									.compareTo(Double.valueOf(amountAfterDueDateRes)) != 0) {
+							if (txnAmount.compareTo(amountAfterDate) != 0) {
 								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 								response = new BillPaymentResponse(infoPay, null, null);
@@ -4142,8 +4085,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					}
 				} else {
 					LOG.info("Invalid due date input");
-					if (Double.valueOf(request.getTxnInfo().getTranAmount())
-							.compareTo(Double.valueOf(amountWithInDueDateRes)) != 0) {
+					if (txnAmount.compareTo(amountInDueToDate) != 0) {
 						infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 								Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 						response = new BillPaymentResponse(infoPay, null, null);
@@ -4242,14 +4184,13 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
+						billerNameRes, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),
-						amountDueDateRes == null ? amountInDueToDate : amountDueDateRes,
-						amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes, Constants.ACTIVITY.BillPayment,
+						amountInDueToDate,amountAfterDate, Constants.ACTIVITY.BillPayment,
 						transactionStatus, channel, Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDateRes == null ? duedate : dueDateRes,
-						billingMonthRes == null ? billingMonth : billingMonthRes, paymentRefrence, bankName, bankCode,
+						new BigDecimal(request.getTxnInfo().getTranAmount()),String.valueOf(dueDate),
+						billingMonthRes, paymentRefrence, bankName, bankCode,
 						branchName, branchCode, "", "");
 
 				LOG.info(" --- Bill Payment Method End --- ");

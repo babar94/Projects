@@ -101,9 +101,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Value("${fbr.bank.mnemonic}")
+	@Value("${uom.bank.mnemonic}")
 	private String bankMnemonic;
 
+	
 	
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -2341,7 +2342,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
 						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), amountInDueToDate, amountAfterDate,
+						request.getTxnInfo().getBillerId(), amountInDueToDate, amountInDueToDate,
 						Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, null,
 						formattedDueDate == null ? dueDate : formattedDueDate,
@@ -2529,9 +2530,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					
 					requestAmountWithInDueDate = new BigDecimal(amountResWithInDueDate.replaceFirst("^\\+?0+", ""));
+					requestAmountWithInDueDate = requestAmountWithInDueDate.divide(BigDecimal.valueOf(100));
 					amountInDueToDate = requestAmountWithInDueDate.setScale(2, RoundingMode.UP);
 
 					requestAmountAfterDueDate=new BigDecimal(amountResAfterDueDate.replaceFirst("^\\+?0+", ""));
+					requestAmountAfterDueDate = requestAmountAfterDueDate.divide(BigDecimal.valueOf(100));
 					amountAfterDate = requestAmountAfterDueDate.setScale(2, RoundingMode.UP);
 
 					

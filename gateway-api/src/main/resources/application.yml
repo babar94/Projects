@@ -82,6 +82,12 @@ fbr:
   bank:
    mnemonic: NBP	
 
+uom:
+  bank:
+   mnemonic: UOM
+  reserved:  NBP   
+
+  
 service:
   auth:
     multilogin: true

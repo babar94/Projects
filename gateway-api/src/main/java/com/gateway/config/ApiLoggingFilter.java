@@ -1,13 +1,11 @@
 package com.gateway.config;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +21,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-//import kong.unirest.JsonNode;
-//import kong.unirest.Unirest;
 
 @Component
 public class ApiLoggingFilter implements Filter {
@@ -34,14 +30,6 @@ public class ApiLoggingFilter implements Filter {
 	@Autowired
 	private FilterRequestResponseUtils filterRequestResponseUtils;
 
-//	@Value("${base.path}")
-//	private String basePath;
-//
-//	@Value("${bpmserver.ip}")
-//	private String bpmIp;
-//
-//	@Value("${bpmserver.sockettimeout}")
-//	private int socketTimeout;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -49,7 +37,6 @@ public class ApiLoggingFilter implements Filter {
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-//		ActivityLogs activityLogs = new ActivityLogs();
 
 		try {
 
@@ -62,7 +49,6 @@ public class ApiLoggingFilter implements Filter {
 			logger.info("method : {}", httpServletRequest.getMethod());
 			logger.info("method : {}", httpServletRequest.getHeaderNames().toString());
 
-	//		saveReqToDb(httpServletRequest, bufferedRequest, activityLogs);
 
 			final StringBuilder logRequest = new StringBuilder("HTTP ").append(httpServletRequest.getMethod())
 					.append(" \"").append(httpServletRequest.getServletPath()).append("\" ").append(", parameters=")
@@ -79,7 +65,6 @@ public class ApiLoggingFilter implements Filter {
 				logger.info(logResponse.toString());
 
 			}
-		//	saveResToDb(bufferedResponse, httpServletResponse, activityLogs);
 			MDC.clear();
 
 		} catch (Throwable e) {
@@ -89,57 +74,6 @@ public class ApiLoggingFilter implements Filter {
 
 	}
 
-//	public void saveReqToDb(HttpServletRequest httpServletRequest, BufferedRequestWrapper bufferedRequest,
-//			ActivityLogs activityLogs) throws IOException {
-//
-//		String path = httpServletRequest.getServletPath();// .substring(basePath.length());
-//
-//		String controllerString = path;
-//		String reqBody = bufferedRequest.getRequestBody();
-//		String reqHeaders = filterRequestResponseUtils.getReqHeaders(httpServletRequest);
-//
-//		logger.info("reqHeaders: {}", reqHeaders);
-//
-//		String userId = bufferedRequest.getHeader("UserId");
-//
-//		String ipAddress = bufferedRequest.getHeader("IP-Address");
-//		if (ipAddress == null || ipAddress.equals("null") || ipAddress.equals("")) {
-//			logger.info("getIPAddress: {}", httpServletRequest.getRemoteAddr());
-//			activityLogs.setIpAddress(httpServletRequest.getRemoteAddr());
-//		} else {
-//			logger.info("getIPAddress: {}", ipAddress);
-//			activityLogs.setIpAddress(ipAddress);
-//		}
-//
-//		activityLogs.setUserId(userId);
-//		activityLogs.setRequestBody(reqBody);
-//		activityLogs.setRequestDate(new Date());
-//		activityLogs.setActivity(controllerString);
-//		activityLogs.setRequestHeaders(reqHeaders);
-//
-//	}
-
-//	public void saveResToDb(BufferedResponseWrapper bufferedResponse, HttpServletResponse httpServletResponse,
-//			ActivityLogs activityLogs) throws IOException {
-//
-//		Integer status = httpServletResponse.getStatus();
-//		String responseBody = bufferedResponse.getContent();
-//
-//		String responseHeaders = filterRequestResponseUtils.getResHeaders(httpServletResponse);
-//
-//		activityLogs.setResponseHeaders(responseHeaders);
-//		activityLogs.setResponseCode(status.toString());
-//
-//		activityLogs.setResponseBody(responseBody);
-//		activityLogs.setResponseDate(new Date());
-//
-//		Unirest.post(bpmIp + "/activitylog").header("Content-Type", "application/json").body(activityLogs)
-//				.socketTimeout(socketTimeout).asJsonAsync(response -> {
-//					int code = response.getStatus();
-//					JsonNode body = response.getBody();
-//					logger.info("code {} call", code, body.toString());
-//				});
-//	}
 
 	@Override
 	public void destroy() {
