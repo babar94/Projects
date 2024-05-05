@@ -377,6 +377,20 @@ public class UtilMethods {
 		String result = dateBillingMonth.replace("-", "");
 		return result;
 	}
+	
+	
+	
+	public String formatAmountIso(double amount,int n) {
+		// Step 1: Remove the decimal point and currency symbol
+		long amountInMinorUnits = (long) (amount * 100);
+
+		// Step 2: Left-pad with zeros to make it 13 digits
+		String formattedAmount = String.format("%0"+n+"d", amountInMinorUnits);
+
+		return formattedAmount;
+	}
+
+	
 
 	// muhammad Sajid
 

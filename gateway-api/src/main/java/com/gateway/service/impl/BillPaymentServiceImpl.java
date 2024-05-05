@@ -4043,12 +4043,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentParams.add(Constants.MPAY_REQUEST_METHODS.UOM_BILL_PAYMENT);
 				paymentParams.add(request.getTxnInfo().getBillNumber().trim());
-				paymentParams.add(request.getTxnInfo().getTranAmount().trim());
+				paymentParams.add(utilMethods.formatAmountIso(Double.valueOf(request.getTxnInfo().getTranAmount()),12));
 				paymentParams.add(request.getTxnInfo().getTranDate().trim());
 				paymentParams.add(request.getTxnInfo().getTranTime().trim());
 				paymentParams.add(transAuthId);
 				paymentParams.add(bankMnemonic);
-				paymentParams.add(request.getAdditionalInfo().getReserveField1());
+				paymentParams.add(reserved);
 				paymentParams.add(rrn);
 				paymentParams.add(stan);
 
@@ -4097,11 +4097,80 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						Constants.ACTIVITY.BillPayment, BillerConstant.UOM.UOM);
 
 				
-				}	
+				
 				
 				if(uomUpdateVoucherResponse!=null) {
+					
+					
+						if (uomUpdateVoucherResponse.getResponse() == null) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+							response = new BillPaymentResponse(infoPay, null, null);
+
+							transactionStatus = Constants.Status.Fail;
+
+							return response;
+
+						}
+
+						else if (uomUpdateVoucherResponse.getResponse().getResponse_code()
+								.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+
+							response = new BillPaymentResponse(infoPay, null, null);
+
+							return response;
+						}
+
+						else if (uomUpdateVoucherResponse.getResponse().getResponse_code()
+								.equalsIgnoreCase(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+
+							infoPay = new InfoPay(uomUpdateVoucherResponse.getResponse().getResponse_code(),
+									uomUpdateVoucherResponse.getResponse().getResponse_desc(), rrn, stan);
+
+							response = new BillPaymentResponse(infoPay, null, null);
+
+							return response;
+						}
+
+						
+						
+						else if (uomUpdateVoucherResponse.getResponse().getResponse_code().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+
+						    billerId =request.getTxnInfo().getBillerId();
+							billerNumber = request.getTxnInfo().getBillNumber(); 
+							
+							infoPay = new InfoPay(uomgetVoucherResponse.getResponse().getResponseCode(),
+									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							transactionStatus = Constants.Status.Success;
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+							return response;
+
+						}
+
 				
-				if (uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+					else if (uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode()
+								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+		
 
 					infoPay = new InfoPay(
 							uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode(),
@@ -4128,8 +4197,25 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					return response;
 				
+				  
+				
 				  }
+						
 				}
+				else {
+
+					
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					
+					response = new BillPaymentResponse(infoPay, null, null);
+					
+					return response;
+
+				}
+				
+				
+				}	
 				else {
 
 				

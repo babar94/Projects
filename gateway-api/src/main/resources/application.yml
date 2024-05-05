@@ -85,7 +85,7 @@ fbr:
 uom:
   bank:
    mnemonic: UOM
-  reserved:  NBP   
+  reserved:     
 
   
 service:

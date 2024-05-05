@@ -15,7 +15,15 @@ import lombok.ToString;
 @ToString
 public class UomResponse {
 	
+	
+	@JsonProperty("response_code")
+    private String response_code;
+  
 	@JsonProperty("uom-updatevoucher")
     private UomUpdateVoucher uomUpdateVoucher;
   
+	@JsonProperty("response_desc")
+    private String response_desc;
+  
+	
 }
