@@ -20,8 +20,9 @@ spring:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
     url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
-    username: app_user
-    password: $3cUrity&6496
+    username : ENC(aF3V2Gker0iesnTTR30h2c7MVmCyi8kV)
+    password : ENC(lG2+V+BWsvTE1yGscQoO/IF9dM+xU3ea)
+    
     #username: paysys
     #password: paysys
 #    url: jdbc:sqlserver://nbp-db.database.windows.net:1433;database=nbp;
