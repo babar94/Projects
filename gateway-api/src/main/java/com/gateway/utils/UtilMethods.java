@@ -384,7 +384,7 @@ public class UtilMethods {
 		// Step 1: Remove the decimal point and currency symbol
 		long amountInMinorUnits = (long) (amount * 100);
 
-		// Step 2: Left-pad with zeros to make it 13 digits
+		// Step 2: Left-pad with zeros to make it 12 digits
 		String formattedAmount = String.format("%0"+n+"d", amountInMinorUnits);
 
 		return formattedAmount;

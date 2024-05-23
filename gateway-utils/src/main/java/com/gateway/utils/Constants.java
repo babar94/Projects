@@ -25,7 +25,8 @@ public class Constants {
 		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "12";
 		public static final String TRANSACTION_CAN_NOT_BE_PROCESSED = "13";
 		public static final String UNAUTHORISED_USER = "14";
-
+		public static final String BILL_EXPIRED = "15";
+		
 		public static final String DISABLED_EXCEPTION = "400";
 		public static final String UNAUTHORISED = "401";
 		public static final String INVALID_VALIDATION = "400";

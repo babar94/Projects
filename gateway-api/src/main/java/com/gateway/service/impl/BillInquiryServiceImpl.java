@@ -2455,6 +2455,20 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					return response;
 				}
 				
+				else if (uomgetVoucherResponse.getResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.BILL_EXPIRED)) {
+					
+					info = new Info(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED,
+							rrn, stan);
+
+					response = new BillInquiryResponse(info, null, null);
+
+					return response;
+
+				}
+
+				
+				
 				else if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 					PaymentLog paymentLog = paymentLogRepository
 							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(

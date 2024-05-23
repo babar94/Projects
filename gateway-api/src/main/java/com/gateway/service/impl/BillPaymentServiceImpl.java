@@ -45,6 +45,7 @@ import com.gateway.repository.SubBillerListRepository;
 import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -1786,6 +1787,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.PTA_BILL_PAYMENT);
 								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
+								ubpsBillParams.add(dataWrapper.getBranchCode());
+								ubpsBillParams.add(dataWrapper.getBranchName());
 								ubpsBillParams.add(Constants.Status.VOUCHER_UPDATED);
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
@@ -3948,6 +3951,19 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
+				else if (uomgetVoucherResponse.getResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.BILL_EXPIRED)) {
+					
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED,
+							rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+
+				}
+
+				
 				
 				else if (uomgetVoucherResponse.getResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 
