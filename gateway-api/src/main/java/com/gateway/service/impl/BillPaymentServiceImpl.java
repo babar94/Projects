@@ -1787,8 +1787,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.PTA_BILL_PAYMENT);
 								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
-								ubpsBillParams.add(dataWrapper.getBranchCode());
-								ubpsBillParams.add(dataWrapper.getBranchName());
+								ubpsBillParams.add(request.getBranchInfo().getBranchCode());
+								ubpsBillParams.add(request.getBranchInfo().getBranchName());
 								ubpsBillParams.add(Constants.Status.VOUCHER_UPDATED);
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
