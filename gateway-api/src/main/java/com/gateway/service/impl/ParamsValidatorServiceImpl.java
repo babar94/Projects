@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.gateway.entity.TransactionParams;
 import com.gateway.repository.TransactionParamsDao;
 import com.gateway.service.ParamsValidatorService;
+
+import kong.unirest.json.JSONObject;
 
 @Service
 public class ParamsValidatorServiceImpl implements ParamsValidatorService {

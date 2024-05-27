@@ -15,7 +15,6 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,10 @@ import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
 import com.gateway.repository.MPAYLogRepository;
-import com.gateway.response.BillInquiryValidationResponse;
-import com.gateway.response.billinquiryresponse.BillInquiryResponse;
-import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.utils.BillerConstant.Aiou;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kong.unirest.json.JSONObject;
 
 @Component
 public class UtilMethods {

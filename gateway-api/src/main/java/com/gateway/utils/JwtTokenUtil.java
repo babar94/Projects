@@ -2,10 +2,20 @@ package com.gateway.utils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +29,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -63,8 +74,10 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	// for retrieveing any information from token we will need the secret key
+	@SuppressWarnings("deprecation")
 	private Claims getAllClaimsFromToken(String token) {
-		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+	    return Jwts.parser().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+
 	}
 
 	// check if the token has expired
@@ -88,13 +101,26 @@ public class JwtTokenUtil implements Serializable {
 	// 3. According to JWS Compact
 	// Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 	// compaction of the JWT to a URL-safe string
+	@SuppressWarnings("deprecation")
 	private String doGenerateToken(Map<String, Object> claims, String subject, String channel) {
+			
 		long JWT_TOKEN_VALIDITY = jwtHours * jwtMins * jwtSecs;
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).setAudience(channel)
-				.signWith(SignatureAlgorithm.HS512, secret).compact();
-	}
 
+		return Jwts.builder()
+				  
+			      .subject(subject)
+			      .issuedAt(new Date(System.currentTimeMillis()))
+			      .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+			      .claims(claims)
+			      
+			      .compact();
+		
+//	 return	 Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+//			.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).setAudience(channel)
+//			.signWith(SignatureAlgorithm.HS512, secret).compact();
+}  
+		  
+		  
 	// validate token
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);
