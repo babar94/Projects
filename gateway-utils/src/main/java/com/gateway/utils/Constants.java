@@ -122,6 +122,12 @@ public class Constants {
 
 		public static final String UOM_BILL_INQUIRY = "uom-getvoucher";
 		public static final String UOM_BILL_PAYMENT = "uom-updatevoucher";
+		
+		
+		public static final String DLS_BILL_INQUIRY = "dls-getvoucher";
+		public static final String DLS_BILL_PAYMENT = "dls-updatevoucher";
+
+		
 
 	}
 

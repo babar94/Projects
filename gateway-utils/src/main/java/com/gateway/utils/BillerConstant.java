@@ -45,6 +45,11 @@ public interface BillerConstant {
 
 		String UOM = "UOM";
 	}
+	
+	interface DLS {
+
+		String DLS = "DLS";
+	}
 
 	
 }

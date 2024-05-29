@@ -18,7 +18,7 @@ import javax.crypto.SecretKey;
 @SpringBootApplication(scanBasePackages = { "com.gateway" })
 @EnableEncryptableProperties
 
-public class Application implements CommandLineRunner {
+public class Application  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -33,12 +33,6 @@ public class Application implements CommandLineRunner {
 		return encryptor;
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-		String secretString = Encoders.BASE64.encode(key.getEncoded());
-		System.out.println("Secret key: " + secretString);
-
-	}
+	
 
 }

@@ -19,7 +19,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
-    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
+    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_UAT;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
     username : ENC(aF3V2Gker0iesnTTR30h2c7MVmCyi8kV)
     password : ENC(lG2+V+BWsvTE1yGscQoO/IF9dM+xU3ea)
     
@@ -56,7 +56,7 @@ swagger:
 payment:
   pendingThresholdMinutes: 15
   pendingVoucherUpdateMessage: A Transaction for this voucher has already been made, but marking your voucher to paid for some reason. this will be fixed within a few hours.
-  pendningPaymentMessage: A Transaction for this voucher is pending, please wait while that transaction is successful of rejected.	
+  pendingPaymentMessage: A Transaction for this voucher is pending, please wait while that transaction is successful of rejected.	
   
   
 api:

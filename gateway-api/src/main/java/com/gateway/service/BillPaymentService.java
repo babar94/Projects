@@ -25,6 +25,12 @@ public interface BillPaymentService {
 	public BillPaymentResponse billPaymentThardeep(BillPaymentRequest request, HttpServletRequest httpRequestData);
 	
 	public BillPaymentResponse billPaymentUom(BillPaymentRequest request, HttpServletRequest httpRequestData);
+	
+	
+	public BillPaymentResponse billPaymentDls(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
+	
+	
 
 	
 

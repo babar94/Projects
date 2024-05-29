@@ -1,4 +1,4 @@
-package com.gateway.model.mpay.response.billinquiry.pta;
+package com.gateway.model.mpay.response.billinquiry.dls;
 
 import java.io.Serializable;
 
@@ -21,9 +21,10 @@ public class Response implements Serializable {
 
 	@JsonProperty(value = "response_code")
 	private String responseCode;
+
 	@JsonProperty(value = "response_desc")
 	private String responseDesc;
 	
-	@JsonProperty(value = "pta-getvoucher")
-	 private PtaGetVoucher ptaGetVoucher;
+	@JsonProperty(value = "dls-getvoucher")
+	private DlsGetVoucher dlsgetvoucher;
 }

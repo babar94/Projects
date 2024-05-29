@@ -25,6 +25,7 @@ import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
+import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
@@ -296,6 +297,38 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									}
 
 									////////// Univesity of Malakand ///////
+									
+									
+									
+								
+									
+						                      ////////// Driving licsence sindh ///////
+					
+										else if (billerDetail.getBillerName()
+												.equalsIgnoreCase(BillerConstant.DLS.DLS)
+												&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+					
+											switch (subBillerDetail.getSubBillerName()) {
+					
+											case BillerConstant.DLS.DLS:
+												billInquiryResponse = billInquiryDls(request, httpRequestData);
+												break;
+					
+											default:
+												LOG.info("subBiller does not exists.");
+												info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
+														Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+												billInquiryResponse = new BillInquiryResponse(info, null, null);
+					
+												break;
+											}
+										}
+									
+									
+	                                            ////////// Driving licsence sindh ///////
+ 
+									
+									
 
 									else if (type.equalsIgnoreCase(Constants.BillerType.OFFLINE_BILLER)) {
 										// offline apis
@@ -2759,5 +2792,220 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		return response;
 
 	}
+	
+	
+	
+	
+	@Override
+	public BillInquiryResponse billInquiryDls(BillInquiryRequest request, HttpServletRequest httpRequestData) {
+
+		LOG.info("Dls Bill Inquiry Request {}  ", request.toString());
+
+		BillInquiryResponse response = null;
+		DlsGetVoucherResponse dlsgetVoucherResponse = null;
+		Info info = null;
+		Date strDate = new Date();
+		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
+		String stan = request.getInfo().getStan(); // utilMethods.getStan();
+		String transAuthId = "";
+		String transactionStatus = "";
+
+		double transactionFees = 0;
+		String cnic = "";
+		String mobile = "";
+		String address = "";
+		String name = "";
+		String billStatus = "";
+		double dbAmount = 0;
+		double dbTax = 0;
+		double dbTransactionFees = 0;
+		double dbTotal = 0;
+		String province = "";
+		String channel = "";
+		String username = "";
+		String amountPaidInDueDate = "";
+		String datePaid = "";
+		String billingMonth = "";
+		String dueDAte = "";
+		String oneBillNumber = "";
+		BigDecimal requestAmount = null, amountPaid = null;
+		BigDecimal amountInDueDate = null;
+		String amountAfterDueDate = "";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+
+		try {
+
+			if (request.getBranchInfo() != null) {
+				bankName = request.getBranchInfo().getBankName();
+				bankCode = request.getBranchInfo().getBankCode();
+				branchName = request.getBranchInfo().getBranchName();
+				branchCode = request.getBranchInfo().getBranchCode();
+			}
+
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+			username = result[0];
+			channel = result[1];
+
+			ArrayList<String> inquiryParams = new ArrayList<String>();
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.DLS_BILL_INQUIRY);
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
+			inquiryParams.add(rrn);
+			inquiryParams.add(stan);
+
+			dlsgetVoucherResponse = serviceCaller.get(inquiryParams, DlsGetVoucherResponse.class, rrn,
+					Constants.ACTIVITY.BillInquiry, BillerConstant.DLS.DLS);
+
+			if (dlsgetVoucherResponse != null) {
+				info = new Info(dlsgetVoucherResponse.getResponse().getResponseCode(),
+						dlsgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
+				if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
+
+					String status = "";
+
+					if (dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null) {
+						
+						requestAmount = new BigDecimal(dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getAmount().replaceFirst("^\\+?0+", ""));
+						amountInDueDate = requestAmount.setScale(2, RoundingMode.UP);
+
+						
+						amountAfterDueDate = String.valueOf(amountInDueDate);
+
+						name = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getName();
+						mobile = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getMobile_number();
+						billStatus = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getStatus();
+
+						
+						dbTotal = amountInDueDate.doubleValue();
+
+						billStatus = billStatus.trim().equals("1") ? Constants.BILL_STATUS.BILL_UNPAID
+								: Constants.BILL_STATUS.BILL_PAID;
+						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+							PaymentLog paymentLog = paymentLogRepository
+									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+											request.getTxnInfo().getBillerId().trim(),
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ResponseCodes.OK);
+							if (paymentLog != null) {
+								datePaid = paymentLog.getTranDate();
+								status = "P";
+								transAuthId = paymentLog.getTranAuthId();
+								amountPaid = paymentLog.getAmountPaid();
+
+							} else {
+								info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+										Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+								response = new BillInquiryResponse(info, null, null);
+								return response;
+							}
+
+							transactionStatus = Constants.Status.Success;
+						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+							status = "U";
+							transAuthId = "";
+							datePaid = "";
+
+							transactionStatus = Constants.Status.Pending;
+
+						} else {
+							transactionStatus = Constants.Status.Fail;
+							status = "B";
+						}
+
+						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+								request.getTxnInfo().getBillNumber(), name, status, dueDAte,
+								String.valueOf(amountInDueDate), amountAfterDueDate, transAuthId, oneBillNumber);
+
+						AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+								request.getAdditionalInfo().getReserveField2(),
+								request.getAdditionalInfo().getReserveField3(),
+								request.getAdditionalInfo().getReserveField4(),
+								request.getAdditionalInfo().getReserveField5(),
+								request.getAdditionalInfo().getReserveField6(),
+								request.getAdditionalInfo().getReserveField7(),
+								request.getAdditionalInfo().getReserveField8(),
+								request.getAdditionalInfo().getReserveField9(),
+								request.getAdditionalInfo().getReserveField10());
+
+						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+					} else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+							.equals(Constants.ResponseCodes.NOT_FOUND)) {
+						info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+
+					} else {
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+					}
+
+				} else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.NOT_FOUND)) {
+					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				} else {
+					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
+							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+				}
+
+			} else {
+				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
+						stan);
+				response = new BillInquiryResponse(info, null, null);
+
+			}
+
+		} catch (Exception ex) {
+
+			LOG.error("Exception {}", ex);
+
+		} finally {
+
+			Date responseDate = new Date();
+			try {
+
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
+
+				auditLoggingService.auditLog(Constants.ACTIVITY.BillInquiry, response.getInfo().getResponseCode(),
+						response.getInfo().getResponseDesc(), requestAsString, responseAsString, strDate, strDate, rrn,
+						request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(), channel, username);
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+			try {
+
+				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
+						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
+						request.getTxnInfo().getBillerId(), amountPaid, amountInDueDate,
+						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
+						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
+						branchCode);
+
+			} catch (Exception ex) {
+				LOG.error("{}", ex);
+			}
+
+		}
+		return response;
+
+	}
+	
+	
+	
+	
 
 }
