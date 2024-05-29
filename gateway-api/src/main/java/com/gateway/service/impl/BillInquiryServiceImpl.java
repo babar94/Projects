@@ -105,9 +105,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Value("${uom.bank.mnemonic}")
 	private String bankMnemonic;
-
+	@Autowired
 	private PgPaymentLogRepository pgPaymentLogRepository;
-
+	@Autowired
 	private PendingPaymentRepository pendingPaymentRepository;
 
 	@Override
