@@ -2,20 +2,15 @@ package com.gateway.utils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -73,11 +68,16 @@ public class JwtTokenUtil implements Serializable {
 		return channel;
 	}
 
-	// for retrieveing any information from token we will need the secret key
-	@SuppressWarnings("deprecation")
 	private Claims getAllClaimsFromToken(String token) {
-	    return Jwts.parser().setSigningKey(secret).build().parseClaimsJws(token).getBody();
 
+		return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+
+	}
+
+	private SecretKey getSigningKey() {
+		byte[] keyBytes = Decoders.BASE64.decode(secret);
+		
+		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	// check if the token has expired
@@ -95,33 +95,16 @@ public class JwtTokenUtil implements Serializable {
 		return doGenerateToken(claims, username, channel);
 	}
 
-	// while creating the token -
-	// 1. Define claims of the token, like Issuer, Expiration, Subject, and the ID
-	// 2. Sign the JWT using the HS512 algorithm and secret key.
-	// 3. According to JWS Compact
-	// Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-	// compaction of the JWT to a URL-safe string
-	@SuppressWarnings("deprecation")
 	private String doGenerateToken(Map<String, Object> claims, String subject, String channel) {
-			
+
 		long JWT_TOKEN_VALIDITY = jwtHours * jwtMins * jwtSecs;
 
-		return Jwts.builder()
-				  
-			      .subject(subject)
-			      .issuedAt(new Date(System.currentTimeMillis()))
-			      .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-			      .claims(claims)
-			      
-			      .compact();
-		
-//	 return	 Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-//			.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).setAudience(channel)
-//			.signWith(SignatureAlgorithm.HS512, secret).compact();
-}  
-		  
-		  
-	// validate token
+		return Jwts.builder().subject(subject).issuedAt(new Date(System.currentTimeMillis()))
+				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(getSigningKey())
+				.compact();
+
+	}
+
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -147,7 +130,7 @@ public class JwtTokenUtil implements Serializable {
 		String[] result = new String[2];
 		String requestTokenHeader = null;
 		requestTokenHeader = request.getHeader("X-Auth-Token");
-		if(requestTokenHeader==null) {
+		if (requestTokenHeader == null) {
 			requestTokenHeader = request.getHeader("Authorization");
 		}
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
@@ -162,7 +145,7 @@ public class JwtTokenUtil implements Serializable {
 			} catch (ExpiredJwtException e) {
 				System.out.println("JWT Token has expired");
 			}
-		} 
+		}
 		return result;
 
 	}

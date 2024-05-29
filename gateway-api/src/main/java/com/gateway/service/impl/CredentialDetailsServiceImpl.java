@@ -107,6 +107,8 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 		} catch (Exception e) {
 			response = new AuthenticationResponse(Constants.ResponseCodes.UNABLE_TO_PROCESS,
 					ResponseDescription.UNABLE_TO_PROCESS);
+			LOG.debug("Exception " + e);
+			LOG.info("Exception " + e);
 
 			return response;
 		} finally {

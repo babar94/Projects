@@ -1,5 +1,5 @@
 jwt:
-  secret: javainuse
+  secret: 4t2mHsym2c/S39GLy8VameEgaiyB4XuPV1j/XfKw1qs=
   hours: 1
   mins: 45
   secs: 60
