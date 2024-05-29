@@ -114,7 +114,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
 
-		LOG.info("================ REQUEST billInquiry ================");
+		LOG.info("================ REQUEST billInquiry ===============");
 		BillInquiryResponse billInquiryResponse = null;
 		BillInquiryValidationResponse billInquiryValidationResponse = null;
 
