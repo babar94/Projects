@@ -52,6 +52,13 @@ springfox.documentation.swagger.v2.path: /docs
 swagger:
   enabled: true  
   
+  
+payment:
+  pendingThresholdMinutes: 15
+  pendingVoucherUpdateMessage: A Transaction for this voucher has already been made, but marking your voucher to paid for some reason. this will be fixed within a few hours.
+  pendningPaymentMessage: A Transaction for this voucher is pending, please wait while that transaction is successful of rejected.	
+  
+  
 api:
   title: OPEN CONNECT API
   description: REST Services for interacting with the exchange
