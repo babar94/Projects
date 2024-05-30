@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.gateway.utils.EncryptionUtils;
 import com.gateway.utils.FilterRequestResponseUtils;
 import com.gateway.utils.FilterRequestResponseUtils.BufferedRequestWrapper;
 import com.gateway.utils.FilterRequestResponseUtils.BufferedResponseWrapper;
@@ -21,6 +22,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kong.unirest.json.JSONObject;
 
 @Component
 public class ApiLoggingFilter implements Filter {
@@ -45,14 +47,16 @@ public class ApiLoggingFilter implements Filter {
 			BufferedResponseWrapper bufferedResponse = new BufferedResponseWrapper(httpServletResponse);
 			String reqBody = bufferedRequest.getRequestBody();
 
-			logger.info("reqBody : {}", reqBody);
+            String encryptedBody = encryptSensitiveData(reqBody);
+
+			logger.info("reqBody : {}", encryptedBody);
 			logger.info("method : {}", httpServletRequest.getMethod());
 			logger.info("method : {}", httpServletRequest.getHeaderNames().toString());
 
 
 			final StringBuilder logRequest = new StringBuilder("HTTP ").append(httpServletRequest.getMethod())
 					.append(" \"").append(httpServletRequest.getServletPath()).append("\" ").append(", parameters=")
-					.append(", body=").append(bufferedRequest.getRequestBody()).append(", remote_address=")
+					.append(", body=").append(encryptedBody).append(", remote_address=")
 					.append(httpServletRequest.getRemoteAddr());
 			logger.info(logRequest.toString());
 
@@ -61,7 +65,6 @@ public class ApiLoggingFilter implements Filter {
 
 			} finally {
 				StringBuilder logResponse = new StringBuilder("HTTP RESPONSE ").append(bufferedResponse.getContent());
-				//logger.info(logResponse.length() >= 200 ? logResponse.substring(0, 200) : logResponse.toString());
 				logger.info(logResponse.toString());
 
 			}
@@ -73,6 +76,23 @@ public class ApiLoggingFilter implements Filter {
 		}
 
 	}
+	
+	private String encryptSensitiveData(String data) {
+        try {
+            // Parse JSON and encrypt sensitive fields
+            JSONObject json = new JSONObject(data);
+            if (json.has("username")) {
+                json.put("username", EncryptionUtils.encrypt(json.getString("username")));
+            }
+            if (json.has("password")) {
+                json.put("password", EncryptionUtils.encrypt(json.getString("password")));
+            }
+            return json.toString();
+        } catch (Exception e) {
+            logger.error("Error encrypting data", e);
+            return data; // Fallback to original data if encryption fails
+        }
+    }
 
 
 	@Override

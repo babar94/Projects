@@ -46,7 +46,7 @@ public class Constants {
 		public static final String BILL_ALREADY_PAID = "Bill Already Paid";
 		public static final String BAD_TRANSACTION = "Unknown Error / Bad Transaction";
 		public static final String DUPLICATE_TRANSACTION = "Duplicate Transaction";
-		public static final String PAYMENT_NOT_FOUND = "Payment info not found.";
+		public static final String PAYMENT_NOT_FOUND = "Payment not found.";
 		public static final String UNABLE_TO_PROCESS = "Unable to process at this time, please try again later.";
 		public static final String AMMOUNT_MISMATCH = "Amount mismatch.";
 		public static final String DUPLICATE_TRANSACTION_AUTH_ID = "duplicate Tran-Auth Id.";
@@ -93,6 +93,7 @@ public class Constants {
 		public static final String Processing = "Processing";
 		public static final String Pending = "Pending";
 		public static final String VOUCHER_UPDATED = "1";
+		public static final String VOUCHER_UPDATED_DLS = "2";
 		public static final String Expired = "Expired";
 		public static final String Block = "Block";
 

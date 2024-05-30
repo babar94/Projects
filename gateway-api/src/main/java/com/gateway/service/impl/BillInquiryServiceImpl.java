@@ -302,30 +302,30 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									
 								
 									
-						                      ////////// Driving licsence sindh ///////
-					
-										else if (billerDetail.getBillerName()
-												.equalsIgnoreCase(BillerConstant.DLS.DLS)
-												&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-					
-											switch (subBillerDetail.getSubBillerName()) {
-					
-											case BillerConstant.DLS.DLS:
-												billInquiryResponse = billInquiryDls(request, httpRequestData);
-												break;
-					
-											default:
-												LOG.info("subBiller does not exists.");
-												info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
-														Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-												billInquiryResponse = new BillInquiryResponse(info, null, null);
-					
-												break;
-											}
-										}
-									
-									
-	                                            ////////// Driving licsence sindh ///////
+			                      ////////// Driving licsence sindh ///////
+		
+							else if (billerDetail.getBillerName()
+									.equalsIgnoreCase(BillerConstant.DLS.DLS)
+									&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+		
+								switch (subBillerDetail.getSubBillerName()) {
+		
+								case BillerConstant.DLS.DLS:
+									billInquiryResponse = billInquiryDls(request, httpRequestData);
+									break;
+		
+								default:
+									LOG.info("subBiller does not exists.");
+									info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
+											Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+									billInquiryResponse = new BillInquiryResponse(info, null, null);
+		
+									break;
+								}
+							}
+						
+						
+	                                ////////// Driving licsence sindh ///////
  
 									
 									
@@ -2989,7 +2989,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueDate,
-						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
+						amountAfterDueDate==null || amountAfterDueDate.equals("") ? null : new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,

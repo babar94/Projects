@@ -4479,7 +4479,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.DLS_BILL_PAYMENT);
 								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
-								ubpsBillParams.add(Constants.Status.VOUCHER_UPDATED);
+								ubpsBillParams.add(Constants.Status.VOUCHER_UPDATED_DLS);
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
 
@@ -4511,41 +4511,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										transactionStatus = Constants.Status.Success;
 										billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-									} else if (dlsUpdateVoucherResponse.getResponse().getResponseCode().equals("402")) {
-										infoPay = new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-												Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-										transactionStatus = Constants.Status.Fail;
 									} else {
 										infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 												Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+										
+										response = new BillPaymentResponse(infoPay,null,null);
 									}
 
 								} else { // Second time bill inquiry to pe call from here and if bill is paid then
@@ -4587,57 +4557,21 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											} else {
 												infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 														Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-												txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-														request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-												additionalInfoPay = new AdditionalInfoPay(
-														request.getAdditionalInfo().getReserveField1(),
-														request.getAdditionalInfo().getReserveField2(),
-														request.getAdditionalInfo().getReserveField3(),
-														request.getAdditionalInfo().getReserveField4(),
-														request.getAdditionalInfo().getReserveField5(),
-														request.getAdditionalInfo().getReserveField6(),
-														request.getAdditionalInfo().getReserveField7(),
-														request.getAdditionalInfo().getReserveField8(),
-														request.getAdditionalInfo().getReserveField9(),
-														request.getAdditionalInfo().getReserveField10());
-												response = new BillPaymentResponse(infoPay, txnInfoPay,
-														additionalInfoPay);
+												response = new BillPaymentResponse(infoPay,null,
+														null);
 											}
 										} else {
+											
 											infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-													Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
-											response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+													Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);											
+											response = new BillPaymentResponse(infoPay,null,null);
 										}
+										
 									} else {
 										infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 												Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+										
+										response = new BillPaymentResponse(infoPay,null,null);
 										transactionStatus = Constants.Status.Fail;
 									}
 
@@ -4670,75 +4604,40 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_BLOCK)) {
 							infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
 									Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
-							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-									request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-									request.getAdditionalInfo().getReserveField2(),
-									request.getAdditionalInfo().getReserveField3(),
-									request.getAdditionalInfo().getReserveField4(),
-									request.getAdditionalInfo().getReserveField5(),
-									request.getAdditionalInfo().getReserveField6(),
-									request.getAdditionalInfo().getReserveField7(),
-									request.getAdditionalInfo().getReserveField8(),
-									request.getAdditionalInfo().getReserveField9(),
-									request.getAdditionalInfo().getReserveField10());
-							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+							
+							response = new BillPaymentResponse(infoPay,null,null);
 							transactionStatus = Constants.Status.Fail;
 						}
 					} else if (dlsgetVoucherResponse.getResponse().getResponseCode()
 							.equals(Constants.ResponseCodes.NOT_FOUND)) {
 						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-						txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-						additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-								request.getAdditionalInfo().getReserveField2(),
-								request.getAdditionalInfo().getReserveField3(),
-								request.getAdditionalInfo().getReserveField4(),
-								request.getAdditionalInfo().getReserveField5(),
-								request.getAdditionalInfo().getReserveField6(),
-								request.getAdditionalInfo().getReserveField7(),
-								request.getAdditionalInfo().getReserveField8(),
-								request.getAdditionalInfo().getReserveField9(),
-								request.getAdditionalInfo().getReserveField10());
-						response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+						response = new BillPaymentResponse(infoPay,null,null);
 						transactionStatus = Constants.Status.Fail;
 
 					} else {
 						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-						txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-						additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-								request.getAdditionalInfo().getReserveField2(),
-								request.getAdditionalInfo().getReserveField3(),
-								request.getAdditionalInfo().getReserveField4(),
-								request.getAdditionalInfo().getReserveField5(),
-								request.getAdditionalInfo().getReserveField6(),
-								request.getAdditionalInfo().getReserveField7(),
-								request.getAdditionalInfo().getReserveField8(),
-								request.getAdditionalInfo().getReserveField9(),
-								request.getAdditionalInfo().getReserveField10());
-						response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+						response = new BillPaymentResponse(infoPay, null,null);
 						transactionStatus = Constants.Status.Fail;
 					}
 
-				} else {
+				}
+				
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.NOT_FOUND)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					response = new BillPaymentResponse(infoPay,null,null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+				
+				else {
 					infoPay = new InfoPay(Constants.ResponseCodes.BAD_TRANSACTION,
 							Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan);
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					
+					response = new BillPaymentResponse(infoPay,null,null);
 
 					transactionStatus = Constants.Status.Fail;
 					LOG.info("Calling Bill payment End");
