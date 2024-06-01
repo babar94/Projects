@@ -27,23 +27,12 @@ public class PgPaymentLog {
 	private String cnic;
 	private String mobileNo;
 	private String name;
-	//private String consumerNumber;
 	private String billerId;
 	private Integer  amount;
 	private Integer  charges;
 	private String activity;
-	//private String paymentRefNo;
-	//private String billerNumber;
 	private String transactionStatus;
-	//private String address;
-	//private Integer  transactionFees;
-	//private Integer  taxAmount;
 	private Integer  totalAmount;
-	//private String channel;
-//	private String tranDate;
-//	private String tranTime;
-//	private String province;
-//	private String tranAuthId;
 	private String billStatus;
 	private Integer  retryCount;
 	private String voucherId;
@@ -57,7 +46,6 @@ public class PgPaymentLog {
 	private Integer  nbpFee;
 	private String toAccount;
 	private String fromAccount;
-	//private Float total;
 	private String baflPaymentIndicator;
 
 }

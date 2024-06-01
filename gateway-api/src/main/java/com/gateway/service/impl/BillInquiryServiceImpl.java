@@ -473,7 +473,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String transAuthId = ""; // utilMethods.getStan();
 		String transactionStatus = "";
 
-		double transactionFees = 0;
+		
 		String cnic = "";
 		String mobile = "";
 		String address = "";
@@ -759,10 +759,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, new BigDecimal(amountInDueToDate),
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode);
+						branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1116,6 +1116,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
 			}
+			
 			try {
 
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
@@ -1123,10 +1124,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, new BigDecimal(amountInDueToDate),
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode);
+						branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1349,10 +1350,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueToDate,
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode);
+						branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1628,9 +1629,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueToDate, amountInDueToDate,
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, dbBillStatus,
+						transactionStatus, address, dbTotal, channel, dbBillStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1909,9 +1910,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueToDate, amountAfterDueDate,
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, dbBillStatus,
+						transactionStatus, address, dbTotal, channel, dbBillStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2226,15 +2227,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
+						(billerNameRes == null ? billerName : billerNameRes), request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),
-						amountDueDateRes == null ? amountInDueToDate : amountDueDateRes,
-						amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes, Constants.ACTIVITY.BillInquiry,
+						(amountDueDateRes == null ? amountInDueToDate : amountDueDateRes),
+						(amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes), Constants.ACTIVITY.BillInquiry,
 						transactionStatus, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId, null,
-						dueDateRes == null ? dueDate : dueDateRes,
-						billingMonthRes == null ? billingMonth : billingMonthRes, "", bankName, bankCode, branchName,
-						branchCode, "", null);
+						(dueDateRes == null ? dueDate : dueDateRes),
+						(billingMonthRes == null ? billingMonth : billingMonthRes), "", bankName, bankCode, branchName,
+						branchCode, "",username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2264,10 +2265,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal amountInDueToDate = null;
 		BigDecimal amountAfterDate = null;
 		BigDecimal amountPaid;
-		String billerName = "";
-		String dueDate = "";
-		String billingMonth = "";
-		String transAuthId = "";
+	
 
 		String amountWithInDueDateRes = "";
 		BigDecimal amountDueDateRes = null;
@@ -2400,7 +2398,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), billerNameRes, billStatusRes, formattedDueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountInDueToDate), transAuthId, "");
+							String.valueOf(amountInDueToDate), String.valueOf(amountInDueToDate), "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(
 							thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillingMonth(),
@@ -2469,13 +2467,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
+						billerNameRes, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueToDate, amountInDueToDate,
 						Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, null,
-						formattedDueDate == null ? dueDate : formattedDueDate,
-						billingMonthRes == null ? billingMonth : billingMonthRes, "", bankName, bankCode, branchName,
-						branchCode, tranAuthIdRes, String.valueOf(amountInDueToDate));
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", null,
+						formattedDueDate,
+						billingMonthRes, "", bankName, bankCode, branchName,
+						branchCode, tranAuthIdRes,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2504,7 +2502,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String channel = "";
 		BigDecimal amountInDueToDate = null;
 		BigDecimal amountAfterDate = null;
-		BigDecimal amountPaid;
+		BigDecimal amountPaid = null;
 		String billerName = "", billingMonth = "", transAuthId = "", billstatus = "";
 
 		BigDecimal requestAmountWithInDueDate = null;
@@ -2773,13 +2771,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						billerNameRes == null ? billerName : billerNameRes, request.getTxnInfo().getBillNumber(),
+						(billerNameRes == null ? billerName : billerNameRes), request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueToDate, amountAfterDate,
 						Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, null,
-						dueDateRes == null ? dueDate : dueDateRes,
-						billingMonthRes == null ? billingMonth : billingMonthRes, "", bankName, bankCode, branchName,
-						branchCode, tranAuthIdRes, String.valueOf(amountInDueToDate));
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, amountPaid,
+						(dueDateRes == null ? dueDate : dueDateRes),
+						(billingMonthRes == null ? billingMonth : billingMonthRes), "", bankName, bankCode, branchName,
+						branchCode, tranAuthIdRes,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2989,11 +2987,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueDate,
-						amountAfterDueDate==null || amountAfterDueDate.equals("") ? null : new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						(amountAfterDueDate==null || amountAfterDueDate.equals("") ? null : new BigDecimal(amountAfterDueDate)), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
+						request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode);
+						branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

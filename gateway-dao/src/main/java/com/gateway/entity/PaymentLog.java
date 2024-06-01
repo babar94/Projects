@@ -88,20 +88,23 @@ public class PaymentLog implements Serializable {
 	@Column(name = "address")
 	private String address;
 
-	@Column(name = "transaction_Fees")
-	private double transactionFees;
+//	@Column(name = "transaction_Fees")
+//	private double transactionFees;
 
-	@Column(name = "tax_Amount")
-	private double taxAmount;
+//	@Column(name = "tax_Amount")
+//	private double taxAmount;
 
-	@Column(name = "amount")
-	private String amount;
+//	@Column(name = "amount")
+//	private String amount;
 	
 	@Column(name = "total")
 	private double total;
 
 	@Column(name = "channel")
 	private String channel;
+	
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "bill_Status")
 	private String billStatus;
@@ -146,8 +149,10 @@ public class PaymentLog implements Serializable {
 	
 	// new added on 20-03-2024
 
-	@Column(name = "biller_auth_id")
-	private String billerAuthId;
+	// changed on 31-05-2024
+
+	@Column(name = "thirdparty_auth_id")
+	private String thirdparty_auth_id;
 
 
 }

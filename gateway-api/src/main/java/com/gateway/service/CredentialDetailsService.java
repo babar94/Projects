@@ -9,6 +9,5 @@ import com.gateway.response.AuthenticationResponse;
 public interface CredentialDetailsService {
 
 	public AuthenticationResponse authenticatedToken(AuthenticationRequest authenticationRequest);
-//	public UserDetails loadUserByUsername(String username);
 	
 }

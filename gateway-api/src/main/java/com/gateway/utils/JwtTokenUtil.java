@@ -95,12 +95,14 @@ public class JwtTokenUtil implements Serializable {
 		return doGenerateToken(claims, username, channel);
 	}
 
+	@SuppressWarnings("deprecation")
 	private String doGenerateToken(Map<String, Object> claims, String subject, String channel) {
 
 		long JWT_TOKEN_VALIDITY = jwtHours * jwtMins * jwtSecs;
 
-		return Jwts.builder().subject(subject).issuedAt(new Date(System.currentTimeMillis()))
+		return Jwts.builder().setClaims(claims).subject(subject).issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(getSigningKey())
+				
 				.compact();
 
 	}

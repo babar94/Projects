@@ -982,9 +982,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), inquiryTotalAmountbdUp, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1253,9 +1253,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), inquiryTotalAmountbdUp, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1761,9 +1761,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), requestAmount, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2184,9 +2184,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2728,9 +2728,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), requestAmountDb, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3309,10 +3309,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), txnAmount, amountInDueToDate, amountAfterDueDate,
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
-						request.getTxnInfo().getBillNumber(), transactionStatus, address, transactionFees, dbTax,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode);
+						branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3644,7 +3644,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						Constants.ACTIVITY.BillPayment, transactionStatus, channel, Constants.BILL_STATUS.BILL_PAID,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDateRes, billingMonthRes,
-						paymentRefrence, bankName, bankCode, branchName, branchCode, "", "");
+						paymentRefrence, bankName, bankCode, branchName, branchCode, "",username);
 
 				LOG.info(" --- Bill Payment Method End --- ");
 
@@ -3917,7 +3917,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), formattedDueDate, billingMonthRes,
-						paymentRefrence, bankName, bankCode, branchName, branchCode, tranAuthIdRes, "");
+						paymentRefrence, bankName, bankCode, branchName, branchCode, tranAuthIdRes,username);
 
 				LOG.info(" --- Bill Payment Method End --- ");
 
@@ -4353,7 +4353,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), billingMonthRes,
-						paymentRefrence, bankName, bankCode, branchName, branchCode, "", "");
+						paymentRefrence, bankName, bankCode, branchName, branchCode, "",username);
 
 				LOG.info(" --- Bill Payment Method End --- ");
 
@@ -4372,7 +4372,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("Inside billPaymentPta method ");
 		BillPaymentResponse response = null;
 		DlsGetVoucherResponse dlsgetVoucherResponse = null;
-		Date responseDate = new Date();
+		Date requestedDate = new Date();
 		DlsUpdateVoucherResponse dlsUpdateVoucherResponse = null;
 		Date strDate = new Date();
 		InfoPay infoPay = null;
@@ -4669,14 +4669,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 			try {
 
-				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
+				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountInDueDate, dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, transactionFees, dbTax, dbTotal, channel, billStatus,
+						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode);
+						bankName, bankCode, branchName, branchCode,username);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

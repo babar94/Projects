@@ -1,6 +1,7 @@
 package com.gateway.service.impl;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ import com.gateway.service.CredentialDetailsService;
 import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseDescription;
 import com.gateway.utils.JwtTokenUtil;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 @Service
 public class CredentialDetailsServiceImpl implements CredentialDetailsService {
@@ -119,11 +122,20 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 				ObjectMapper reqMapper = new ObjectMapper();
 				String requestAsString = reqMapper.writeValueAsString(authenticationRequest);
 
+				
+		        Map<String, Object> map = reqMapper.readValue(requestAsString, new TypeReference<Map<String, Object>>() {});
+
+		        map.remove("username");
+		        map.remove("password");
+		        
+		        String updatedJsonString = reqMapper.writeValueAsString(map);
+
+				
 				ObjectMapper respMapper = new ObjectMapper();
 				String responseAsString = respMapper.writeValueAsString(response);
 
 				auditLoggingService.auditLog("Authentication", response.getResponseCode(),
-						response.getResponseDescription(), requestAsString, responseAsString, requestDatetime,
+						response.getResponseDescription(), updatedJsonString, responseAsString, requestDatetime,
 						requestDatetime, null, null, null, authenticationRequest.getChannel(),
 						authenticationRequest.getUsername());
 

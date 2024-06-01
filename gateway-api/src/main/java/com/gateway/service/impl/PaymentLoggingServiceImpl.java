@@ -25,9 +25,9 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 	public void paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
 			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
 			BigDecimal amountPaid, BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges,
-			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address,
-			double transactionFees, double taxAmount, double total, String channel, String billStatus, String tranDate,
-			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode) throws Exception {
+			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address, 
+			double total, String channel, String billStatus, String tranDate,
+			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username) throws Exception {
 
 		PaymentLog paymentLog = new PaymentLog();
 		LOG.info("Inserting in table (paymentLog audit)");
@@ -52,8 +52,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBillerNumber(billerNumber);
 		paymentLog.setTransactionStatus(transactionStatus);
 		paymentLog.setAddress(address);
-		paymentLog.setTransactionFees(transactionFees);
-		paymentLog.setTaxAmount(taxAmount);
+		//paymentLog.setTransactionFees(transactionFees);
+		//paymentLog.setTaxAmount(taxAmount);
 		paymentLog.setTotal(total);
 		paymentLog.setChannel(channel);
 		paymentLog.setBillStatus(billStatus);
@@ -65,7 +65,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBankCode(bankCode);
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
-
+		paymentLog.setUsername(username);
 		transactionDetialsLogRepository.save(paymentLog);
 
 		LOG.info("Inserted in table (audit)");
@@ -77,8 +77,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 	public void paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
 			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
 			BigDecimal amountPaid, double charges, String activity, String paymentRefNo, String billerNumber,
-			String transactionStatus, String address, double transactionFees, double taxAmount, double total,
-			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode)
+			String transactionStatus, String address, double total,
+			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username)
 			throws Exception {
 
 		PaymentLog paymentLog = new PaymentLog();
@@ -102,8 +102,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBillerNumber(billerNumber);
 		paymentLog.setTransactionStatus(transactionStatus);
 		paymentLog.setAddress(address);
-		paymentLog.setTransactionFees(transactionFees);
-		paymentLog.setTaxAmount(taxAmount);
+		//paymentLog.setTransactionFees(transactionFees);
+		//paymentLog.setTaxAmount(taxAmount);
 		paymentLog.setTotal(total);
 		paymentLog.setChannel(channel);
 		paymentLog.setBillStatus(billStatus);
@@ -115,7 +115,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBankCode(bankCode);
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
-
+		paymentLog.setUsername(username);
 		transactionDetialsLogRepository.save(paymentLog);
 
 		LOG.info("Inserted in table (audit)");
@@ -128,7 +128,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 			String responseDesc,String studentName,String billNumber,String billerId,
 			BigDecimal amountInDueDate,BigDecimal amountAfterDueDate,String billinquiry,
 			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth,String paymentRefno,
-			String bankName,String bankCode,String branchName,String branchCode, String billerAuthId,String amount) {
+			String bankName,String bankCode,String branchName,String branchCode, String thirdparty_auth_id,String username) {
 
 	
 		PaymentLog paymentLog = new PaymentLog();
@@ -161,9 +161,9 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBankCode(bankCode);
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
-		paymentLog.setBillerAuthId(billerAuthId);
-		paymentLog.setAmount(amount);
-
+		paymentLog.setThirdparty_auth_id(thirdparty_auth_id);
+//		paymentLog.setAmount(amount);
+		paymentLog.setUsername(username);
 
 		transactionDetialsLogRepository.save(paymentLog);
 
