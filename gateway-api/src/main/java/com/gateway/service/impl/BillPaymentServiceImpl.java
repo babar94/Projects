@@ -240,7 +240,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                      ///////// PITHAM ///////
+									                      ///////// Pitham ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -261,17 +261,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
  
-									                      ////////// PITHAM ///////
+									                      ////////// Pitham ///////
 
-									                      ////////// THARDEEP ///////
+									                      ////////// Thardeep ///////
 
 									else if (billerDetail.getBillerName()
-											.equalsIgnoreCase(BillerConstant.THARDEEP.THARDEEP)
+											.equalsIgnoreCase(BillerConstant.Thardeep.THARDEEP)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.THARDEEP.THARDEEP:
+										case BillerConstant.Thardeep.THARDEEP:
 											billPaymentResponse = billPaymentThardeep(request, httpRequestData);
 											break;
 
@@ -285,16 +285,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                        ////////// THARDEEP //////
+									                        ////////// Thardeep //////
 
-									                        ////////// UOM ///////////
+									                        ////////// Uom ///////////
 
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.UOM.UOM)
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Uom.UOM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.UOM.UOM:
+										case BillerConstant.Uom.UOM:
 											billPaymentResponse = billPaymentUom(request, httpRequestData);
 											break;
 
@@ -308,19 +308,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                         ////////// UOM //////////
+									                         ////////// Uom //////////
 
-									
-									
-									
-									                          ////////// DLS ///////
+								
+									                          ////////// Dls ///////
 
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.DLS.DLS)
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Dls.DLS)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.DLS.DLS:
+										case BillerConstant.Dls.DLS:
 											billPaymentResponse = billPaymentDls(request, httpRequestData);
 											break;
 
@@ -334,7 +332,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                        ////////// DLS //////////
+									                        ////////// Dls //////////
 			
 									
 									
@@ -3709,7 +3707,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Thardeep.THARDEEP);
 
 			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
 
@@ -3832,7 +3830,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					thardeepUpdateVoucherResponse = serviceCaller.get(paymentParams,
 							ThardeepUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,
-							BillerConstant.THARDEEP.THARDEEP);
+							BillerConstant.Thardeep.THARDEEP);
 
 					infoPay = new InfoPay(thardeepUpdateVoucherResponse.getResponse().getResponseCode(),
 							thardeepUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
@@ -3985,7 +3983,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			uomgetVoucherResponse = serviceCaller.get(inquiryParams, UomGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.UOM.UOM);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Uom.UOM);
 
 			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
 
@@ -4187,7 +4185,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					}
 
 					uomUpdateVoucherResponse = serviceCaller.get(paymentParams, UomUpdateVoucherResponse.class, rrn,
-							Constants.ACTIVITY.BillPayment, BillerConstant.UOM.UOM);
+							Constants.ACTIVITY.BillPayment, BillerConstant.Uom.UOM);
 
 					if (uomUpdateVoucherResponse != null) {
 
@@ -4369,7 +4367,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Override
 	public BillPaymentResponse billPaymentDls(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
-		LOG.info("Inside billPaymentPta method ");
+		LOG.info("Inside billPayment Dls method ");
+		
 		BillPaymentResponse response = null;
 		DlsGetVoucherResponse dlsgetVoucherResponse = null;
 		Date requestedDate = new Date();
@@ -4423,7 +4422,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(stan);
 
 			dlsgetVoucherResponse = serviceCaller.get(inquiryParams, DlsGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.DLS.DLS);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Dls.DLS);
 
 			if (dlsgetVoucherResponse != null) {
 				info = new Info(dlsgetVoucherResponse.getResponse().getResponseCode(),
@@ -4466,7 +4465,79 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
 							try {
+								
+								
+								////////////////// Pending Payment - Start ///////////////////////
+								
+								
+								PendingPayment pendingPayment = pendingPaymentRepository
+										.findFirstByVoucherIdOrderByPaymentIdDesc(
+												request.getTxnInfo().getBillNumber().trim());
 
+								if (pendingPayment != null) {
+
+									if (pendingPayment.getIgnoreTimer()) {
+
+										infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+												rrn, stan);
+										response = new BillPaymentResponse(infoPay, null, null);
+										transactionStatus = Constants.Status.Pending;
+										billStatus = Constants.BILL_STATUS.BILL_PENDING;
+										return response;
+
+									} else {
+										LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+										LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+										// Calculate the difference in minutes
+										long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+										if (minutesDifference <= pendingThresholdMinutes) {
+
+											infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+													pendingPaymentMessage, rrn, stan);
+											response = new BillPaymentResponse(infoPay, null, null);
+
+											transactionStatus = Constants.Status.Pending;
+											billStatus = Constants.BILL_STATUS.BILL_PENDING;
+											return response;
+
+										}
+									}
+								}
+
+								
+								
+								        //////////////////   Pending Payment - End ///////////////////////
+
+								
+								        //////////////////// Pg Payment - Start    ///////////////////////
+
+								
+								
+								LOG.info("Calling Payment Inquiry from pg_payment_log table");
+								PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
+										request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+
+								if (pgPaymentLog != null
+										&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+											pendingVoucherUpdateMessage, rrn, stan); // success
+
+									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+									response = new BillPaymentResponse(infoPay, null, null);
+
+									return response;
+								}
+
+								
+
+						               ////////////////// Pg Payment - End ///////////////////////
+
+								
 								String tranDate = request.getTxnInfo().getTranDate();
 
 								if (tranDate.length() == 8) {
@@ -4485,7 +4556,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								dlsUpdateVoucherResponse = serviceCaller.get(ubpsBillParams,
 										DlsUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,
-										BillerConstant.DLS.DLS);
+										BillerConstant.Dls.DLS);
 
 								if (dlsUpdateVoucherResponse != null) {
 									infoPay = new InfoPay(dlsUpdateVoucherResponse.getResponse().getResponseCode(),
@@ -4523,7 +4594,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									dlsgetVoucherResponse = serviceCaller.get(inquiryParams, DlsGetVoucherResponse.class,
-											stan, Constants.ACTIVITY.BillInquiry, BillerConstant.DLS.DLS);
+											stan, Constants.ACTIVITY.BillInquiry, BillerConstant.Dls.DLS);
 
 									if (dlsgetVoucherResponse != null) {
 										if (dlsgetVoucherResponse.getResponse().getResponseCode()
@@ -4685,6 +4756,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		UtilMethods.generalLog("OUT -  Bill Payment Response {}" + response, LOG);
 
+		LOG.info("----- Bill Payment Method End -----");
+
+		
 		return response;
 
 	}

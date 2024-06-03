@@ -173,7 +173,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									}
 
-									////////// PITHAM ///////
+									                    ////////// Pitham ///////
 
 									else if (billerDetail.getBillerName()
 											.equalsIgnoreCase(BillerConstant.Pithm.PITHM)) {
@@ -196,16 +196,16 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									}
 
-									////////// PITHAM ///////
+									                       ////////// Pitham ///////
 
-									////////// THARDEEP ///////
+									                      ////////// Thardeep ///////
 
 									else if (billerDetail.getBillerName()
-											.equalsIgnoreCase(BillerConstant.THARDEEP.THARDEEP)) {
+											.equalsIgnoreCase(BillerConstant.Thardeep.THARDEEP)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.THARDEEP.THARDEEP:
+										case BillerConstant.Thardeep.THARDEEP:
 											paymentInquiryResponse = payementInquiryTHARDEEP(request, httpRequestData,
 													billPaymentInquiryValidationResponse);
 											break;
@@ -221,19 +221,17 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									}
 
-									////////// THARDEEP ///////
+									             ////////// Thardeep ///////
 									
 									
-									
-									
-									               ////////// UOM ///////
+									               ////////// Uom ///////
 
 									else if (billerDetail.getBillerName()
-											.equalsIgnoreCase(BillerConstant.UOM.UOM)) {
+											.equalsIgnoreCase(BillerConstant.Uom.UOM)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.UOM.UOM:
+										case BillerConstant.Uom.UOM:
 											paymentInquiryResponse = payementInquiryUOM(request, httpRequestData,
 													billPaymentInquiryValidationResponse);
 											break;
@@ -249,19 +247,17 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									}
 
-									                      ////////// UOM ///////
-									
-									
+									             ///////////// Uom  //////////
 									
 									
 				                                 ////////// Driving licsence sindh ///////
 			
 									 else if (billerDetail.getBillerName()
-											.equalsIgnoreCase(BillerConstant.DLS.DLS)) {
+											.equalsIgnoreCase(BillerConstant.Dls.DLS)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.DLS.DLS:
+										case BillerConstant.Dls.DLS:
 											paymentInquiryResponse = payementInquiryDls(request, httpRequestData,
 													billPaymentInquiryValidationResponse);
 											break;

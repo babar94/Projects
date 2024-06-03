@@ -31,22 +31,22 @@ public interface BillerConstant {
 		String PITHM = "PITHM";
 	}
 
-	interface THARDEEP {
+	interface Thardeep {
 
 		String THARDEEP = "THARDEEP";
 	}
 	
-	interface ETANB {
+	interface Etanb {
 
 		String ETANB = "ETANB";
 	}
 	
-	interface UOM {
+	interface Uom {
 
 		String UOM = "UOM";
 	}
 	
-	interface DLS {
+	interface Dls {
 
 		String DLS = "DLS";
 	}

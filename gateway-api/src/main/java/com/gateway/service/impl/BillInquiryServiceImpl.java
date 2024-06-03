@@ -228,7 +228,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
-									////////// PITHAM ///////
+									                     ////////// Pitham ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -249,17 +249,17 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
-									////////// PITHAM ///////
+									                  ///////////// Pitham ///////////
 
-									////////// THARDEEP ///////
+									               ///// ////////// Thardeep ////////////
 
 									else if (billerDetail.getBillerName()
-											.equalsIgnoreCase(BillerConstant.THARDEEP.THARDEEP)
+											.equalsIgnoreCase(BillerConstant.Thardeep.THARDEEP)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.THARDEEP.THARDEEP:
+										case BillerConstant.Thardeep.THARDEEP:
 											billInquiryResponse = billInquiryTHARDEEP(request, httpRequestData);
 											break;
 
@@ -273,16 +273,16 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
-									////////// THARDEEP ///////
+									                    ////////// Thardeep ///////
 
-									////////// Univesity of Malakand ///////
+									                 ////////// Univesity of Malakand ///////
 
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.UOM.UOM)
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Uom.UOM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
 										switch (subBillerDetail.getSubBillerName()) {
 
-										case BillerConstant.UOM.UOM:
+										case BillerConstant.Uom.UOM:
 											billInquiryResponse = billInquiryUOM(request, httpRequestData);
 											break;
 
@@ -295,39 +295,36 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											break;
 										}
 									}
-
-									////////// Univesity of Malakand ///////
-									
-									
-									
-								
-									
-			                      ////////// Driving licsence sindh ///////
+						
+													////////// Univesity of Malakand ///////
+													
+													
+							                      ////////// Driving licsence sindh ///////
 		
-							else if (billerDetail.getBillerName()
-									.equalsIgnoreCase(BillerConstant.DLS.DLS)
-									&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-		
-								switch (subBillerDetail.getSubBillerName()) {
-		
-								case BillerConstant.DLS.DLS:
-									billInquiryResponse = billInquiryDls(request, httpRequestData);
-									break;
-		
-								default:
-									LOG.info("subBiller does not exists.");
-									info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
-											Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-									billInquiryResponse = new BillInquiryResponse(info, null, null);
-		
-									break;
-								}
-							}
+										else if (billerDetail.getBillerName()
+												.equalsIgnoreCase(BillerConstant.Dls.DLS)
+												&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+					
+											switch (subBillerDetail.getSubBillerName()) {
+					
+											case BillerConstant.Dls.DLS:
+												billInquiryResponse = billInquiryDls(request, httpRequestData);
+												break;
+					
+											default:
+												LOG.info("subBiller does not exists.");
+												info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
+														Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+												billInquiryResponse = new BillInquiryResponse(info, null, null);
+					
+												break;
+											}
+										}
 						
 						
-	                                ////////// Driving licsence sindh ///////
- 
-									
+					                                ////////// Driving licsence sindh ///////
+				 
+													
 									
 
 									else if (type.equalsIgnoreCase(Constants.BillerType.OFFLINE_BILLER)) {
@@ -2301,7 +2298,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.THARDEEP.THARDEEP);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Thardeep.THARDEEP);
 
 			if (thardeepgetVoucherResponse != null) {
 
@@ -2538,7 +2535,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			uomgetVoucherResponse = serviceCaller.get(inquiryParams, UomGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.UOM.UOM);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Uom.UOM);
 
 			if (uomgetVoucherResponse != null) {
 
@@ -2851,7 +2848,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(stan);
 
 			dlsgetVoucherResponse = serviceCaller.get(inquiryParams, DlsGetVoucherResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.DLS.DLS);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.Dls.DLS);
 
 			if (dlsgetVoucherResponse != null) {
 				info = new Info(dlsgetVoucherResponse.getResponse().getResponseCode(),
@@ -2890,15 +2887,136 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								transAuthId = paymentLog.getTranAuthId();
 								amountPaid = paymentLog.getAmountPaid();
 
-							} else {
-								info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
-										Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+							}
+							
+							   
+							      ////////////////// Pg - Payment Log - Start ///////////////////
+							
+							
+							else {
+
+								LOG.info("Calling Payment Inquiry from pg_payment_log table");
+								PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
+										request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+
+								if (pgPaymentLog != null) {
+									billingMonth = utilMethods
+											.formatDateString(String.valueOf(pgPaymentLog.getRequestDateTime()));
+									info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
+											stan); // success
+
+									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(),
+											dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getName(),
+											pgPaymentLog.getBillStatus(), dueDAte, String.valueOf(amountInDueDate),
+											String.valueOf(amountAfterDueDate), transAuthId, oneBillNumber);// total
+
+								AdditionalInfo	additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5());
+
+									transactionStatus = Constants.Status.Success;
+
+									return response;
+
+								} 
+								
+								
+								else {
+									info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+											Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+									response = new BillInquiryResponse(info, null, null);
+									transactionStatus = Constants.Status.Fail;
+									return response;
+
+								}
+								
+								
+							}	
+							
+							   //////////////////  Pg - Payment Log - End   ///////////////////
+
+							
+						}	
+							
+					
+						else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+							
+											
+							
+							////////////////////////  Pending Payment - Start //////////////////
+							
+							
+							
+							PendingPayment pendingPayment = pendingPaymentRepository
+									.findFirstByVoucherIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim());
+
+							if (pendingPayment != null) {
+
+								if (pendingPayment.getIgnoreTimer()) {
+
+									info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+											stan);
+									response = new BillInquiryResponse(info, null, null);
+									transactionStatus = Constants.Status.Pending;
+									billStatus = Constants.BILL_STATUS.BILL_PENDING;
+									return response;
+
+								} else {
+									LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+									LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+									// Calculate the difference in minutes
+									long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+									if (minutesDifference <= pendingThresholdMinutes) {
+
+										info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+												rrn, stan);
+										response = new BillInquiryResponse(info, null, null);
+
+										transactionStatus = Constants.Status.Pending;
+										billStatus = Constants.BILL_STATUS.BILL_PENDING;
+										return response;
+
+									}
+								}
+							}
+							
+							
+							           ////////////////////////  Pending Payment - End  //////////////////
+							
+							
+							 
+							           ///////////////////////// Pg Payment - Start //////////////////////// 
+
+
+							LOG.info("Calling Payment Inquiry from pg_payment_log table");
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
+									request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+
+							if (pgPaymentLog != null
+									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+								info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn,
+										stan); // success
+
+								transactionStatus = Constants.Status.Success;
+								billStatus = Constants.BILL_STATUS.BILL_PAID;
+
 								response = new BillInquiryResponse(info, null, null);
+
 								return response;
 							}
 
-							transactionStatus = Constants.Status.Success;
-						} else if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+							
+							
+					                   ///////////////////////// Pg Payment - End  //////////////////////// 
+							
+							
 							status = "U";
 							transAuthId = "";
 							datePaid = "";
@@ -2997,6 +3115,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				LOG.error("{}", ex);
 			}
 
+			LOG.info("----- Bill Inquiry Method End -----");
+
+			
 		}
 		return response;
 
