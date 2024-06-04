@@ -4549,7 +4549,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								ArrayList<String> ubpsBillParams = new ArrayList<>();
 
 								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.DLS_BILL_PAYMENT);
-								ubpsBillParams.add(request.getTxnInfo().getBillNumber().trim());
+								ubpsBillParams.add(dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getId());
 								ubpsBillParams.add(Constants.Status.VOUCHER_UPDATED_DLS);
 								ubpsBillParams.add(rrn);
 								ubpsBillParams.add(stan);
