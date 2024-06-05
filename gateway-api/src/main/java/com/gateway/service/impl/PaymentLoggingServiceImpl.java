@@ -27,7 +27,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 			BigDecimal amountPaid, BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges,
 			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address, 
 			double total, String channel, String billStatus, String tranDate,
-			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username) throws Exception {
+			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail) throws Exception {
 
 		PaymentLog paymentLog = new PaymentLog();
 		LOG.info("Inserting in table (paymentLog audit)");
@@ -66,6 +66,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
 		paymentLog.setUsername(username);
+		paymentLog.setFee_Detail(feeDetail);
 		transactionDetialsLogRepository.save(paymentLog);
 
 		LOG.info("Inserted in table (audit)");
@@ -78,7 +79,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
 			BigDecimal amountPaid, double charges, String activity, String paymentRefNo, String billerNumber,
 			String transactionStatus, String address, double total,
-			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username)
+			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail)
 			throws Exception {
 
 		PaymentLog paymentLog = new PaymentLog();
@@ -116,6 +117,9 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
 		paymentLog.setUsername(username);
+		paymentLog.setUsername(feeDetail);
+		
+		
 		transactionDetialsLogRepository.save(paymentLog);
 
 		LOG.info("Inserted in table (audit)");

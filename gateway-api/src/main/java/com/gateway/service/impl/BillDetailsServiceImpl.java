@@ -687,7 +687,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
 						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, tranDate, tranTime, province, "",
-						bankName, bankCode, branchName, branchCode,username);
+						bankName, bankCode, branchName, branchCode,username,"");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -896,7 +896,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
 						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address,
 						dbTotal, channel, billStatus, tranDate, tranTime, province, "",
-						bankName, bankCode, branchName, branchCode,username);
+						bankName, bankCode, branchName, branchCode,username,"");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

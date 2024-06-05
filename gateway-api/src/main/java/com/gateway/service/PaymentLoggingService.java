@@ -14,7 +14,7 @@ public interface PaymentLoggingService {
 			BigDecimal amount, BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges,
 			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address,
 			double total, String channel, String billStatus, String tranDate,
-			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username) throws Exception;
+			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail) throws Exception;
 
 	
 	//Used In Bill Payment
@@ -22,7 +22,7 @@ public interface PaymentLoggingService {
 			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
 			BigDecimal amount, double charges, String activity, String paymentRefNo, String billerNumber,
 			String transactionStatus, String address, double total,
-			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username)
+			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail)
 			throws Exception;
 
 	

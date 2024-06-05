@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -22,6 +23,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
+import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.repository.MPAYLogRepository;
 import com.gateway.utils.BillerConstant.Aiou;
 
@@ -459,5 +462,26 @@ public class UtilMethods {
 			return false;
 		}
 	}
+	
+	public String formatFeeTypeList(DlsGetVoucherResponse dlsGetVoucherResponse) {
+	    StringBuilder formattedResponse = new StringBuilder();
+	    List<FeeTypeListWrapper> feeTypeList = dlsGetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper();
+
+	    for (FeeTypeListWrapper feeType : feeTypeList) {
+	    	formattedResponse.append("feesType: ").append(feeType.getFeesType()).append(", ");
+	        formattedResponse.append("typeDetail: ").append(feeType.getTypeDetail()).append(", ");
+	        formattedResponse.append("fees: ").append(feeType.getFees()).append(" || ");
+
+	    }
+
+	    // Remove the last " || " from the formatted response
+	    if (formattedResponse.length() >= 4) {
+	        formattedResponse.setLength(formattedResponse.length() - 4);
+	    }
+
+	    return formattedResponse.toString();
+	}
+	
+	
 
 }

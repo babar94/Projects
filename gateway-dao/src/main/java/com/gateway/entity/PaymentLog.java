@@ -153,6 +153,14 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "thirdparty_auth_id")
 	private String thirdparty_auth_id;
+	
+	
+	// new added on 05-06-2024
+
+	@Column(name = "fee_detail")
+	private String fee_Detail;
+
+	
 
 
 }
