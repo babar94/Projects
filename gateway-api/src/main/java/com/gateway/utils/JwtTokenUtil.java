@@ -76,7 +76,7 @@ public class JwtTokenUtil implements Serializable {
 
 	private SecretKey getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
-		
+
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
@@ -98,11 +98,10 @@ public class JwtTokenUtil implements Serializable {
 	@SuppressWarnings("deprecation")
 	private String doGenerateToken(Map<String, Object> claims, String subject, String channel) {
 
-		long JWT_TOKEN_VALIDITY = jwtHours * jwtMins * jwtSecs;
-
+		long JWT_TOKEN_VALIDITY = (jwtHours * 3600) + (jwtMins * 60) + jwtSecs;
 		return Jwts.builder().setClaims(claims).subject(subject).issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000)).signWith(getSigningKey())
-				
+				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).signWith(getSigningKey())
+
 				.compact();
 
 	}
