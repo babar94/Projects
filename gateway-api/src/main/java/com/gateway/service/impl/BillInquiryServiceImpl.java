@@ -1192,7 +1192,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String dueDAte = "";
 		String oneBillNumber = "";
 		BigDecimal requestTotalAmountbdUp = null, amountPaid = null;
-		BigDecimal amountInDueToDate = null;
+		BigDecimal amountInDueToDate = BigDecimal.ZERO;
 		String amountAfterDueDate = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
