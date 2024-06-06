@@ -42580,3 +42580,10 @@ Unconditional classes:
 2024-06-05 22:33:08,516 [http-nio-8082-exec-1] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
 2024-06-05 22:33:08,517 [http-nio-8082-exec-1] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token has expired
 2024-06-05 22:33:08,520 [http-nio-8082-exec-1] INFO  [JwtAuthenticationEntryPoint] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - INVALID CREDENTIALS
+2024-06-05 22:39:20,365 [RMI TCP Connection(2)-127.0.0.1] INFO  [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application shutdown requested.
+2024-06-05 22:39:20,365 [RMI TCP Connection(2)-127.0.0.1] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
+2024-06-05 22:39:20,366 [RMI TCP Connection(2)-127.0.0.1] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@3f093abe, started on Wed Jun 05 22:27:02 PKT 2024
+2024-06-05 22:39:20,370 [RMI TCP Connection(2)-127.0.0.1] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Stopping ProtocolHandler ["http-nio-8082"]
+2024-06-05 22:39:20,404 [RMI TCP Connection(2)-127.0.0.1] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-06-05 22:39:20,407 [RMI TCP Connection(2)-127.0.0.1] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Shutdown initiated...
+2024-06-05 22:39:20,414 [RMI TCP Connection(2)-127.0.0.1] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Shutdown completed.

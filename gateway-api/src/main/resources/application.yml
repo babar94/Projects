@@ -1,7 +1,7 @@
 jwt:
   secret: 4t2mHsym2c/S39GLy8VameEgaiyB4XuPV1j/XfKw1qs=
   hours: 0
-  mins: 2
+  mins: 5
   secs: 0
   
 #hours*mins*secs
