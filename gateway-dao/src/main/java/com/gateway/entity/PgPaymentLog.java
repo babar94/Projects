@@ -16,7 +16,7 @@ public class PgPaymentLog {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 
 	private LocalDateTime requestDateTime;
 	private LocalDateTime responseDateTime;

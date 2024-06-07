@@ -80,6 +80,8 @@ public class Constants {
 		public static final String BillPayment = "BillPayment";
 		public static final String PaymentInquiry = "PaymentInquiry";
 		public static final String GetBillerList = "GetBillerList";
+		public static final String RBTS_FUNDT_RANSFER ="RBTSFundTransfer";
+		public static final String CREDIT_DEBIT_CARD = "Credit/Debit Card";
 
 	}
 

@@ -101,7 +101,6 @@ public class JwtTokenUtil implements Serializable {
 		long JWT_TOKEN_VALIDITY = (jwtHours * 3600) + (jwtMins * 60) + jwtSecs;
 		return Jwts.builder().setClaims(claims).subject(subject).issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).signWith(getSigningKey())
-
 				.compact();
 
 	}
