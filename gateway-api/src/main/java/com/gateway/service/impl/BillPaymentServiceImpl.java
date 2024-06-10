@@ -4644,7 +4644,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), requestname, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(),amountInDueDate==null ? amount : amountInDueDate,amountInDueDate==null ? amount : amountInDueDate,amountAfterDueDate==null  || amountAfterDueDate=="" ? amount :  new BigDecimal(amountAfterDueDate),dbTransactionFees,
+						request.getTxnInfo().getBillerId(),amountInDueDate==null ? amount : amountInDueDate,amountInDueDate==null ? amount : amountInDueDate,amountAfterDueDate==null  || amountAfterDueDate.trim().equalsIgnoreCase("") ? amount :  new BigDecimal(amountAfterDueDate),dbTransactionFees,
 						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,

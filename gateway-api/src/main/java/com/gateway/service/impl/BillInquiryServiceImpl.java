@@ -553,7 +553,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											.findFirstByBillerNumberAndBillStatusAndActivitiesOrderByRequestDateTimeDesc(
 													request.getTxnInfo().getBillNumber().trim(),
 													Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
-													Constants.ACTIVITY.RBTS_FUNDT_RANSFER,
+													Constants.ACTIVITY.RBTS_FUND_TRANSFER,
 													Constants.ACTIVITY.CREDIT_DEBIT_CARD));
 							if (combinedPaymentLogView.isPresent()) {
 								CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
@@ -2994,12 +2994,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									.findFirstByBillerNumberAndBillStatusAndActivitiesOrderByRequestDateTimeDesc(
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
-											Constants.ACTIVITY.RBTS_FUNDT_RANSFER,
+											Constants.ACTIVITY.RBTS_FUND_TRANSFER,
 											Constants.ACTIVITY.CREDIT_DEBIT_CARD));
 					if (combinedPaymentLogView.isPresent()) {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
+						name = paymentLog.getName();
 						transAuthId = paymentLog.getTranAuthId();
 						status = "P";
 						amountPaid = paymentLog.getTotalAmount();

@@ -20,6 +20,9 @@ public class CombinedPaymentLogView {
 	@Id
 	private Long logId;
 
+	@Column(name="name")
+	private String name;
+	
 	@Column(name = "request_date_time")
 	private String requestDateTime;
 

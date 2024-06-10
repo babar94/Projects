@@ -11,9 +11,8 @@ import org.springframework.data.repository.query.Param;
 import com.gateway.entity.CombinedPaymentLogView;
 
 public interface CombinedPaymentLogViewRepository extends JpaRepository<CombinedPaymentLogView, Long> {
-//	CombinedPaymentLogView findFirstByBillerNumberAndBillStatusAndActivityOrderByRequestDateTimeDesc(
-//			String billerNumber, String billStatus, String activity);
 
+	
 	@Query("SELECT c FROM CombinedPaymentLogView c WHERE c.billerNumber = :billerNumber AND c.billStatus = :billStatus AND (c.activity = :BillPayment OR c.activity = :RbtsFundTransfer OR c.activity = :CreditDebitCard) ORDER BY c.requestDateTime DESC")
 	List<CombinedPaymentLogView> findTopByBillerNumberAndBillStatusAndActivitiesOrderByRequestDateTimeDesc(
 			@Param("billerNumber") String billerNumber, @Param("billStatus") String billStatus,
