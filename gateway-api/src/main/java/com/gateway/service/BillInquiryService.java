@@ -19,6 +19,6 @@ public interface BillInquiryService {
 
 	public BillInquiryResponse billInquiryAiou(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
-//	public BillInquiryResponse billInquiryDls(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	public BillInquiryResponse billInquiryDls(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
 }
