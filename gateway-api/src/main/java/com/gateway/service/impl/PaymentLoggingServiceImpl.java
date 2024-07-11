@@ -22,12 +22,13 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 	private PaymentLogRepository transactionDetialsLogRepository;
 
 	@Async("paymentLoggingExecutor")
-	public void paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
-			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
-			BigDecimal amountPaid, BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges,
-			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address, 
-			double total, String channel, String billStatus, String tranDate,
-			String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail) throws Exception {
+	public PaymentLog paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan,
+			String responseCode, String responseDescription, String cnic, String mobile, String name,
+			String consumerNumber, String billerId, BigDecimal amountPaid, BigDecimal amountwithinduedate,
+			BigDecimal amountafterduedate, double charges, String activity, String paymentRefNo, String billerNumber,
+			String transactionStatus, String address, double total, String channel, String billStatus, String tranDate,
+			String tranTime, String province, String tranAuthId, String bankName, String bankCode, String branchName,
+			String branchCode, String username, String feeDetail) throws Exception {
 
 		PaymentLog paymentLog = new PaymentLog();
 		LOG.info("Inserting in table (paymentLog audit)");
@@ -52,8 +53,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBillerNumber(billerNumber);
 		paymentLog.setTransactionStatus(transactionStatus);
 		paymentLog.setAddress(address);
-		//paymentLog.setTransactionFees(transactionFees);
-		//paymentLog.setTaxAmount(taxAmount);
+		// paymentLog.setTransactionFees(transactionFees);
+		// paymentLog.setTaxAmount(taxAmount);
 		paymentLog.setTotal(total);
 		paymentLog.setChannel(channel);
 		paymentLog.setBillStatus(billStatus);
@@ -69,7 +70,11 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setFee_Detail(feeDetail);
 		transactionDetialsLogRepository.save(paymentLog);
 
+		PaymentLog savedPaymentLog = transactionDetialsLogRepository.save(paymentLog);
+
 		LOG.info("Inserted in table (audit)");
+
+		return savedPaymentLog;
 
 	}
 
@@ -127,16 +132,16 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 //		LOG.info("Inserted in table (audit)");
 //
 //	}
-	
+
 	@Async("paymentLoggingExecutor")
 	@Override
-	public void paymentLog(Date requestedDate, Date responsedate,String rrn,String stan,String responseCode,
-			String responseDesc,String studentName,String billNumber,String billerId,
-			BigDecimal amountInDueDate,BigDecimal amountAfterDueDate,String billinquiry,
-			String transactionStatus,String channel,String billstatus,String tranDate,String tranTime,String transAuthId,BigDecimal amountpaid,String duedate,String billingMonth,String paymentRefno,
-			String bankName,String bankCode,String branchName,String branchCode, String thirdparty_auth_id,String username) {
+	public void paymentLog(Date requestedDate, Date responsedate, String rrn, String stan, String responseCode,
+			String responseDesc, String studentName, String billNumber, String billerId, BigDecimal amountInDueDate,
+			BigDecimal amountAfterDueDate, String billinquiry, String transactionStatus, String channel,
+			String billstatus, String tranDate, String tranTime, String transAuthId, BigDecimal amountpaid,
+			String duedate, String billingMonth, String paymentRefno, String bankName, String bankCode,
+			String branchName, String branchCode, String thirdparty_auth_id, String username) {
 
-	
 		PaymentLog paymentLog = new PaymentLog();
 		LOG.info("Inserting in table (paymentLog audit)");
 
@@ -173,12 +178,6 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 
 		transactionDetialsLogRepository.save(paymentLog);
 
-
 	}
-	
-	
-	
-	
-	
 
 }

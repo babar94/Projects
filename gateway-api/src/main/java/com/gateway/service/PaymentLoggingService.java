@@ -3,12 +3,12 @@ package com.gateway.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.gateway.utils.Constants;
+import com.gateway.entity.PaymentLog;
 
 public interface PaymentLoggingService {
 
 	// Used In All three
-	public void paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
+	public PaymentLog paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
 			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
 			BigDecimal amount, BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges,
 			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address,

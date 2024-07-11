@@ -6,9 +6,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.entity.BillerConfiguration;
 import com.gateway.entity.CombinedPaymentLogView;
+import com.gateway.entity.FeeType;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.PendingPayment;
 import com.gateway.entity.PgPaymentLog;
@@ -27,15 +30,18 @@ import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
+
 import com.gateway.model.mpay.response.billinquiry.pta.PtaGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.uom.UomGetVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.CombinedPaymentLogViewRepository;
+import com.gateway.repository.FeeTypeRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
 import com.gateway.repository.PgPaymentLogRepository;
@@ -54,6 +60,7 @@ import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
+import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.UtilMethods;
 
@@ -106,14 +113,29 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
+	@Autowired
+	private FeeTypeMapper feeTypeMapper;
+
 	@Value("${uom.bank.mnemonic}")
 	private String bankMnemonic;
+
 	@Autowired
 	private PgPaymentLogRepository pgPaymentLogRepository;
+
 	@Autowired
 	private PendingPaymentRepository pendingPaymentRepository;
+
 	@Autowired
 	private CombinedPaymentLogViewRepository combinedPaymentLogViewRepository;
+
+	@Autowired
+	private FeeTypeRepository feeTypeRepository;
+
+	@Value("${payment.log.table}")
+	private String paymentLogTable;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -3006,6 +3028,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						amountPaid = paymentLog.getTotalAmount();
 						amountInDueDate = amountPaid;
 						amountAfterDate = amountPaid;
+						billStatus = paymentLog.getBillStatus();
 
 						info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 								rrn, stan); // success
@@ -3121,7 +3144,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			}
 			try {
 
-				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
+				PaymentLog savedPaymentLog = paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(), amountPaid, amountInDueDate,
@@ -3131,6 +3154,28 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						transactionStatus, address, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
 						branchCode, username, feeDetail);
+
+				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
+						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
+						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
+
+					List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
+							.getFeeTypesList_wrapper();
+
+					FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
+					if (savedPaymentLog != null) {
+						for (FeeType feeType : feeDetails) {
+							feeType.setPaymentLog(savedPaymentLog.getID());
+							feeType.setSource(paymentLogTable);
+							feeTypeRepository.save(feeType);
+							LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+									savedPaymentLog.getID());
+
+						}
+					} else {
+						LOG.error("Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+					}
+				}
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);

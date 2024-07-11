@@ -59,7 +59,8 @@ payment:
   pendingThresholdMinutes: 15
   pendingVoucherUpdateMessage: A Transaction for this voucher has already been made, but marking your voucher to paid for some reason. this will be fixed within a few hours.
   pendingPaymentMessage: A Transaction for this voucher is pending, please wait while that transaction is successful of rejected.	
-  
+  log:
+    table: payment_log
   
 api:
   title: OPEN CONNECT API

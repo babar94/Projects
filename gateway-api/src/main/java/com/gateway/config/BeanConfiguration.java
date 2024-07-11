@@ -1,5 +1,6 @@
 package com.gateway.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,6 +20,11 @@ public class BeanConfiguration {
 	public ObjectMapper mapper() {
 
 		return new ObjectMapper();
+	}
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 
 //	@Bean

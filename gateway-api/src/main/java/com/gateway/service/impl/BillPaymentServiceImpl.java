@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.entity.BillerConfiguration;
+import com.gateway.entity.FeeType;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.PendingPayment;
 import com.gateway.entity.PgPaymentLog;
@@ -29,6 +31,7 @@ import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
@@ -46,6 +49,7 @@ import com.gateway.model.mpay.response.billpayment.pta.PtaUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.thardeep.ThardeepUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.uom.UomUpdateVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
+import com.gateway.repository.FeeTypeRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
 import com.gateway.repository.PgPaymentLogRepository;
@@ -53,7 +57,6 @@ import com.gateway.repository.SubBillerListRepository;
 import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
-import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -69,6 +72,7 @@ import com.gateway.utils.BillerConstant;
 import com.gateway.utils.CompAndDecompString;
 import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
+import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.UtilMethods;
 
@@ -132,7 +136,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
+	@Autowired
+	private ModelMapper modelMapper;
+	@Autowired
+	private FeeTypeMapper feeTypeMapper;
 
+	@Autowired
+	private FeeTypeRepository feeTypeRepository;
+
+	@Value("${payment.log.table}")
+	private String paymentLogTable;
 	@Autowired
 	private ObjectMapper mapper;
 	@Autowired
@@ -318,7 +331,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Dls.DLS:
-											 billPaymentResponse = billPaymentDls(request, httpRequestData);
+											billPaymentResponse = billPaymentDls(request, httpRequestData);
 											break;
 
 										default:
@@ -2231,7 +2244,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String dbBillStatus = "";
 		BigDecimal requestAmount = null;
 		String dueDateStr = "";
-		BigDecimal requestAmountDb = null,amountAfterDueDate = null;
+		BigDecimal requestAmountDb = null, amountAfterDueDate = null;
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		String channel = "";
@@ -2266,7 +2279,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (fbrGetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 					// Setting Values for Db entry
 
-					
 					String billstatus = "";
 					requestAmountDb = new BigDecimal(request.getTxnInfo().getTranAmount());
 
@@ -2723,11 +2735,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), requestAmountDb,amountInDueToDate,amountAfterDueDate,dbTransactionFees,
-						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode, username, "");
+						request.getTxnInfo().getBillerId(), requestAmountDb, amountInDueToDate, amountAfterDueDate,
+						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
+						bankName, bankCode, branchName, branchCode, username, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -4365,7 +4377,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	public BillPaymentResponse billPaymentDls(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside billPayment Dls method ");
-		
+
 		BillPaymentResponse response = null;
 		DlsGetVoucherResponse dlsgetVoucherResponse = null;
 		Date requestedDate = new Date();
@@ -4397,14 +4409,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String requestname = "";
 		String channel = "";
 		String username = "";
-		BigDecimal requestAmount = null , amountInDueDate=null;
-		String bankName = "", bankCode = "", branchName = "", branchCode = "",status = "",  feeDetail = "";
+		BigDecimal requestAmount = null, amountInDueDate = null;
+		String bankName = "", bankCode = "", branchName = "", branchCode = "", status = "", feeDetail = "";
 		double amountInDueToDate = 0;
 		String amountAfterDueDate = "";
-		BigDecimal amount=BigDecimal.ZERO;
-		
+		BigDecimal amount = BigDecimal.ZERO;
+
 		try {
-			
+
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
@@ -4430,28 +4442,23 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dlsgetVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
 				if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
-					
-					feeDetail=utilMethods.formatFeeTypeList(dlsgetVoucherResponse);
-
+					feeDetail = utilMethods.formatFeeTypeList(dlsgetVoucherResponse);
 
 					if (dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null) {
 
-						
-						requestAmount = new BigDecimal(dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getAmount().replaceFirst("^\\+?0+", ""));
+						requestAmount = new BigDecimal(dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
+								.getAmount().replaceFirst("^\\+?0+", ""));
 						amountInDueDate = requestAmount.setScale(2, RoundingMode.UP);
-						
+
 						amountAfterDueDate = String.valueOf(amountInDueToDate);
 
-						
 						requestname = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getName();
 						mobile = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getMobile_number();
 						billStatus = dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getStatus();
 
-						
 						billStatus = billStatus.trim().equals("1") ? Constants.BILL_STATUS.BILL_UNPAID
 								: Constants.BILL_STATUS.BILL_PAID;
-					
-						
+
 						dbTotal = amountInDueDate.doubleValue();
 						dbAmount = amountInDueDate.doubleValue();
 
@@ -4461,81 +4468,75 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							response = new BillPaymentResponse(infoPay, null, null);
 							return response;
 						}
-						
 
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
-								
-								LOG.info("Calling UpdateVoucher ");
-								ArrayList<String> ubpsBillParams = new ArrayList<>();
+							LOG.info("Calling UpdateVoucher ");
+							ArrayList<String> ubpsBillParams = new ArrayList<>();
 
-								ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.DLS_BILL_PAYMENT);
-								ubpsBillParams.add(request.getTxnInfo().getBillNumber());
-								ubpsBillParams.add(rrn);
-								ubpsBillParams.add(stan);
+							ubpsBillParams.add(Constants.MPAY_REQUEST_METHODS.DLS_BILL_PAYMENT);
+							ubpsBillParams.add(request.getTxnInfo().getBillNumber());
+							ubpsBillParams.add(rrn);
+							ubpsBillParams.add(stan);
 
-								dlsUpdateVoucherResponse = serviceCaller.get(ubpsBillParams,
-										DlsUpdateVoucherResponse.class, rrn, Constants.ACTIVITY.BillPayment,
-										BillerConstant.Dls.DLS);
+							dlsUpdateVoucherResponse = serviceCaller.get(ubpsBillParams, DlsUpdateVoucherResponse.class,
+									rrn, Constants.ACTIVITY.BillPayment, BillerConstant.Dls.DLS);
 
-								if (dlsUpdateVoucherResponse != null) {
-									infoPay = new InfoPay(dlsUpdateVoucherResponse.getResponse().getResponseCode(),
-											dlsUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-									if (dlsUpdateVoucherResponse.getResponse().getResponseCode()
-											.equals(ResponseCodes.OK)) {
-										paymentRefrence = utilMethods.getRRN();
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
+							if (dlsUpdateVoucherResponse != null) {
+								infoPay = new InfoPay(dlsUpdateVoucherResponse.getResponse().getResponseCode(),
+										dlsUpdateVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
+								if (dlsUpdateVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
+									paymentRefrence = utilMethods.getRRN();
+									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), paymentRefrence);
+									additionalInfoPay = new AdditionalInfoPay(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
 
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-										transactionStatus = Constants.Status.Success;
-										billStatus = Constants.BILL_STATUS.BILL_PAID;
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-									} else {
-										infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-												Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-										
-										response = new BillPaymentResponse(infoPay,null,null);
-									}
+								} else {
+									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+											Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
 
-								} 
-								
-								else {
-									infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-											Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-									
-									response = new BillPaymentResponse(infoPay,null,null);
+									response = new BillPaymentResponse(infoPay, null, null);
 								}
-							
-						} 
 
-			     	}
-					
-				
-				else {
-					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-					
-					response = new BillPaymentResponse(infoPay,null,null);
+							}
 
-					transactionStatus = Constants.Status.Fail;
-					
-					LOG.info("Calling Bill payment End");
+							else {
+								infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+										Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+								response = new BillPaymentResponse(infoPay, null, null);
+							}
+
+						}
+
+					}
+
+					else {
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						transactionStatus = Constants.Status.Fail;
+
+						LOG.info("Calling Bill payment End");
+					}
 				}
-			} 
-				
-				
+
 				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
 						.equals(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
 					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
@@ -4555,72 +4556,66 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 					transactionStatus = Constants.Status.Success;
-				}	
-			
-			
-			else if (dlsgetVoucherResponse.getResponse().getResponseCode()
-					.equals(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
-				infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-						Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				transactionStatus = Constants.Status.Fail;
+				}
 
-			} 
-			
-			else if (dlsgetVoucherResponse.getResponse().getResponseCode()
-					.equals(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK)) {
-				infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
-						Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				status="B";
-				transactionStatus = Constants.Status.Fail;
-			} 
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
 
-		
-			else if (dlsgetVoucherResponse.getResponse().getResponseCode()
-					.equals(Constants.ResponseCodes.UNKNOWN_ERROR)) {
-				infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-						Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				transactionStatus = Constants.Status.Fail;
-			} 
+				}
 
-		
-			else if (dlsgetVoucherResponse.getResponse().getResponseCode()
-					.equals(Constants.ResponseCodes.INVALID_DATA)) {
-				infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
-						Constants.ResponseDescription.INVALID_DATA, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				transactionStatus = Constants.Status.Fail;
-			} 
-		
-		
-			else if (dlsgetVoucherResponse.getResponse().getResponseCode()
-					.equals(Constants.ResponseCodes.SERVICE_FAIL)) {
-				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-						Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				transactionStatus = Constants.Status.Fail;
-			} 
-								
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_BLOCK,
+							Constants.ResponseDescription.CONSUMER_NUMBER_BLOCK, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					status = "B";
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.UNKNOWN_ERROR)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.INVALID_DATA)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.INVALID_DATA,
+							Constants.ResponseDescription.INVALID_DATA, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else if (dlsgetVoucherResponse.getResponse().getResponseCode()
+						.equals(Constants.ResponseCodes.SERVICE_FAIL)) {
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+				}
+
+				else {
+					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+
+				}
+			}
+
 			else {
-				infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
 						rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
 
+				response = new BillPaymentResponse(infoPay, null, null);
 			}
-		}
-			
-			else {
-				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-						Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-				
-				response = new BillPaymentResponse(infoPay,null,null);
-			}
-		
-			
-		}	
-			catch (Exception ex) {
+
+		} catch (Exception ex) {
 
 			LOG.error("{}", ex);
 
@@ -4641,14 +4636,40 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 			try {
 
-				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+				PaymentLog savedPaymentLog = paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), requestname, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(),amountInDueDate==null ? amount : amountInDueDate,amountInDueDate==null ? amount : amountInDueDate,amountAfterDueDate==null  || amountAfterDueDate.trim().equalsIgnoreCase("") ? amount :  new BigDecimal(amountAfterDueDate),dbTransactionFees,
-						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
-						transactionStatus, address, dbTotal, channel, billStatus,
+						request.getTxnInfo().getBillerId(), amountInDueDate == null ? amount : amountInDueDate,
+						amountInDueDate == null ? amount : amountInDueDate,
+						amountAfterDueDate == null || amountAfterDueDate.trim().equalsIgnoreCase("") ? amount
+								: new BigDecimal(amountAfterDueDate),
+						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode,username,feeDetail);
+						bankName, bankCode, branchName, branchCode, username, feeDetail);
+
+				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
+						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
+						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
+					if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.BILL_ALREADY_PAID)) {
+						List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
+								.getFeeTypesList_wrapper();
+						FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
+						if (savedPaymentLog != null) {
+							for (FeeType feeType : feeDetails) {
+
+								feeType.setPaymentLog(savedPaymentLog.getID());
+								feeType.setSource(paymentLogTable);
+								feeTypeRepository.save(feeType);
+								LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+										savedPaymentLog.getID());
+							}
+						} else {
+							LOG.error(
+									"Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+						}
+					}
+				}
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -4659,10 +4680,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		LOG.info("----- Bill Payment Method End -----");
 
-		
 		return response;
 
 	}
-	
 
 }
