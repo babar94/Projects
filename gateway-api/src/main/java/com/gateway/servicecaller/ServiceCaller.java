@@ -86,6 +86,9 @@ public class ServiceCaller {
 			long endTime = System.currentTimeMillis();
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;
+			
+            //result ="{\"response\":{\"bzu-updatevoucher\":{\"message\":\"Voucher Transaction updated successfully\"},\"response_code\":\"00\",\"response_desc\":\"Operation Successful\"}}";
+			
 			// result="{\"response\":{\"response_code\":\"501\",\"response_desc\":\"Connect
 			// Timeout Exception\"}}";
 			if (result == null || result.toString().isEmpty()) {

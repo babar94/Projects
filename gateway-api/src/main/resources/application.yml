@@ -98,6 +98,10 @@ uom:
    mnemonic: UOM
   reserved:     
 
+
+bzu:
+  username : nbp@361
+  password : NBP@791
   
 service:
   auth:

@@ -129,7 +129,13 @@ public class Constants {
 		
 		public static final String DLS_BILL_INQUIRY = "dls-getvoucher";
 		public static final String DLS_BILL_PAYMENT = "dls-updatevoucher";
-
+		
+		
+		public static final String BZU_BILL_INQUIRY = "bzu-getvoucher";
+		public static final String BZU_BILL_PAYMENT = "bzu-updatevoucher";
+		
+		
+		
 		
 
 	}

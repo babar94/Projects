@@ -50,6 +50,11 @@ public interface BillerConstant {
 
 		String DLS = "DLS";
 	}
+	
+	interface BZU {
+		
+		String BZU ="BZU";
+	}
 
 	
 }

@@ -28,7 +28,7 @@ public interface BillPaymentService {
 		
 	public BillPaymentResponse billPaymentDls(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
-	
+	public BillPaymentResponse billPaymentBzu(BillPaymentRequest request, HttpServletRequest httpRequestData);
 	
 
 	

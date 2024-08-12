@@ -26,10 +26,6 @@ public class FeeType {
 	@Column(name = "type_detail")
 	private String typeDetail;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "payment_id")
-//	private PaymentLog paymentLog;
-	
 	@Column(name = "payment_id")
 	private Long paymentLog; 
 	
