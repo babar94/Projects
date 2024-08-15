@@ -2,6 +2,7 @@ package com.gateway.model.mpay.response.billinquiry.dls;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gateway.model.mpay.response.billinquiry.BillerDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FeeTypeListWrapper {
+public class FeeTypeListWrapper implements BillerDetails {
 
 	
 	@JsonProperty("fees")
@@ -27,6 +28,15 @@ public class FeeTypeListWrapper {
 	@JsonProperty("typeDetail")
 	private String typeDetail;
 
-	
+	@Override
+	public String getItemDetail() {
+
+		return typeDetail;
+	}
+
+	@Override
+	public String getFees() {
+		return fees;
+	}
 
 }

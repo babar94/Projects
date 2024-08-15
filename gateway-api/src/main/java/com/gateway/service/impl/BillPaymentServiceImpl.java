@@ -28,6 +28,7 @@ import com.gateway.entity.PendingPayment;
 import com.gateway.entity.PgPaymentLog;
 import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.SubBillersList;
+import com.gateway.model.mpay.response.billinquiry.BillerDetails;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bzu.BzuGetVoucherResponse;
@@ -4694,24 +4695,52 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
-					if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.BILL_ALREADY_PAID)) {
-						List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
-								.getFeeTypesList_wrapper();
-						FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
+					
+//					if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.BILL_ALREADY_PAID)) {
+//						List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
+//								.getFeeTypesList_wrapper();
+//						FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
+//						if (savedPaymentLog != null) {
+//							for (FeeType feeType : feeDetails) {
+//
+//								feeType.setPaymentLog(savedPaymentLog.getID());
+//								feeType.setSource(paymentLogTable);
+//								feeTypeRepository.save(feeType);
+//								LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+//										savedPaymentLog.getID());
+//							}
+//						} else {
+//							LOG.error(
+//									"Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+//						}
+//					}
+
+					
+					if (infoPay.getResponseCode().equals(ResponseCodes.OK)
+							&& billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
+						List<? extends BillerDetails> billerDetailsList = dlsgetVoucherResponse.getResponse()
+								.getDlsgetvoucher().getFeeTypesList_wrapper();
+
+
+						FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(billerDetailsList);
+
 						if (savedPaymentLog != null) {
 							for (FeeType feeType : feeDetails) {
-
-								feeType.setPaymentLog(savedPaymentLog.getID());
+								feeType.setPaymentLogId(savedPaymentLog.getID());
 								feeType.setSource(paymentLogTable);
 								feeTypeRepository.save(feeType);
+
 								LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
 										savedPaymentLog.getID());
+
 							}
 						} else {
 							LOG.error(
 									"Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
 						}
-					}
+					}			
+					
+					
 				}
 
 			} catch (Exception ex) {
@@ -4746,8 +4775,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
 		String transAuthId = request.getTxnInfo().getTranAuthId();
-		String channel = "";
-		String username = "";
+		String channel = "" , username = "";
 
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
@@ -4874,22 +4902,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
 					if (utilMethods.isValidInput(dueDate)) {
-						LocalDate currentDate = LocalDate.now();
-
+										
 						try {
-
-							localDate = utilMethods.parseDueDateWithoutDashes(dueDate);
-
-							///// Check due date conditions///
-
-							if (utilMethods.isPaymentWithinDueDate(currentDate, localDate)) {
-								if (txnAmount.compareTo(amountInDueToDate) != 0) {
+		
+							if (txnAmount.compareTo(amountInDueToDate) != 0) {
 									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 									response = new BillPaymentResponse(infoPay, null, null);
 									return response;
-								}
-							} 
+							}
 							
 
 						} catch (DateTimeParseException e) {
@@ -4923,35 +4944,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						}
 
-						
-//						else if (bzuUpdateVoucherResponse.getResponse().getResponseCode()
-//								.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
-//
-//							billerId = request.getTxnInfo().getBillerId();
-//							billerNumber = request.getTxnInfo().getBillNumber();
-//
-//							infoPay = new InfoPay(bzugetVoucherResponse.getResponse().getResponseCode(),
-//									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-//
-//							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-//
-//							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-//									request.getAdditionalInfo().getReserveField2(),
-//									request.getAdditionalInfo().getReserveField3(),
-//									request.getAdditionalInfo().getReserveField4(),
-//									request.getAdditionalInfo().getReserveField5(),
-//									request.getAdditionalInfo().getReserveField6(),
-//									request.getAdditionalInfo().getReserveField7(),
-//									request.getAdditionalInfo().getReserveField8(),
-//									request.getAdditionalInfo().getReserveField9(),
-//									request.getAdditionalInfo().getReserveField10());
-//
-//							transactionStatus = Constants.Status.Success;
-//
-//							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-//							return response;
-//
-//						}
 
 						else if (bzuUpdateVoucherResponse.getResponse().getResponseCode()
 								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {

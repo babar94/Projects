@@ -27,7 +27,7 @@ public class FeeType {
 	private String typeDetail;
 
 	@Column(name = "payment_id")
-	private Long paymentLog; 
+	private Long paymentLogId; 
 	
 	@Column(name = "source_table")
 	private String source;

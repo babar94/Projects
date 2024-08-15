@@ -3193,27 +3193,27 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
 						branchCode, username, feeDetail);
 
-				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
-						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
-						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
-
-					List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
-							.getFeeTypesList_wrapper();
-
-					FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
-					if (savedPaymentLog != null) {
-						for (FeeType feeType : feeDetails) {
-							feeType.setPaymentLog(savedPaymentLog.getID());
-							feeType.setSource(paymentLogTable);
-							feeTypeRepository.save(feeType);
-							LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
-									savedPaymentLog.getID());
-
-						}
-					} else {
-						LOG.error("Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
-					}
-				}
+//				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
+//						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
+//						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
+//
+//					List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
+//							.getFeeTypesList_wrapper();
+//
+//					FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(feeTypesList);
+//					if (savedPaymentLog != null) {
+//						for (FeeType feeType : feeDetails) {
+//							feeType.setPaymentLog(savedPaymentLog.getID());
+//							feeType.setSource(paymentLogTable);
+//							feeTypeRepository.save(feeType);
+//							LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+//									savedPaymentLog.getID());
+//
+//						}
+//					} else {
+//						LOG.error("Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+//					}
+//				}
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3235,16 +3235,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		Info info = null;
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
-		String transactionStatus = "";
-		String billStatus = "";
-		String username = "";
-		String channel = "";
-		BigDecimal amountInDueToDate = null;
-		BigDecimal amountAfterDate = null;
-		BigDecimal amountPaid = null;
+		String transactionStatus = "" , billStatus = "" , username = "" , channel = "";
+		BigDecimal amountInDueToDate = null , amountAfterDate = null , amountPaid = null;
 		
 		String  studentName = "", fatherName = "" , issueDate = "" , dueDate = "",
-				 billstatus = "" , responseCode = "" , responseDescription ="";
+				 billstatus = "" , cninc = "" , roll_Number = "";
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
@@ -3341,7 +3336,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), studentName, billstatus, dueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDate), "", "");
+							String.valueOf(amountInDueToDate), "", "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -3365,6 +3360,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					studentName = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getStudentName();
 					fatherName = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getStudentFname();
+					cninc =  bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getScnic();
+					roll_Number = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getRollNo();
+					issueDate = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getIssueDate();	
 					dueDate = utilmethod.transactionDateFormater(bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getDueDate());
 					billstatus ="U";
 					amountInDueToDate =  new BigDecimal(bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getTotalFees());
@@ -3379,9 +3377,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							String.valueOf(amountInDueToDate), "", "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(
-							request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
+							fatherName,
+							cninc,
+							roll_Number,
 							request.getAdditionalInfo().getReserveField4(),
 							request.getAdditionalInfo().getReserveField5(),
 							request.getAdditionalInfo().getReserveField6(),
