@@ -46,7 +46,7 @@ public class ReservedFieldsValidationServiceImpl implements ReservedFieldsValida
 	        if (!validationPassed) {
 	            logger.error("Validation failed. All reserved fields must match the regex pattern.");
 	        } else {
-	            logger.info("Validation passed. All reserved fields match the regex pattern.");
+	            logger.info("Validation passed. All reserved fields match the regex pattern."); 
 	        }
 
 	        return validationPassed;

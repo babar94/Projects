@@ -13,6 +13,12 @@ public interface BillInquiryService {
 	public BillInquiryResponse billInquiryOffline(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller);
 
+	
+	public BillInquiryResponse billInquiryBEOE(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
+	public BillInquiryResponse billInquiryKppsc(BillInquiryRequest request,
+			BillInquiryValidationResponse billInquiryValidationResponse, HttpServletRequest httpRequestData);
+	
 	public BillInquiryResponse billInquiryFbr(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
 	public BillInquiryResponse billInquiryPta(BillInquiryRequest request, HttpServletRequest httpRequestData);
@@ -20,5 +26,14 @@ public interface BillInquiryService {
 	public BillInquiryResponse billInquiryAiou(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
 	public BillInquiryResponse billInquiryDls(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
+	public BillInquiryResponse billInquiryPitham(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
+	public BillInquiryResponse billInquiryThardeep(BillInquiryRequest request, HttpServletRequest httpRequestData);
+		
+	public BillInquiryResponse billInquiryUom(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
+	public BillInquiryResponse billInquiryBzu(BillInquiryRequest request, HttpServletRequest httpRequestData);
+
 
 }

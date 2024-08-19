@@ -39,6 +39,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 			String parameter = transactionParam.getParamName(); // list ka parameter ka naam
 			String invalidDescription = transactionParam.getInvalidDescription();
 			String regex = transactionParam.getRegex();
+			LOG.info("Regex validation check on Param : "+parameter);
 			boolean match = false;
 			if (requestObj.has("txnInfo")) {
 				innerObject = requestObj.getJSONObject("txnInfo");
@@ -50,7 +51,7 @@ public class ParamsValidatorServiceImpl implements ParamsValidatorService {
 
 						if (match) {
 							result = true;
-							LOG.info("Regex matches");
+							LOG.info("Regex matches: "+parameter);
 							if (parameter.equalsIgnoreCase("tranDate")) {
 								SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
 								f.setLenient(false);

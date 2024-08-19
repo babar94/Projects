@@ -602,6 +602,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	}
 
+	
+	@Override
 	public BillPaymentResponse billPaymentBEOE(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside method Bill Payment");
@@ -4756,7 +4758,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	}
 
-	
 	@Override
 	public BillPaymentResponse billPaymentBzu(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 

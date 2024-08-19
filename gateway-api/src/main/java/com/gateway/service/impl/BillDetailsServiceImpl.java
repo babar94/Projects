@@ -142,7 +142,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 										switch (subBillerDetail.getSubBillerName()) {
 										case BillerConstant.Beoe.BEOE:
-											paymentInquiryResponse = paymentInquiryBEOE(request, httpRequestData);
+											paymentInquiryResponse = paymentInquiryBeoe(request, httpRequestData);
 											break;
 
 										default:
@@ -158,8 +158,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Pral.KPPSC:
-											paymentInquiryResponse = paymentInquiryPRAL(request,
-													billPaymentInquiryValidationResponse);
+											paymentInquiryResponse = paymentInquiryPral(request,
+													httpRequestData);
 											break;
 
 										default:
@@ -181,8 +181,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Pithm.PITHM:
-											paymentInquiryResponse = paymentInquiryPITHAM(request, httpRequestData,
-													billPaymentInquiryValidationResponse);
+											paymentInquiryResponse = paymentInquiryPitham(request, httpRequestData);
 											break;
 
 										default:
@@ -206,8 +205,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Thardeep.THARDEEP:
-											paymentInquiryResponse = payementInquiryTHARDEEP(request, httpRequestData,
-													billPaymentInquiryValidationResponse);
+											paymentInquiryResponse = paymentInquiryThardeep(request, httpRequestData);
 											break;
 
 										default:
@@ -232,8 +230,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Uom.UOM:
-											paymentInquiryResponse = payementInquiryUOM(request, httpRequestData,
-													billPaymentInquiryValidationResponse);
+											paymentInquiryResponse = paymentInquiryUom(request, httpRequestData);
 											break;
 
 										default:
@@ -258,8 +255,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Dls.DLS:
-											paymentInquiryResponse = payementInquiryDls(request, httpRequestData,
-													billPaymentInquiryValidationResponse);
+											paymentInquiryResponse = paymentInquiryDls(request, httpRequestData);
 											break;
 
 										default:
@@ -286,8 +282,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 											switch (subBillerDetail.getSubBillerName()) {
 
 											case BillerConstant.BZU.BZU:
-												paymentInquiryResponse = payementInquiryBzu(request, httpRequestData,
-														billPaymentInquiryValidationResponse);
+												paymentInquiryResponse = paymentInquiryBzu(request, httpRequestData);
 												break;
 
 											default:
@@ -514,7 +509,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	public PaymentInquiryResponse paymentInquiryBEOE(PaymentInquiryRequest request,
+	@Override
+	public PaymentInquiryResponse paymentInquiryBeoe(PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside method Bill Inquiry");
@@ -728,8 +724,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	public PaymentInquiryResponse paymentInquiryPRAL(PaymentInquiryRequest request,
-			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+	public PaymentInquiryResponse paymentInquiryPral(PaymentInquiryRequest request,HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside method Bill Inquiry");
 		PaymentInquiryResponse response = null;
@@ -1022,9 +1017,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	public PaymentInquiryResponse paymentInquiryPITHAM(PaymentInquiryRequest request,
-			HttpServletRequest httpRequestData,
-			BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {
+	public PaymentInquiryResponse paymentInquiryPitham(PaymentInquiryRequest request,
+			HttpServletRequest httpRequestData) {
 
 		LOG.info("Inside method PaymentInquiry");
 
@@ -1168,7 +1162,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 		
-	public PaymentInquiryResponse payementInquiryTHARDEEP(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
+	@Override
+	public PaymentInquiryResponse paymentInquiryThardeep(PaymentInquiryRequest request,HttpServletRequest httpRequestData) {	
 	
 	LOG.info("THARDEEP Bill Inquiry Request {} ", request.toString());
 	
@@ -1326,7 +1321,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	
 }
 
-	public PaymentInquiryResponse payementInquiryUOM(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
+	@Override
+	public PaymentInquiryResponse paymentInquiryUom(PaymentInquiryRequest request,HttpServletRequest httpRequestData) {	
 	
 	LOG.info("UOM Payment Inquiry Request {} ", request.toString());
 	
@@ -1481,7 +1477,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 	
 }
 	
-	public PaymentInquiryResponse payementInquiryDls(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
+	@Override
+	public PaymentInquiryResponse paymentInquiryDls(PaymentInquiryRequest request,HttpServletRequest httpRequestData) {	
 		
 		LOG.info("DLS Payment Inquiry Request {} ", request.toString());
 		
@@ -1636,8 +1633,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		
 	}
 
-	
-public PaymentInquiryResponse payementInquiryBzu(PaymentInquiryRequest request,HttpServletRequest httpRequestData,BillPaymentInquiryValidationResponse BillPaymentInquiryValidationResponse) {	
+	@Override
+    public PaymentInquiryResponse paymentInquiryBzu(PaymentInquiryRequest request,HttpServletRequest httpRequestData) {	
 		
 		LOG.info("BZU Payment Inquiry Request {} ", request.toString());
 		

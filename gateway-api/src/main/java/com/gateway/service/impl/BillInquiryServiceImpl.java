@@ -264,7 +264,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
-									////////// Pitham ///////
+									                        ////////// Pitham ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -272,7 +272,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Pithm.PITHM:
-											billInquiryResponse = billInquiryPITHAM(request, httpRequestData);
+											billInquiryResponse = billInquiryPitham(request, httpRequestData);
 											break;
 
 										default:
@@ -286,6 +286,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									}
 
 									                  ///////////// Pitham ///////////
+									
 
 									                 /////////////// Thardeep ////////////
 
@@ -296,7 +297,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Thardeep.THARDEEP:
-											billInquiryResponse = billInquiryTHARDEEP(request, httpRequestData);
+											billInquiryResponse = billInquiryThardeep(request, httpRequestData);
 											break;
 
 										default:
@@ -319,7 +320,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.Uom.UOM:
-											billInquiryResponse = billInquiryUOM(request, httpRequestData);
+											billInquiryResponse = billInquiryUom(request, httpRequestData);
 											break;
 
 										default:
@@ -356,9 +357,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
-									                   ////////// Driving licsence sindh ///////
+									               ////////// Driving licsence sindh ///////
 															 
-							                           ////////// Bahauddin zikria university ///////
+							                       ////////// Bahauddin zikria university ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.BZU.BZU)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -366,7 +367,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										switch (subBillerDetail.getSubBillerName()) {
 		
 										case BillerConstant.BZU.BZU:
-											billInquiryResponse = billInquiryBZU(request, httpRequestData);
+											billInquiryResponse = billInquiryBzu(request, httpRequestData);
 											break;
 		
 										default:
@@ -512,6 +513,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		return response;
 	}
 
+	
+	@Override 
 	public BillInquiryResponse billInquiryBEOE(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("BEOE Bill Inquiry Request {} ", request.toString());
@@ -854,6 +857,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
+	@Override 
 	public BillInquiryResponse billInquiryKppsc(BillInquiryRequest request,
 			BillInquiryValidationResponse billInquiryValidationResponse, HttpServletRequest httpRequestData) {
 
@@ -2001,7 +2005,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	public BillInquiryResponse billInquiryPITHAM(BillInquiryRequest request, HttpServletRequest httpRequestData) {
+	@Override
+	public BillInquiryResponse billInquiryPitham(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("PITHAM Bill Inquiry Request {} ", request.toString());
 
@@ -2328,7 +2333,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	public BillInquiryResponse billInquiryTHARDEEP(BillInquiryRequest request, HttpServletRequest httpRequestData) {
+	@Override
+	public BillInquiryResponse billInquiryThardeep(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("THARDEEP Bill Inquiry Request {} ", request.toString());
 
@@ -2563,7 +2569,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	public BillInquiryResponse billInquiryUOM(BillInquiryRequest request, HttpServletRequest httpRequestData) {
+	@Override
+	public BillInquiryResponse billInquiryUom(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("UOM Bill Inquiry Request {} ", request.toString());
 
@@ -3226,7 +3233,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	public BillInquiryResponse billInquiryBZU(BillInquiryRequest request, HttpServletRequest httpRequestData) {
+	@Override
+	public BillInquiryResponse billInquiryBzu(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
 		LOG.info("BZU Bill Inquiry Request {} ", request.toString());
 
