@@ -4783,7 +4783,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		BigDecimal amountInDueToDate = null, amountAfterDate = null,
 				requestAmountafterduedate = null, txnAmount = null;
-		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "" ,  fatherName = "";
+		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "" ,  fatherName = "" , billStatus = "";
 		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
@@ -4819,6 +4819,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 				response = new BillPaymentResponse(infoPay, null, null);
+				
+                billStatus = "Unpaid";
+
 				return response;
 
 			}
@@ -4875,6 +4878,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					transactionStatus = Constants.Status.Success;
 
+					 billStatus = "Paid";
+
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 					return response;
 
@@ -4890,7 +4895,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					billstatus ="U";
 					amountInDueToDate =  new BigDecimal(bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getTotalFees());
 					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
-
+                    billStatus = "Unpaid";
 								
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.BZU_BILL_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -4971,6 +4976,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							transactionStatus = Constants.Status.Success;
 
+							 billStatus = "Paid";
+								
 							return response;
 
 						}
@@ -5043,7 +5050,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), studentName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						amountAfterDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel,
-						Constants.BILL_STATUS.BILL_PAID, request.getTxnInfo().getTranDate(),
+						billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
 						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username);

@@ -3247,7 +3247,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		BigDecimal amountInDueToDate = null , amountAfterDate = null , amountPaid = null;
 		
 		String  studentName = "", fatherName = "" , issueDate = "" , dueDate = "",
-				 billstatus = "" , cninc = "" , roll_Number = "";
+				 billstatus = "" , cninc = "" , roll_Number = "" , tran_Auth_Id = "";
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
@@ -3323,6 +3323,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						studentName = paymentLog.getName();
 						amountPaid = paymentLog.getAmountPaid();
 						dueDate = paymentLog.getDuedate();
+						tran_Auth_Id = paymentLog.getTranAuthId();
 					
 
 						transactionStatus = Constants.Status.Success;
@@ -3344,7 +3345,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 							request.getTxnInfo().getBillNumber(), studentName, billstatus, dueDate,
-							String.valueOf(amountInDueToDate), "", "", "");
+							String.valueOf(amountInDueToDate), "",tran_Auth_Id,"");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
