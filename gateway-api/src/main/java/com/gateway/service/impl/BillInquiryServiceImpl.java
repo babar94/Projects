@@ -491,7 +491,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			} catch (Exception ex) {
 
-				ex.printStackTrace();
+				LOG.info("BillInquiryServiceImpl - billInquiryValidations - Getting token info error"+ex);
 			}
 
 //			if (request.getTxnInfo().getBillerId() != null || !request.getTxnInfo().getBillerId().isEmpty()) {

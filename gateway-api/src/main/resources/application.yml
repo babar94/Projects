@@ -10,6 +10,8 @@ server:
   port: 8082 
   
 logging:
+  level:
+    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: WARN
   config: file:logback.xml
 
 debug: true
@@ -18,18 +20,12 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    #url: jdbc:sqlserver://localhost;databaseName=open-connect-api
-    #url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
     url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_UAT;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
 
     username : ENC(aF3V2Gker0iesnTTR30h2c7MVmCyi8kV)
     password : ENC(lG2+V+BWsvTE1yGscQoO/IF9dM+xU3ea)
     
-    #username: paysys
-    #password: paysys
-#    url: jdbc:sqlserver://nbp-db.database.windows.net:1433;database=nbp;
-#    username: PAYSYS
-#    password: C:Flmysy.W3g
+
     hikari:
       connection-test-query: SELECT 1
       minimum-idle: 8
@@ -45,9 +41,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
-#  mvc:
-#      pathmatch:
-#            matching-strategy: ant_path_matcher
     
 springfox.documentation.swagger.v2.path: /docs
 
@@ -125,18 +118,6 @@ service:
       default-package: 1  
   url:
     queue: http://10.0.110.1:7033/nbpl/queueforwarding/
-    simulator: http://13.73.143.92:7032/nbpl/queueforwarding/
-    sms: http://13.73.143.92:7034/api/SmsService/
-    email: http://13.73.143.92:7034/api/EmailService/
-    email.attachment: http://13.73.143.92:7034/api/EmailServiceWithAttachement/
-    senderName: 'NATIONAL Bank'
-    senderEmail: 'paysyslabstesting@gmail.com'
-#    queue: http://40.68.251.49:7033/nbpl/queueforwarding/
-#    simulator: http://40.68.251.49:7032/nbpl/queueforwarding/
-#    sms: http://40.68.251.49:7034/api/SmsService/
-#    email: http://40.68.251.49:7034/api/EmailService/
-#    email.attachment: http://40.68.251.49:7034/api/EmailServiceWithAttachement/
-    umps: http://13.73.143.92:65111/umps-api/gateway/v1/internal/hce/
     
   thread-pool:
     notification: 4
@@ -144,7 +125,6 @@ service:
     audit-log: 4
     login-audit-log: 4
     balance-inquiry: 4
-  secret: paysys@123
   timeout:
     connect: 15000
     read: 75000

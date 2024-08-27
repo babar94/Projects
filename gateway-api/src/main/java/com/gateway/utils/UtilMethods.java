@@ -113,7 +113,7 @@ public class UtilMethods {
 			today = new SimpleDateFormat("yyyyMMdd").parse(tranDate);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		LOG.info("UtilsMethod-DueDateError :"+e);
 		}
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
@@ -307,7 +307,7 @@ public class UtilMethods {
 			resultAmount.append(amount.substring(amount.indexOf("+") + 1)); // Exclude the leading zeros and the "+"
 																			// sign
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("UtilsMethod-convertAmountToISOFormat"+ex);
 		}
 
 		return resultAmount.toString();
@@ -338,7 +338,8 @@ public class UtilMethods {
 			resultAmount.append(amount.charAt(0)); // Append the sign
 			resultAmount.append(amount.substring(1)); // Exclude the leading zeros and the sign
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("UtilsMethod-convertAmountToISOFormatWithoutPlusSign"+ex);
+
 		}
 
 		return resultAmount.toString();
@@ -365,7 +366,8 @@ public class UtilMethods {
 			resultAmount = df.format(doubleAmount);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("UtilsMethod-convertISOFormatAmount : "+ex);
+
 		}
 		return resultAmount;
 	}

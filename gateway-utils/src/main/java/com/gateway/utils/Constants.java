@@ -134,9 +134,6 @@ public class Constants {
 		public static final String BZU_BILL_INQUIRY = "bzu-getvoucher";
 		public static final String BZU_BILL_PAYMENT = "bzu-updatevoucher";
 		
-		
-		
-		
 
 	}
 
@@ -170,6 +167,13 @@ public class Constants {
 		public static final String NBP = "NBP";
 		public static final String ABL = "ABL";
 
+	}
+	
+	public static class Key{
+		
+		public static final String SECRET_KEY = "dbsecretkey";
+		public static final String ALGORITHM ="PBEWithMD5AndDES";
+		
 	}
 
 }

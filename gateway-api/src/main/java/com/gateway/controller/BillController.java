@@ -262,7 +262,7 @@ public class BillController extends ApiController {
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.writeValueAsString(object);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.info("Json String Error :"+e);
 			return null;
 		}
 	}

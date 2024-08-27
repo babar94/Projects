@@ -34,24 +34,6 @@ public class ServiceCaller {
 	@Value("${service.url.queue}")
 	private String queueForwardingUrl;
 
-	@Value("${service.url.simulator}")
-	private String simulatorUrl;
-
-	@Value("${service.url.sms}")
-	private String smsUrl;
-
-	@Value("${service.url.email}")
-	private String emailUrl;
-
-	@Value("${service.url.email.attachment}")
-	private String attachmentUrl;
-
-	@Value("${service.secret}")
-	private String secret;
-
-	@Value("${mpay.calls.simulator}")
-	public String mpaySimulator;
-
 	@Autowired
 	private UtilMethods utilMethods;
 
@@ -87,10 +69,6 @@ public class ServiceCaller {
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;
 			
-            //result ="{\"response\":{\"bzu-updatevoucher\":{\"message\":\"Voucher Transaction updated successfully\"},\"response_code\":\"00\",\"response_desc\":\"Operation Successful\"}}";
-			
-			// result="{\"response\":{\"response_code\":\"501\",\"response_desc\":\"Connect
-			// Timeout Exception\"}}";
 			if (result == null || result.toString().isEmpty()) {
 				LOG.info("MPAY Response: " + "Response null: timeout");
 				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout", billername);
@@ -172,7 +150,6 @@ public class ServiceCaller {
 				return null;
 			}
 			LOG.info("Response: Date:({}), TranRef:({}), Result:({})", new Date(), rrn, result);
-			// System.out.print("MPAY Response: " + result.getBody());
 			LOG.info("\n\n[ MPAY RESPONSE #{} ]\n\n{}\n\n", XMLBeautifier.format(result));
 			LOG.info("\n[\n%%%%%%%%%%%%%% Total ***MPAY*** Call Execution Time: '{}' %%%%%%%%%%%%%%\n]\n", totalTime);
 			obj = typecastToT(result, type);
@@ -185,10 +162,8 @@ public class ServiceCaller {
 	}
 
 	private String getEndpoint() {
-		if (mpaySimulator == null || mpaySimulator.equals("0"))
 			return queueForwardingUrl;
-		else
-			return simulatorUrl;
+
 	}
 
 	@SuppressWarnings("unchecked")

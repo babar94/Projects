@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.gateway.utils.EncryptionUtils;
 import com.gateway.utils.FilterRequestResponseUtils;
 import com.gateway.utils.FilterRequestResponseUtils.BufferedRequestWrapper;
 import com.gateway.utils.FilterRequestResponseUtils.BufferedResponseWrapper;
@@ -47,16 +46,16 @@ public class ApiLoggingFilter implements Filter {
 			BufferedResponseWrapper bufferedResponse = new BufferedResponseWrapper(httpServletResponse);
 			String reqBody = bufferedRequest.getRequestBody();
 
-            String encryptedBody = encryptSensitiveData(reqBody);
+            String requestInfo = removeSensitiveData(reqBody);
 
-			logger.info("reqBody : {}", encryptedBody);
+			logger.info("reqBody : {}", requestInfo);
 			logger.info("method : {}", httpServletRequest.getMethod());
 			logger.info("method : {}", httpServletRequest.getHeaderNames().toString());
 
 
 			final StringBuilder logRequest = new StringBuilder("HTTP ").append(httpServletRequest.getMethod())
 					.append(" \"").append(httpServletRequest.getServletPath()).append("\" ").append(", parameters=")
-					.append(", body=").append(encryptedBody).append(", remote_address=")
+					.append(", body=").append(requestInfo).append(", remote_address=")
 					.append(httpServletRequest.getRemoteAddr());
 			logger.info(logRequest.toString());
 
@@ -77,15 +76,15 @@ public class ApiLoggingFilter implements Filter {
 
 	}
 	
-	private String encryptSensitiveData(String data) {
+	private String removeSensitiveData(String data) {
         try {
             // Parse JSON and encrypt sensitive fields
             JSONObject json = new JSONObject(data);
             if (json.has("username")) {
-                json.put("username", EncryptionUtils.encrypt(json.getString("username")));
+                json.remove("username");
             }
             if (json.has("password")) {
-                json.put("password", EncryptionUtils.encrypt(json.getString("password")));
+                json.remove("password");
             }
             return json.toString();
         } catch (Exception e) {

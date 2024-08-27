@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.gateway.utils.Constants;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,8 +28,8 @@ public class Application  {
 	@Bean("jasyptStringEncryptor")
 	public StringEncryptor stringEncryptor() {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-		encryptor.setPassword("dbsecretkey"); // Replace with your encryption key or passphrase
-		encryptor.setAlgorithm("PBEWithMD5AndDES");
+		encryptor.setPassword(Constants.Key.SECRET_KEY); // Replace with your encryption key or passphrase
+		encryptor.setAlgorithm(Constants.Key.ALGORITHM);
 		encryptor.setIvGenerator(new org.jasypt.iv.NoIvGenerator());
 		return encryptor;
 	}

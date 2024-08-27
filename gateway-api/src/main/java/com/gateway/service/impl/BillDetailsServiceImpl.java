@@ -477,7 +477,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				channel = result[1];
 
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				LOG.info("BillDetailServiceImpl - billPaymentInquiryValidations - Getting token info error"+ex);
+
 			}
 
 			// RRN a validation First check payment Hsitory
@@ -502,7 +503,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 			response = new BillPaymentInquiryValidationResponse("00", "SUCCESS", username, channel, rrn, stan);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			
+			LOG.info("BillDetailServiceImpl - billPaymentInquiryValidations "+ex);
+			
 		}
 
 		return response;
@@ -953,7 +956,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 				channel = result[1];
 
 			} catch (Exception ex) {
-				ex.printStackTrace();
+
+				LOG.info("BillDetailsServiceImpl - getBillerList - Getting token error"+ex);
+
 			}
 			List<BillerConfiguration> billers = billerConfigurationRepo.findByIsActiveTrue();
 

@@ -56,7 +56,7 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("00", "User created Succesfully!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("Save Credential Error :"+ex);
 		}
 
 		return response;
@@ -78,7 +78,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - disableCredential :"+ex);
+
 		}
 
 		return response;
@@ -102,7 +103,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - enableCredential :"+ex);
+
 		}
 
 		return response;
@@ -128,7 +130,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - updateCredentialPassword :"+ex);
+
 		}
 
 		return response;
@@ -150,7 +153,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "User does not exist against the channel!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - updateCredentialChannel :"+ex);
+
 		}
 
 		return response;
@@ -172,7 +176,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "User Not Found!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - deleteCredential :"+ex);
+
 		}
 
 		return response;
@@ -194,7 +199,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "Users Not Found!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - getCredentialsList :"+ex);
+
 		}
 
 		return response;
@@ -219,7 +225,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "channel does not exist!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - disableChannel :"+ex);
+
 		}
 
 		return response;
@@ -244,7 +251,8 @@ public class ConfigurationManagementServiceImpl implements ConfigurationManageme
 				response = new GenericResponse<>("01", "channel does not exist!");
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("CredentialDetailsServiceImpl - enableChannel :"+ex);
+
 		}
 		return response;
 	}

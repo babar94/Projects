@@ -549,7 +549,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				channel = result[1];
 
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				LOG.info("BillPaymentServiceImpl - billPaymentValidations - Getting token error : "+ex);
+
 			}
 
 			// RRN a validation First check payment Hsitory
@@ -595,7 +596,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					stan);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("BillDetailsServiceImpl - billPaymentValidations : "+ex);
+
 		}
 
 		return response;

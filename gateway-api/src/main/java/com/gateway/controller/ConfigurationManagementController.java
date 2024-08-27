@@ -18,9 +18,7 @@ import com.gateway.response.CredentialsListAttribute;
 import com.gateway.response.GenericResponse;
 import com.gateway.service.ConfigurationManagementService;
 
-//@Api(tags = "Configuration Managem Controller")
 @RestController
-//@CrossOrigin
 @RequestMapping(path = ApiController.CONFIGURATION_URL)
 public class ConfigurationManagementController extends ApiController {
 
