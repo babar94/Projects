@@ -14,6 +14,9 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Encoders;
+
+import java.util.ArrayList;
+
 import javax.crypto.SecretKey;
 
 @SpringBootApplication(scanBasePackages = { "com.gateway" })
@@ -32,6 +35,7 @@ public class Application  {
 		encryptor.setAlgorithm(Constants.Key.ALGORITHM);
 		encryptor.setIvGenerator(new org.jasypt.iv.NoIvGenerator());
 		return encryptor;
+	
 	}
 
 	
