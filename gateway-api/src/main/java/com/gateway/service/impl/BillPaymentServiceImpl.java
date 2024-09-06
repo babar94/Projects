@@ -2240,8 +2240,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, new BigDecimal(amountInDueToDate),
-						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillPayment,
+						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, (Double.isNaN(amountInDueToDate) ? BigDecimal.ZERO
+								:new BigDecimal(amountInDueToDate)),
+						(amountAfterDueDate == null || amountAfterDueDate.equals("") ? BigDecimal.ZERO
+								: new BigDecimal(amountAfterDueDate)), dbTransactionFees, Constants.ACTIVITY.BillPayment,
 						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
 						channel, billStatus, request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(),
 						province, transAuthId, bankName, bankCode, branchName, branchCode, username, "");

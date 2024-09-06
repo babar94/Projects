@@ -117,7 +117,7 @@ service:
       password-length: 10
       default-package: 1  
   url:
-    queue: https://10.0.110.1:7033/nbpl/queueforwarding/
+    queue: http://10.0.110.1:7033/nbpl/queueforwarding/
     
   thread-pool:
     notification: 4
