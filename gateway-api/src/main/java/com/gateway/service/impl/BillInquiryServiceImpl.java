@@ -606,11 +606,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 //							
 							Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 									.ofNullable(combinedPaymentLogViewRepository
-											.findFirstByBillerNumberAndBillStatusAndActivitiesOrderByRequestDateTimeDesc(
+											.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
 													request.getTxnInfo().getBillNumber().trim(),
 													Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 													Constants.ACTIVITY.RBTS_FUND_TRANSFER,
-													Constants.ACTIVITY.CREDIT_DEBIT_CARD));
+													Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+													request.getTxnInfo().getBillerId()));
 							if (combinedPaymentLogView.isPresent()) {
 								CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
@@ -729,8 +730,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							}
 
 							LOG.info("Calling Payment Inquiry from pg_payment_log table");
-							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
-									request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
 
 							if (pgPaymentLog != null
 									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
@@ -2994,8 +2995,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							}
 
 							LOG.info("Calling Payment Inquiry from pg_payment_log table");
-							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
-									request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
 
 							if (pgPaymentLog != null
 									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
@@ -3053,11 +3054,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 							.ofNullable(combinedPaymentLogViewRepository
-									.findFirstByBillerNumberAndBillStatusAndActivitiesOrderByRequestDateTimeDesc(
+									.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 											Constants.ACTIVITY.RBTS_FUND_TRANSFER,
-											Constants.ACTIVITY.CREDIT_DEBIT_CARD));
+											Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+											request.getTxnInfo().getBillerId()));
 					if (combinedPaymentLogView.isPresent()) {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();

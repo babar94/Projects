@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface BillDetailsService {
 
-	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest reques);
+	public PaymentInquiryResponse paymentInquiry(HttpServletRequest httpRequestData, PaymentInquiryRequest request);
 	
 	public PaymentInquiryResponse paymentInquiryBeoe(PaymentInquiryRequest request,HttpServletRequest httpRequestData);
 	

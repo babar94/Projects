@@ -8,6 +8,6 @@ public interface PgPaymentLogRepository extends JpaRepository<PgPaymentLog, Long
 
 	//public List<PgPaymentLog> findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(Long billerId, String billerNumber,String billStatus,String Activity,String responseCode);
 	//public PgPaymentLog findFirstByBillerNumberAndBillStatus(String billNumber,String billStatus);
-	public PgPaymentLog findFirstByVoucherIdAndBillStatus(String voucherId,String billStatus);
+	public PgPaymentLog findFirstByVoucherIdAndBillerIdAndBillStatus(String voucherId,String BillerId,String billStatus);
 	
 }

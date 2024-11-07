@@ -43,4 +43,7 @@ public class CombinedPaymentLogView {
 
 	@Column(name = "source")
 	private String source;
+	
+	@Column(name = "biller_id")
+	private String billerId;
 }

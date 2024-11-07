@@ -729,8 +729,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							}
 
 							LOG.info("Calling Payment Inquiry from pg_payment_log table");
-							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillStatus(
-									request.getTxnInfo().getBillNumber(), Constants.BILL_STATUS.BILL_PAID);
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
 
 							if (pgPaymentLog != null
 									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
