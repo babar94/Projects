@@ -686,12 +686,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						response = new BillPaymentResponse(infoPay, null, null);
 						return response;
 					}
+					
+					
 
 					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
 						try {
 
+							//////////////////////////////////////////////////////////
+							
+							
 							PendingPayment pendingPayment = pendingPaymentRepository
 									.findFirstByVoucherIdOrderByPaymentIdDesc(
 											request.getTxnInfo().getBillNumber().trim());
@@ -745,6 +750,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								return response;
 							}
+							
+							
+							/////////////////////////////////////////////////////////////////////////////
+							
 
 							String tranDate = request.getTxnInfo().getTranDate();
 
@@ -4520,6 +4529,69 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						}
 
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
+							
+							
+							
+							////////////////////////////////////////////////////////
+							
+							
+							PendingPayment pendingPayment = pendingPaymentRepository
+									.findFirstByVoucherIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim());
+
+							if (pendingPayment != null) {
+
+								if (pendingPayment.getIgnoreTimer()) {
+
+									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+											rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									transactionStatus = Constants.Status.Pending;
+									billStatus = Constants.BILL_STATUS.BILL_PENDING;
+									return response;
+
+								} else {
+									LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+									LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+									// Calculate the difference in minutes
+									long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+									if (minutesDifference <= pendingThresholdMinutes) {
+
+										infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+												pendingPaymentMessage, rrn, stan);
+										response = new BillPaymentResponse(infoPay, null, null);
+
+										transactionStatus = Constants.Status.Pending;
+										billStatus = Constants.BILL_STATUS.BILL_PENDING;
+										return response;
+
+									}
+								}
+							}
+
+							LOG.info("Calling Payment Inquiry from pg_payment_log table");
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
+
+							if (pgPaymentLog != null
+									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										pendingVoucherUpdateMessage, rrn, stan); // success
+
+								transactionStatus = Constants.Status.Success;
+								billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								return response;
+							}
+							
+
+							////////////////////////////////////////////////////////
+							
 
 							LOG.info("Calling UpdateVoucher ");
 							ArrayList<String> ubpsBillParams = new ArrayList<>();
