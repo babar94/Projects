@@ -1,6 +1,5 @@
 package com.gateway.model.mpay.response.billinquiry.bzu;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

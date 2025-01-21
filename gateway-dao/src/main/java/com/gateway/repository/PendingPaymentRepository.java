@@ -6,5 +6,5 @@ import com.gateway.entity.PendingPayment;
 
 public interface PendingPaymentRepository extends JpaRepository<PendingPayment, Integer> {
 
-	PendingPayment findFirstByVoucherIdOrderByPaymentIdDesc(String voucherId);
+	PendingPayment findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(String voucherId,String billerId);
 }

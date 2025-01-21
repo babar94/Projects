@@ -35,26 +35,30 @@ public interface BillerConstant {
 
 		String THARDEEP = "THARDEEP";
 	}
-	
+
 	interface Etanb {
 
 		String ETANB = "ETANB";
 	}
-	
+
 	interface Uom {
 
 		String UOM = "UOM";
 	}
-	
+
 	interface Dls {
 
 		String DLS = "DLS";
 	}
-	
+
 	interface BZU {
-		
-		String BZU ="BZU";
+
+		String BZU = "BZU";
 	}
 
-	
+	interface SLIC {
+
+		String SLIC = "SLIC";
+	}
+
 }

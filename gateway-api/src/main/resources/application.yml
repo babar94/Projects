@@ -134,3 +134,7 @@ service:
 
 #simulator key
 mpay.calls.simulator: 0 
+
+slic:
+  billerid-1: 1701
+  billerid-2: 1702

@@ -134,6 +134,9 @@ public class Constants {
 		public static final String BZU_BILL_INQUIRY = "bzu-getvoucher";
 		public static final String BZU_BILL_PAYMENT = "bzu-updatevoucher";
 		
+		public static final String SLIC_BILL_INQUIRY = "slic-policyInquiry";
+		public static final String SLIC_BILL_PAYMENT = "slic-policyTranslation";
+		
 
 	}
 

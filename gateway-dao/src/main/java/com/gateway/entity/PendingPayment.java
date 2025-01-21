@@ -2,6 +2,7 @@ package com.gateway.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,5 +27,8 @@ public class PendingPayment {
 	private LocalDateTime transactionDate;
 
 	private Boolean ignoreTimer;
+	
+	@Column(name = "biller_id")
+	private String billerId;
 
 }

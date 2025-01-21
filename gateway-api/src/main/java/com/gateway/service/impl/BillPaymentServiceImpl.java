@@ -39,6 +39,7 @@ import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResp
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
 import com.gateway.model.mpay.response.billinquiry.pta.PtaGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.slic.SlicPolicyInquiryResponse;
 import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.uom.UomGetVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.UpdateVoucherResponse;
@@ -49,6 +50,8 @@ import com.gateway.model.mpay.response.billpayment.fbr.FbrUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.offline.OfflineUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.pitham.PithamUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.pta.PtaUpdateVoucherResponse;
+import com.gateway.model.mpay.response.billpayment.slic.SlicPolicyTranslationResponse;
+import com.gateway.model.mpay.response.billpayment.slic.UpdateSlicPolicyTranslationResponse;
 import com.gateway.model.mpay.response.billpayment.thardeep.ThardeepUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.uom.UomUpdateVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
@@ -60,6 +63,7 @@ import com.gateway.repository.SubBillerListRepository;
 import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -139,10 +143,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private TransactionParamsDao transactionParamsDao;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private FeeTypeMapper feeTypeMapper;
 
@@ -151,23 +155,27 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Value("${payment.log.table}")
 	private String paymentLogTable;
-	
+
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	private PgPaymentLogRepository pgPaymentLogRepository;
-	
+
 	@Autowired
 	private PendingPaymentRepository pendingPaymentRepository;
-	
-	
+
 	@Value("${bzu.username}")
 	private String bzu_username;
-	
+
 	@Value("${bzu.password}")
 	private String bzu_password;
-	
+
+	@Value("${slic.billerid-1}")
+	private String billerId1;
+
+	@Value("${slic.billerid-2}")
+	private String billerId2;
 
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
@@ -269,7 +277,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                               ///////// Pitham ///////
+									///////// Pitham ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Pithm.PITHM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -290,9 +298,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                         ////////// Pitham ///////
+									////////// Pitham ///////
 
-									                         ////////// Thardeep ///////
+									////////// Thardeep ///////
 
 									else if (billerDetail.getBillerName()
 											.equalsIgnoreCase(BillerConstant.Thardeep.THARDEEP)
@@ -314,9 +322,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                        ////////// Thardeep //////
+									////////// Thardeep //////
 
-									                         ////////// Uom ///////////
+									////////// Uom ///////////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Uom.UOM)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -337,9 +345,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                          ////////// Uom //////////
+									////////// Uom //////////
 
-									                           ////////// Dls ///////
+									////////// Dls ///////
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Dls.DLS)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
@@ -360,38 +368,57 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										}
 									}
 
-									                  ////////// Dls //////////
-									
-									
-									
-			                                           ////////// Bzu ///////
+									////////// Dls //////////
 
-										else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.BZU.BZU)
-												&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+									////////// Bzu ///////
 
-											switch (subBillerDetail.getSubBillerName()) {
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.BZU.BZU)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 
-											case BillerConstant.BZU.BZU:
-												billPaymentResponse = billPaymentBzu(request, httpRequestData);
-												break;
+										switch (subBillerDetail.getSubBillerName()) {
 
-											default:
-												LOG.info("subBiller does not exists.");
-												infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
-														Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-												billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+										case BillerConstant.BZU.BZU:
+											billPaymentResponse = billPaymentBzu(request, httpRequestData);
+											break;
 
-												break;
-											}
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
 										}
+									}
 
-										                  ////////// Bzu //////////
+									////////// Bzu //////////
 
-																		
+									////////// State Life ///////
+
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.SLIC.SLIC:
+											billPaymentResponse = billPaymentSlic(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
+										}
+									}
+
+									////////// State Life ///////
 
 									// AIOU
 									// PTA
-									
+
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Aiou.AIOU)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) { // PRAL
 
@@ -549,7 +576,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				channel = result[1];
 
 			} catch (Exception ex) {
-				LOG.info("BillPaymentServiceImpl - billPaymentValidations - Getting token error : "+ex);
+				LOG.info("BillPaymentServiceImpl - billPaymentValidations - Getting token error : " + ex);
 
 			}
 
@@ -596,7 +623,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					stan);
 
 		} catch (Exception ex) {
-			LOG.info("BillDetailsServiceImpl - billPaymentValidations : "+ex);
+			LOG.info("BillDetailsServiceImpl - billPaymentValidations : " + ex);
 
 		}
 
@@ -604,7 +631,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	}
 
-	
 	@Override
 	public BillPaymentResponse billPaymentBEOE(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
@@ -686,8 +712,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						response = new BillPaymentResponse(infoPay, null, null);
 						return response;
 					}
-					
-					
 
 					if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 							.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
@@ -695,11 +719,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						try {
 
 							//////////////////////////////////////////////////////////
-							
-							
+
 							PendingPayment pendingPayment = pendingPaymentRepository
-									.findFirstByVoucherIdOrderByPaymentIdDesc(
-											request.getTxnInfo().getBillNumber().trim());
+									.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim(),
+											request.getTxnInfo().getBillerId().trim());
 
 							if (pendingPayment != null) {
 
@@ -734,8 +758,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							}
 
 							LOG.info("Calling Payment Inquiry from pg_payment_log table");
-							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
-									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+									.findFirstByVoucherIdAndBillerIdAndBillStatus(request.getTxnInfo().getBillNumber(),
+											request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
 
 							if (pgPaymentLog != null
 									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
@@ -750,10 +775,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								return response;
 							}
-							
-							
+
 							/////////////////////////////////////////////////////////////////////////////
-							
 
 							String tranDate = request.getTxnInfo().getTranDate();
 
@@ -2249,13 +2272,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), depostiroName, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp, (Double.isNaN(amountInDueToDate) ? BigDecimal.ZERO
-								:new BigDecimal(amountInDueToDate)),
+						request.getTxnInfo().getBillerId(), requestTotalAmountbdUp,
+						(Double.isNaN(amountInDueToDate) ? BigDecimal.ZERO : new BigDecimal(amountInDueToDate)),
 						(amountAfterDueDate == null || amountAfterDueDate.equals("") ? BigDecimal.ZERO
-								: new BigDecimal(amountAfterDueDate)), dbTransactionFees, Constants.ACTIVITY.BillPayment,
-						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
-						channel, billStatus, request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(),
-						province, transAuthId, bankName, bankCode, branchName, branchCode, username, "");
+								: new BigDecimal(amountAfterDueDate)),
+						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
+						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
+						bankName, bankCode, branchName, branchCode, username, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -4529,15 +4553,13 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						}
 
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
-							
-							
-							
+
 							////////////////////////////////////////////////////////
-							
-							
+
 							PendingPayment pendingPayment = pendingPaymentRepository
-									.findFirstByVoucherIdOrderByPaymentIdDesc(
-											request.getTxnInfo().getBillNumber().trim());
+									.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim(),
+											request.getTxnInfo().getBillerId().trim());
 
 							if (pendingPayment != null) {
 
@@ -4572,8 +4594,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							}
 
 							LOG.info("Calling Payment Inquiry from pg_payment_log table");
-							PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
-									request.getTxnInfo().getBillNumber(),request.getTxnInfo().getBillerId(),Constants.BILL_STATUS.BILL_PAID);
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+									.findFirstByVoucherIdAndBillerIdAndBillStatus(request.getTxnInfo().getBillNumber(),
+											request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
 
 							if (pgPaymentLog != null
 									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
@@ -4588,10 +4611,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								return response;
 							}
-							
 
 							////////////////////////////////////////////////////////
-							
 
 							LOG.info("Calling UpdateVoucher ");
 							ArrayList<String> ubpsBillParams = new ArrayList<>();
@@ -4773,7 +4794,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper() != null) {
-					
+
 //					if (dlsgetVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.BILL_ALREADY_PAID)) {
 //						List<FeeTypeListWrapper> feeTypesList = dlsgetVoucherResponse.getResponse().getDlsgetvoucher()
 //								.getFeeTypesList_wrapper();
@@ -4793,12 +4814,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 //						}
 //					}
 
-					
 					if (infoPay.getResponseCode().equals(ResponseCodes.OK)
 							&& billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 						List<? extends BillerDetails> billerDetailsList = dlsgetVoucherResponse.getResponse()
 								.getDlsgetvoucher().getFeeTypesList_wrapper();
-
 
 						FeeType[] feeDetails = feeTypeMapper.mapFeeTypeListToArray(billerDetailsList);
 
@@ -4816,9 +4835,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							LOG.error(
 									"Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
 						}
-					}			
-					
-					
+					}
+
 				}
 
 			} catch (Exception ex) {
@@ -4852,20 +4870,20 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		LOG.info("RRN :{ }", rrn);
 		String stan = request.getInfo().getStan();
 		String transAuthId = request.getTxnInfo().getTranAuthId();
-		String channel = "" , username = "";
+		String channel = "", username = "";
 
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		BigDecimal amountInDueToDate = null, amountAfterDate = null,
-				requestAmountafterduedate = null, txnAmount = null;
-		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "" ,  fatherName = "" , billStatus = "";
+		BigDecimal amountInDueToDate = null, amountAfterDate = null, requestAmountafterduedate = null, txnAmount = null;
+		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "", fatherName = "",
+				billStatus = "";
 		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
-        LocalDate localDate;
-		
+		LocalDate localDate;
+
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -4895,8 +4913,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 				response = new BillPaymentResponse(infoPay, null, null);
-				
-                billStatus = "Unpaid";
+
+				billStatus = "Unpaid";
 
 				return response;
 
@@ -4928,8 +4946,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-				
-				
 				else if (bzugetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
 
@@ -4954,7 +4970,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					transactionStatus = Constants.Status.Success;
 
-					 billStatus = "Paid";
+					billStatus = "Paid";
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 					return response;
@@ -4964,15 +4980,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				else if (bzugetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
-				
 					studentName = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getStudentName();
 					fatherName = bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getStudentFname();
-					dueDate = utilMethods.transactionDateFormater(bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getDueDate());
-					billstatus ="U";
-					amountInDueToDate =  new BigDecimal(bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getTotalFees());
+					dueDate = utilMethods.transactionDateFormater(
+							bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getDueDate());
+					billstatus = "U";
+					amountInDueToDate = new BigDecimal(
+							bzugetVoucherResponse.getResponse().getBzugetVoucher().getVoucher().getTotalFees());
 					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
-                    billStatus = "Unpaid";
-								
+					billStatus = "Unpaid";
+
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.BZU_BILL_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
 					paymentParams.add(bzu_username);
@@ -4984,16 +5001,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
 					if (utilMethods.isValidInput(dueDate)) {
-										
+
 						try {
-		
+
 							if (txnAmount.compareTo(amountInDueToDate) != 0) {
-									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									return response;
+								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								return response;
 							}
-							
 
 						} catch (DateTimeParseException e) {
 							LOG.error("Error parsing due date: " + e.getMessage());
@@ -5026,12 +5042,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						}
 
-
 						else if (bzuUpdateVoucherResponse.getResponse().getResponseCode()
 								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
-							infoPay = new InfoPay(
-									Constants.ResponseCodes.OK,
+							infoPay = new InfoPay(Constants.ResponseCodes.OK,
 									Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
 							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
@@ -5052,8 +5066,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							transactionStatus = Constants.Status.Success;
 
-							 billStatus = "Paid";
-								
+							billStatus = "Paid";
+
 							return response;
 
 						}
@@ -5069,8 +5083,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					}
 
-				} 
-				
+				}
+
 				else {
 
 					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
@@ -5125,9 +5139,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), studentName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
-						amountAfterDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel,
-						billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), transAuthId,
+						amountAfterDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
 						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username);
 
@@ -5140,6 +5153,319 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		}
 		return response;
 	}
-	
-	
+
+	@Override
+	public BillPaymentResponse billPaymentSlic(BillPaymentRequest request, HttpServletRequest httpRequestData) {
+
+		LOG.info("Bzu Bill Payment Request {} ", request.toString());
+
+		BillPaymentResponse response = null;
+		UpdateSlicPolicyTranslationResponse updateSlicPolicyTranslationResponse = null;
+		SlicPolicyInquiryResponse slicPolicyInquiryResponse = null;
+		BzuUpdateVoucherResponse bzuUpdateVoucherResponse = null;
+		Date requestedDate = new Date();
+		InfoPay infoPay = null;
+		TxnInfoPay txnInfoPay = null;
+		AdditionalInfoPay additionalInfoPay = null;
+		String transactionStatus = "";
+		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
+
+		LOG.info("RRN :{ }", rrn);
+		String stan = request.getInfo().getStan();
+		String transAuthId = request.getTxnInfo().getTranAuthId();
+		String channel = "", username = "";
+
+		ArrayList<String> inquiryParams = new ArrayList<String>();
+		ArrayList<String> paymentParams = new ArrayList<String>();
+
+		BigDecimal amountInDueToDate = null, amountAfterDate = null, requestAmountafterduedate = null, txnAmount = null;
+		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "", fatherName = "",
+				billStatus = "";
+		String pattern = "\\d+\\.\\d{2}";
+		String billerId = "", billerNumber = "";
+		String paymentRefrence = utilMethods.getRRN();
+		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+		LocalDate localDate;
+
+		try {
+
+			if (request.getBranchInfo() != null) {
+				bankName = request.getBranchInfo().getBankName();
+				bankCode = request.getBranchInfo().getBankCode();
+				branchName = request.getBranchInfo().getBranchName();
+				branchCode = request.getBranchInfo().getBranchCode();
+			}
+
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+
+			username = result[0];
+			channel = result[1];
+
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.SLIC_BILL_INQUIRY);
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
+			inquiryParams.add(rrn); /// BatchTransID
+			inquiryParams.add(rrn);
+			inquiryParams.add(stan);
+
+			slicPolicyInquiryResponse = serviceCaller.get(inquiryParams, SlicPolicyInquiryResponse.class, rrn,
+					Constants.ACTIVITY.BillInquiry, BillerConstant.SLIC.SLIC);
+
+			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
+
+				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				billStatus = "Unpaid";
+
+				return response;
+
+			}
+
+			if (slicPolicyInquiryResponse != null) {
+
+				if (slicPolicyInquiryResponse.getSlicResponse() == null) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+
+				}
+
+				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+				}
+
+				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
+						.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+
+					billerId = request.getTxnInfo().getBillerId();
+					billerNumber = request.getTxnInfo().getBillNumber();
+
+					infoPay = new InfoPay(slicPolicyInquiryResponse.getSlicResponse().getResponseCode(),
+							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+							request.getAdditionalInfo().getReserveField2(),
+							request.getAdditionalInfo().getReserveField3(),
+							request.getAdditionalInfo().getReserveField4(),
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
+
+					transactionStatus = Constants.Status.Success;
+
+					billStatus = "Paid";
+
+					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					return response;
+
+				}
+
+				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+
+					if (request.getTxnInfo().getBillerId().equals(billerId1)) {
+
+						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
+								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
+						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
+
+						// collectionType = "L";
+
+					} else if (request.getTxnInfo().getBillerId().equals(billerId2)) {
+
+						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
+								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
+						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
+
+						// collectionType = "P";
+
+					}
+
+					billstatus = "U";
+
+					billStatus = "Unpaid";
+
+					paymentParams.add(Constants.MPAY_REQUEST_METHODS.SLIC_BILL_PAYMENT);
+					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+					paymentParams.add(request.getInfo().getRrn());
+					paymentParams.add(request.getTxnInfo().getTranAmount());
+					paymentParams.add(request.getAdditionalInfo().getReserveField1());
+					paymentParams.add(rrn);
+					paymentParams.add(stan);
+
+					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
+
+					if (utilMethods.isValidInput(dueDate)) {
+
+						try {
+
+							if (txnAmount.compareTo(amountInDueToDate) != 0) {
+								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								return response;
+							}
+
+						} catch (DateTimeParseException e) {
+							LOG.error("Error parsing due date: " + e.getMessage());
+						}
+					} else {
+						LOG.info("Invalid due date input");
+						if (txnAmount.compareTo(amountInDueToDate) != 0) {
+							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							return response;
+						}
+					}
+
+					updateSlicPolicyTranslationResponse = serviceCaller.get(paymentParams, UpdateSlicPolicyTranslationResponse.class, rrn,
+							Constants.ACTIVITY.BillPayment, BillerConstant.SLIC.SLIC);
+
+					if (updateSlicPolicyTranslationResponse != null) {
+
+						if (updateSlicPolicyTranslationResponse.getSlicResponse() == null) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+							response = new BillPaymentResponse(infoPay, null, null);
+
+							transactionStatus = Constants.Status.Fail;
+
+							return response;
+
+						}
+
+						else if (updateSlicPolicyTranslationResponse.getSlicResponse().getResponseCode()
+								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.OK,
+									Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+									request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+							transactionStatus = Constants.Status.Success;
+
+							billStatus = "Paid";
+
+							return response;
+
+						}
+
+					} else {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;
+
+					}
+
+				}
+
+				else {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+
+				}
+
+			}
+
+			else {
+
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+						rrn, stan);
+
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				transactionStatus = Constants.Status.Fail;
+
+				return response;
+			}
+		}
+
+		catch (Exception e) {
+
+			LOG.info("Exception in bill payment ");
+		}
+
+		finally {
+
+			LOG.info("Bill Payment Response {}", response);
+
+			try {
+
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
+
+				auditLoggingService.auditLog(Constants.ACTIVITY.BillPayment, response.getInfo().getResponseCode(),
+						response.getInfo().getResponseDesc(), requestAsString, responseAsString, requestedDate,
+						new Date(), request.getInfo().getRrn(), request.getTxnInfo().getBillerId(),
+						request.getTxnInfo().getBillNumber(), channel, username);
+
+			} catch (Exception ex) {
+				LOG.error("{Exception Audit Logs}", ex);
+			}
+
+			try {
+
+				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), studentName,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
+						amountAfterDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
+						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
+						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username);
+
+				LOG.info(" --- Bill Payment Method End --- ");
+
+			} catch (Exception ex) {
+				LOG.error("{Exception payment Logs}", ex);
+			}
+
+		}
+		return response;
+	}
+
 }
