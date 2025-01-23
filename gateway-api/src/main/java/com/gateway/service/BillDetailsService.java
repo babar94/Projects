@@ -24,6 +24,10 @@ public interface BillDetailsService {
 	
 	public PaymentInquiryResponse paymentInquiryBzu(PaymentInquiryRequest request,HttpServletRequest httpRequestData);
 	
+	public PaymentInquiryResponse paymentInquirySlic(PaymentInquiryRequest request,HttpServletRequest httpRequestData);
+
 	public BillerListResponse getBillerList(HttpServletRequest httpRequestData);
+	
+	
 
 }

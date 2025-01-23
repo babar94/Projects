@@ -384,29 +384,30 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									}
 
 									////////// Bahauddin zikria university ///////
-
-									////////// State Life ///////
-
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
-											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-
-										switch (subBillerDetail.getSubBillerName()) {
-
-										case BillerConstant.SLIC.SLIC:
-											billInquiryResponse = billInquirySlic(request, httpRequestData);
-											break;
-
-										default:
-											LOG.info("subBiller does not exists.");
-											info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
-													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-											billInquiryResponse = new BillInquiryResponse(info, null, null);
-
-											break;
-										}
-									}
-
-									////////// State Life ///////
+									
+									
+//									////////// State Life ///////
+//
+//									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
+//											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+//
+//										switch (subBillerDetail.getSubBillerName()) {
+//
+//										case BillerConstant.SLIC.SLIC:
+//											billInquiryResponse = billInquirySlic(request, httpRequestData);
+//											break;
+//
+//										default:
+//											LOG.info("subBiller does not exists.");
+//											info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
+//													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+//											billInquiryResponse = new BillInquiryResponse(info, null, null);
+//
+//											break;
+//										}
+//									}
+//
+//									////////// State Life ///////
 
 									else if (type.equalsIgnoreCase(Constants.BillerType.OFFLINE_BILLER)) {
 										// offline apis

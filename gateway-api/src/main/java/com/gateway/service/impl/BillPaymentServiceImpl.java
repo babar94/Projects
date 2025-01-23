@@ -393,28 +393,28 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 									////////// Bzu //////////
 
-									////////// State Life ///////
-
-									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
-											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-
-										switch (subBillerDetail.getSubBillerName()) {
-
-										case BillerConstant.SLIC.SLIC:
-											billPaymentResponse = billPaymentSlic(request, httpRequestData);
-											break;
-
-										default:
-											LOG.info("subBiller does not exists.");
-											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
-													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
-
-											break;
-										}
-									}
-
-									////////// State Life ///////
+//									////////// State Life ///////
+//
+//									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
+//											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+//
+//										switch (subBillerDetail.getSubBillerName()) {
+//
+//										case BillerConstant.SLIC.SLIC:
+//											billPaymentResponse = billPaymentSlic(request, httpRequestData);
+//											break;
+//
+//										default:
+//											LOG.info("subBiller does not exists.");
+//											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+//													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+//											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+//
+//											break;
+//										}
+//									}
+//
+//									////////// State Life ///////
 
 									// AIOU
 									// PTA
@@ -4323,7 +4323,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							billerId = request.getTxnInfo().getBillerId();
 							billerNumber = request.getTxnInfo().getBillNumber();
 
-							infoPay = new InfoPay(uomgetVoucherResponse.getResponse().getResponseCode(),
+							infoPay = new InfoPay(uomUpdateVoucherResponse.getResponse().getResponse_code(),
 									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
 
 							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
@@ -4346,11 +4346,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						}
 
-						else if (uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode()
+						else if (uomUpdateVoucherResponse.getResponse().getResponse_code()
 								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 							infoPay = new InfoPay(
-									uomUpdateVoucherResponse.getResponse().getUomUpdateVoucher().getResponseCode(),
+									uomUpdateVoucherResponse.getResponse().getResponse_code(),
 									Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
 							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
