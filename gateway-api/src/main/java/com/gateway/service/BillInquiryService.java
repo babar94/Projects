@@ -35,7 +35,11 @@ public interface BillInquiryService {
 	
 	public BillInquiryResponse billInquiryBzu(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
-//	public BillInquiryResponse billInquirySlic(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	public BillInquiryResponse billInquirySlic(BillInquiryRequest request, HttpServletRequest httpRequestData);
+	
+	public BillInquiryResponse billInquirybprra(BillInquiryRequest request, HttpServletRequest httpRequestData);
+
+
 
 
 }

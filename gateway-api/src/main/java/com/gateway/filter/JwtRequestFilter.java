@@ -66,7 +66,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-						// wrappedRequest = new CustomHttpRequestBody((HttpServletRequest) request);
 					}
 				}
 			} catch (IllegalArgumentException e) {
@@ -81,37 +80,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			// Invalid token header, handle accordingly
 			logger.warn("JWT Token does not begin with Bearer String");
 		}
-//			AuthenticationResponse authResponse = new AuthenticationResponse(Constants.ResponseCodes.UNAUTHORISED,
-//					Constants.ResponseDescription.UNAUTHORISED_WRONG_CREDENTIALS);
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			String responseBody = objectMapper.writeValueAsString(authResponse);
-//			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//			response.setContentType("application/json");
-//			response.getWriter().write(responseBody);
-//			response.getWriter().flush();
-//			response.getWriter().close();
-//			return;
-
-		// if (wrappedRequest == null)
 		chain.doFilter(request, response);
-		// else
-		// chain.doFilter(wrappedRequest, response);
+		
 	}
 
-//		@Override
-//		protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//			String servletPath = request.getServletPath();
-//			String requestURI = request.getRequestURI();
-//	
-//		log.info("servletPath " +servletPath);
-//		log.info("requestURI" +requestURI);
-//			// Exclude the favicon.ico request from filtering
-////			if (servletPath.equals("/favicon.ico") || requestURI.endsWith("/favicon.ico")) {
-////				return true;
-////			}
-//				return servletPath.equals("/swagger-ui.html");
-////	
-////			// Exclude the swagger-ui.html request from filtering
-////			return servletPath.equals("/swagger-ui/index.html") || requestURI.endsWith("//swagger-ui/index.html");
-////		}
 }
