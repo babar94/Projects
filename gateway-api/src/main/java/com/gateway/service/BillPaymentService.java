@@ -34,6 +34,9 @@ public interface BillPaymentService {
 	
 	public BillPaymentResponse billPaymentSlic(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
+	public BillPaymentResponse billPaymentBppra(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
+	
 	
 	
 

@@ -60,5 +60,10 @@ public interface BillerConstant {
 
 		String SLIC = "SLIC";
 	}
+	
+	interface BPPRA {
+
+		String BPPRA = "BPPRA";
+	}
 
 }

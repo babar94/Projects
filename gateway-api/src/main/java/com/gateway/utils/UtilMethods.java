@@ -2,6 +2,9 @@ package com.gateway.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -9,11 +12,16 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -483,6 +491,101 @@ public class UtilMethods {
 
 	    return formattedResponse.toString();
 	}
+	
+	
+	public static String DecodeJwt(String jwt) {
+
+		String[] parts = jwt.split("\\.");
+		String payload = parts[1];
+		byte[] decodedBytes = Base64.getDecoder().decode(payload);
+		String jwtkey = new String(decodedBytes);
+		JSONObject jsonObject = new JSONObject(jwtkey);
+		String subValue = jsonObject.getString("sub");
+		System.out.println(subValue);
+		return subValue;
+	}
+
+	public static String rsaDecryption(String jwtKey,String privatekey ) {
+
+		String KeyAndIv = "";
+		try {
+
+			byte[] privateKeyBytes = Base64.getDecoder().decode(privatekey);
+
+			// Generate the private key
+			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
+			// Decode the encrypted data from Base64
+			byte[] encryptedBytes = Base64.getDecoder().decode(jwtKey);
+
+			// Initialize the cipher for decryption
+			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+			cipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+			KeyAndIv = new String(decryptedBytes);
+
+			// Print the decrypted message
+			System.out.println("KeyAndIv : " + KeyAndIv);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return KeyAndIv;
+
+	}
+
+	public static String aesPackedAlgorithm(String keyAndIv, String encryptedData) {
+
+		String result = "";
+		try {
+
+			System.out.println("encryptedDataValue :" + encryptedData);
+			String encryptedDataValue = encryptedData.replace("\"", "");
+
+			JSONObject jsonObject = new JSONObject(keyAndIv);
+
+			// Extract Key and Iv values
+			String keyData = jsonObject.getString("Key");
+			String ivData = jsonObject.getString("Iv");
+
+			// Print results
+			System.out.println("Key: " + keyData.trim());
+			System.out.println("Iv: " + ivData.trim());
+
+			// Decode Base64 encoded key, IV, and encrypted data
+			byte[] decodedKey = Base64.getDecoder().decode(keyData);
+			byte[] decodedIV = Base64.getDecoder().decode(ivData);
+			byte[] decodedData = Base64.getDecoder().decode(encryptedDataValue);
+			// Initialize cipher with AES in CBC mode
+			SecretKeySpec secretKey = new SecretKeySpec(decodedKey, "AES");
+			IvParameterSpec ivSpec = new IvParameterSpec(decodedIV);
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+
+			// Perform decryption
+			byte[] decryptedData = cipher.doFinal(decodedData);
+
+			// Convert decrypted data to string
+			result = new String(decryptedData, "UTF-8");
+			System.out.println("Decrypted Data: " + result);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+
+	
+	
+	
+	
 	
 	
 

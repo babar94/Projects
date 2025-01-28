@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.crypto.Cipher;
@@ -38,6 +40,7 @@ import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
+import com.gateway.model.mpay.response.billinquiry.bppra.BppraVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bzu.BzuGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
@@ -79,6 +82,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
 @Service
@@ -3837,16 +3841,17 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		LOG.info("Bprra Bill Inquiry Request {} ", request.toString());
 
 		BillInquiryResponse response = null;
-		SlicPolicyInquiryResponse slicPolicyInquiryResponse = null;
 		Info info = null;
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
 		BigDecimal amountInDueToDate = null, amountPaid = null;
 
-		String billstatus = "", tran_Auth_Id = "", collectionType = "", transAuthId = "";
+		String billerName = "", billstatus = "";
 
-		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "", transAuthId = "", amount = "";
+
+		BppraVoucherResponse getBppraVoucherResponse = null;
 
 		Date requestedDate = new Date();
 
@@ -3863,72 +3868,280 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
-			///// Authentication Call
+			try {
 
-			HttpResponse<String> authResponse = Unirest.post(bppraAuthticateCall)
-					.header("clientSecret", bppraClientSecret).asString();
+				///// Authentication Call
 
-			if (authResponse == null) {
+				HttpResponse<String> authResponse = Unirest.post(bppraAuthticateCall)
+						.header("clientSecret", bppraClientSecret).asString();
 
-				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
-						stan);
+				/// Auth Success
+				if (authResponse.getStatus() == 200) {
 
-				response = new BillInquiryResponse(info, null, null);
-				transactionStatus = Constants.Status.Fail;
+					String authToken = authResponse.getBody();
+					System.out.print("authToken" + authToken);
 
-				return response;
+					
+					///// InitiateInquiryCall
+					HttpResponse<String> inquiryInitiate = Unirest.post(bppraInitiateInquiryCall)
+							.header("Authorization", authToken).header("requestfrom", requestFormAuth)
+							.header("RSApublicKey", publicKey).asString();
 
-			}
+					
+					//// InquiryInitiateSuccess
+					if (inquiryInitiate.getStatus() == 200) {
 
-			
-			if (authResponse.getStatus() == 200) {
+						String jwt = inquiryInitiate.getBody();
+						System.out.println("jwt :" + jwt);
 
-				String authToken = authResponse.getBody();
+						String decodeJwt = UtilMethods.DecodeJwt(jwt);
+						String keyAndIv = UtilMethods.rsaDecryption(decodeJwt,privateKey);
 
-				System.out.print("authToken" + authToken);
+						HttpResponse<String> initiateChallanInquiry = Unirest.get(bpprachallanInquiryCall)
+								.queryString("challancode", request.getTxnInfo().getBillNumber())
+								.header("requestfrom", requestFormChallanEnquire)
+								.header("Authorization", "Bearer " + jwt).asString();
 
-				///// InitiateInquiryCall
+						
+						/////// InitiateChallanInquiry
+						if (initiateChallanInquiry.getStatus() == 200) {
 
-				HttpResponse<String> inquiryInitiate = Unirest.post(bppraInitiateInquiryCall)
-						.header("Authorization", authToken).header("requestfrom", requestFormAuth)
-						.header("RSApublicKey", publicKey).asString();
+							LOG.info("ChallanInquiry - Success ok");
 
-				if (inquiryInitiate == null) {
+							String encryptedChallandata = initiateChallanInquiry.getBody();
+							String decryptData = UtilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
 
-					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
-							rrn, stan);
+							getBppraVoucherResponse = mapper.readValue(decryptData, BppraVoucherResponse.class);
+							System.out.print("GetBppraVoucherResponse : " + getBppraVoucherResponse);
 
-					response = new BillInquiryResponse(info, null, null);
-					transactionStatus = Constants.Status.Fail;
+							// Parse response into a Map
+							@SuppressWarnings("unchecked")
+							Map<String, Object> parsedJson = objectMapper.readValue(decryptData, Map.class);
 
-					return response;
+							// Extract the "challanFee" list
+							@SuppressWarnings("unchecked")
+							List<Map<String, Object>> challanFeeList = (List<Map<String, Object>>) parsedJson
+									.get("challanFee");
 
-				}
+							// Iterate and fetch the "Total Tender Fee"
+							for (Map<String, Object> fee : challanFeeList) {
 
-				String jwt = inquiryInitiate.getBody();
-				System.out.println("jwt:" + jwt);
+								if ("Total Tender Fee".equals(fee.get("TARIFTITLE"))) {
+									System.out.println("Total Tender Fee Amount: " + fee.get("AMOUNT"));
+									amountInDueToDate = new BigDecimal(fee.get("AMOUNT").toString());
+									amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
-				if (inquiryInitiate.getStatus() == 200) {
+								}
+							}
 
-					String decodeJwt = DecodeJwt(jwt);
-					String keyAndIv = rsaDecryption(decodeJwt);
+							billerName = getBppraVoucherResponse.getChallanData().getPaName();
 
-					/////
+							//////// status is Paid
 
-					HttpResponse<String> initiateChallanInquiry = Unirest.get(bpprachallanInquiryCall)
-							.queryString("challanNumber", "BPPRA/TCF/337-2425123837212")
-							.header("requestfrom", requestFormChallanEnquire).header("Authorization","Bearer " + jwt).asString();
+							if (getBppraVoucherResponse.getChallanData().isPaidStatus()) {
 
-					if (initiateChallanInquiry.getStatus() == 200) {
+								Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
+										.ofNullable(combinedPaymentLogViewRepository
+												.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+														request.getTxnInfo().getBillNumber().trim(),
+														Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+														Constants.ACTIVITY.RBTS_FUND_TRANSFER,
+														Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+														request.getTxnInfo().getBillerId()));
+								if (combinedPaymentLogView.isPresent()) {
 
-						String encryptedChallandata = initiateChallanInquiry.getBody();
-						aesPackedAlgorithm(keyAndIv,encryptedChallandata);
+									CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
+
+									transAuthId = paymentLog.getTranAuthId();
+									billstatus = "P";
+									amountPaid = paymentLog.getTotalAmount();
+									amountInDueToDate = amountPaid;
+									billStatus = paymentLog.getBillStatus();
+
+									info = new Info(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan); // success
+
+									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), "", billStatus, "",
+											String.valueOf(amountInDueToDate), "", "", "");
+
+									AdditionalInfo additionalInfo = new AdditionalInfo(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									transactionStatus = Constants.Status.Success;
+
+									response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+								}
+
+							}
+
+							else {
+
+								PendingPayment pendingPayment = pendingPaymentRepository
+										.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+												request.getTxnInfo().getBillNumber().trim(),
+												request.getTxnInfo().getBillerId().trim());
+
+								if (pendingPayment != null) {
+
+									if (pendingPayment.getIgnoreTimer()) {
+
+										info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+												rrn, stan);
+										response = new BillInquiryResponse(info, null, null);
+										transactionStatus = Constants.Status.Pending;
+										billStatus = Constants.BILL_STATUS.BILL_PENDING;
+										return response;
+
+									} else {
+										LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+										LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+										// Calculate the difference in minutes
+										long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+										if (minutesDifference <= pendingThresholdMinutes) {
+
+											info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+													pendingPaymentMessage, rrn, stan);
+											response = new BillInquiryResponse(info, null, null);
+
+											transactionStatus = Constants.Status.Pending;
+											billStatus = Constants.BILL_STATUS.BILL_PENDING;
+											return response;
+
+										}
+									}
+								}
+
+								LOG.info("Calling Payment Inquiry from pg_payment_log table");
+								PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+										.findFirstByVoucherIdAndBillerIdAndBillStatus(
+												request.getTxnInfo().getBillNumber(),
+												request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
+
+								if (pgPaymentLog != null && pgPaymentLog.getTransactionStatus()
+										.equalsIgnoreCase(Constants.Status.Success)) {
+
+									info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage,
+											rrn, stan); // success
+
+									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+									response = new BillInquiryResponse(info, null, null);
+
+									return response;
+								}
+
+								transactionStatus = Constants.Status.Pending;
+
+								billstatus = "U";
+
+								info = new Info(Constants.ResponseCodes.OK,
+										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+								TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
+										String.valueOf(amountInDueToDate), "", "", "");
+
+								AdditionalInfo additionalInfo = new AdditionalInfo(
+										request.getAdditionalInfo().getReserveField1(),
+										request.getAdditionalInfo().getReserveField2(),
+										request.getAdditionalInfo().getReserveField3(),
+										request.getAdditionalInfo().getReserveField4(),
+										request.getAdditionalInfo().getReserveField5(),
+										request.getAdditionalInfo().getReserveField6(),
+										request.getAdditionalInfo().getReserveField7(),
+										request.getAdditionalInfo().getReserveField8(),
+										request.getAdditionalInfo().getReserveField9(),
+										request.getAdditionalInfo().getReserveField10());
+
+								response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+								transactionStatus = Constants.Status.Success;
+
+							}
+
+						}
+
+						else if (initiateChallanInquiry.getStatus() == 400) {
+
+							LOG.info("ChallanInquiry - Bad Request");
+
+							info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+						else if (initiateChallanInquiry.getStatus() == 404) {
+
+							LOG.info("ChallanInquiry - Challan Not Found");
+
+							info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+						////////////
 
 					}
 
-				}
+					else if (inquiryInitiate.getStatus() == 401) {
 
-				else if (authResponse.getStatus() == 401) {
+						LOG.info("InitiateEnquiry - Unauthorized");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					else if (inquiryInitiate.getStatus() == 404) {
+
+						LOG.info("InitiateEnquiry - Not Found ");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					else if (inquiryInitiate.getStatus() == 406) {
+
+						LOG.info("InitiateEnquiry - Invalid Client ");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+				} else if (authResponse.getStatus() == 400) {
+
+					LOG.info("Authentication - Invalid Secret key");
 
 					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
 							rrn, stan);
@@ -3940,15 +4153,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else if (authResponse.getStatus() == 404) {
 
-					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
-							rrn, stan);
-					response = new BillInquiryResponse(info, null, null);
-					transactionStatus = Constants.Status.Fail;
-					return response;
-
-				}
-
-				else if (authResponse.getStatus() == 406) {
+					LOG.info("Authentication - Client with the provided Secret Not Found");
 
 					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
 							rrn, stan);
@@ -3958,20 +4163,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-			} else if (authResponse.getStatus() == 400) {
+			} catch (UnirestException e) {
 
-				info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR, rrn,
+				LOG.info("Error occurred while calling service");
+
+				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
 						stan);
-				response = new BillInquiryResponse(info, null, null);
-				transactionStatus = Constants.Status.Fail;
-				return response;
 
-			}
-
-			else if (authResponse.getStatus() == 404) {
-
-				info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR, rrn,
-						stan);
 				response = new BillInquiryResponse(info, null, null);
 				transactionStatus = Constants.Status.Fail;
 				return response;
@@ -3982,7 +4180,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		catch (Exception ex) {
 
-			LOG.error("Exception {}", ex);
+			LOG.error("Bill Inquiry Exception {}", ex);
 
 		}
 
@@ -4008,10 +4206,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel,
-						slicPolicyInquiryResponse.getSlicResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)
+						(getBppraVoucherResponse != null && !getBppraVoucherResponse.getChallanData().isPaidStatus())
 								? "Unpaid"
-								: slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
-										.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID) ? "Paid" : "",
+								: (getBppraVoucherResponse != null
+										&& getBppraVoucherResponse.getChallanData().isPaidStatus()) ? "Paid" : "",
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username);
 
@@ -4019,7 +4217,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				LOG.error("{}", ex);
 			}
 
-			LOG.info("----- Slic Bill Inquiry Method End -----");
+			LOG.info("----- Bppra Bill Inquiry Method End -----");
 
 		}
 
@@ -4027,95 +4225,4 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-
-	private String DecodeJwt(String jwt) {
-
-		String[] parts = jwt.split("\\.");
-		String payload = parts[1];
-		byte[] decodedBytes = Base64.getDecoder().decode(payload);
-		String jwtkey = new String(decodedBytes);
-		JSONObject jsonObject = new JSONObject(jwtkey);
-		String subValue = jsonObject.getString("sub");
-		System.out.println(subValue);
-		return subValue;
-	}
-
-	private String rsaDecryption(String jwtKey) {
-
-		String KeyAndIv = "";
-		try {
-
-			byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
-
-			// Generate the private key
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-
-			// Decode the encrypted data from Base64
-			byte[] encryptedBytes = Base64.getDecoder().decode(jwtKey);
-
-			// Initialize the cipher for decryption
-			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-			cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-			KeyAndIv = new String(decryptedBytes);
-
-			// Print the decrypted message
-			System.out.println("KeyAndIv : " + KeyAndIv);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return KeyAndIv;
-
-	}
-
-	private void aesPackedAlgorithm(String keyAndIv,String encryptedData) {
-
-		try {
-			
-			
-            System.out.println("encryptedDataValue :"+encryptedData);
-            String encryptedDataValue = encryptedData.replace("\"", "");
-
-
-			JSONObject jsonObject = new JSONObject(keyAndIv);
-
-	        // Extract Key and Iv values
-	        String keyData = jsonObject.getString("Key");
-	        String ivData = jsonObject.getString("Iv");
-
-	        // Print results
-	        System.out.println("Key: " + keyData.trim());
-	        System.out.println("Iv: " + ivData.trim());
-			
-			
-	        // Decode Base64 encoded key, IV, and encrypted data
-            byte[] decodedKey = Base64.getDecoder().decode(keyData);
-            byte[] decodedIV = Base64.getDecoder().decode(ivData);
-            byte[] decodedData = Base64.getDecoder().decode(encryptedDataValue);
-            // Initialize cipher with AES in CBC mode
-            SecretKeySpec secretKey = new SecretKeySpec(decodedKey, "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(decodedIV);
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-
-            // Perform decryption
-            byte[] decryptedData = cipher.doFinal(decodedData);
-
-            // Convert decrypted data to string
-            String result = new String(decryptedData, "UTF-8");
-            System.out.println("Decrypted Data: " + result);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	
 }
