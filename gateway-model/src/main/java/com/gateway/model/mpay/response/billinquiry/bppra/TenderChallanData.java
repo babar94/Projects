@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChallanData {
+public class TenderChallanData {
 
     @JsonProperty("ID")
     private String id;

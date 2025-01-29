@@ -125,7 +125,7 @@ public class UtilMethods {
 			today = new SimpleDateFormat("yyyyMMdd").parse(tranDate);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-		LOG.info("UtilsMethod-DueDateError :"+e);
+			LOG.info("UtilsMethod-DueDateError :" + e);
 		}
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
@@ -192,26 +192,24 @@ public class UtilMethods {
 	public static String formatString(String value) {
 		return value != null && !value.isEmpty() ? String.format("%-30s", value) : "Please Fill";
 	}
-	
-	//Ahmed Ashraf
-	public static String padRight(String value, int n,boolean defaultvalue,String Tag) {
-		
-		
-		if(defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
+
+	// Ahmed Ashraf
+	public static String padRight(String value, int n, boolean defaultvalue, String Tag) {
+
+		if (defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
 			return (value != null && !value.isEmpty() ? String.format("%-" + n + "s", value) : "Please Fill");
 		else
-	     return String.format("%-" + n + "s", value);  
+			return String.format("%-" + n + "s", value);
 	}
 
-	public static String padLeft(String value, int n,boolean defaultvalue,String Tag) {	    
-	    
-		if(defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
+	public static String padLeft(String value, int n, boolean defaultvalue, String Tag) {
+
+		if (defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
 			return (value != null && !value.isEmpty() ? String.format("%" + n + "s", value) : "Please Fill");
 		else
-	     return String.format("%" + n + "s", value);
+			return String.format("%" + n + "s", value);
 	}
 
-	
 	public String getClientIp(HttpServletRequest request) {
 
 		String remoteAddr = "";
@@ -245,7 +243,7 @@ public class UtilMethods {
 	}
 
 	@Async
-	public void insertMpayLog(String type, Date date, String userName, String rrn, String reqRes,String billername) {
+	public void insertMpayLog(String type, Date date, String userName, String rrn, String reqRes, String billername) {
 		MPAYLog temp = new MPAYLog();
 		temp.setType(type);
 		temp.setStampDate(date);
@@ -319,7 +317,7 @@ public class UtilMethods {
 			resultAmount.append(amount.substring(amount.indexOf("+") + 1)); // Exclude the leading zeros and the "+"
 																			// sign
 		} catch (Exception ex) {
-			LOG.info("UtilsMethod-convertAmountToISOFormat"+ex);
+			LOG.info("UtilsMethod-convertAmountToISOFormat" + ex);
 		}
 
 		return resultAmount.toString();
@@ -350,7 +348,7 @@ public class UtilMethods {
 			resultAmount.append(amount.charAt(0)); // Append the sign
 			resultAmount.append(amount.substring(1)); // Exclude the leading zeros and the sign
 		} catch (Exception ex) {
-			LOG.info("UtilsMethod-convertAmountToISOFormatWithoutPlusSign"+ex);
+			LOG.info("UtilsMethod-convertAmountToISOFormatWithoutPlusSign" + ex);
 
 		}
 
@@ -378,7 +376,7 @@ public class UtilMethods {
 			resultAmount = df.format(doubleAmount);
 
 		} catch (Exception ex) {
-			LOG.info("UtilsMethod-convertISOFormatAmount : "+ex);
+			LOG.info("UtilsMethod-convertISOFormatAmount : " + ex);
 
 		}
 		return resultAmount;
@@ -391,20 +389,16 @@ public class UtilMethods {
 		String result = dateBillingMonth.replace("-", "");
 		return result;
 	}
-	
-	
-	
-	public String formatAmountIso(double amount,int n) {
+
+	public String formatAmountIso(double amount, int n) {
 		// Step 1: Remove the decimal point and currency symbol
 		long amountInMinorUnits = (long) (amount * 100);
 
 		// Step 2: Left-pad with zeros to make it 12 digits
-		String formattedAmount = String.format("%0"+n+"d", amountInMinorUnits);
+		String formattedAmount = String.format("%0" + n + "d", amountInMinorUnits);
 
 		return formattedAmount;
 	}
-
-	
 
 	// muhammad Sajid
 
@@ -476,43 +470,101 @@ public class UtilMethods {
 			return false;
 		}
 	}
-	
+
 	public String formatFeeTypeList(DlsGetVoucherResponse dlsGetVoucherResponse) {
-	    StringBuilder formattedResponse = new StringBuilder();
-	    List<FeeTypeListWrapper> feeTypeList = dlsGetVoucherResponse.getResponse().getDlsgetvoucher().getFeeTypesList_wrapper();
+		StringBuilder formattedResponse = new StringBuilder();
+		List<FeeTypeListWrapper> feeTypeList = dlsGetVoucherResponse.getResponse().getDlsgetvoucher()
+				.getFeeTypesList_wrapper();
 
-	    for (FeeTypeListWrapper feeType : feeTypeList) {
-	    	formattedResponse.append("feesType: ").append(feeType.getFeesType()).append(", ");
-	        formattedResponse.append("typeDetail: ").append(feeType.getTypeDetail()).append(", ");
-	        formattedResponse.append("fees: ").append(feeType.getFees()).append(" || ");
+		for (FeeTypeListWrapper feeType : feeTypeList) {
+			formattedResponse.append("feesType: ").append(feeType.getFeesType()).append(", ");
+			formattedResponse.append("typeDetail: ").append(feeType.getTypeDetail()).append(", ");
+			formattedResponse.append("fees: ").append(feeType.getFees()).append(" || ");
 
-	    }
+		}
 
-	    // Remove the last " || " from the formatted response
-	    if (formattedResponse.length() >= 4) {
-	        formattedResponse.setLength(formattedResponse.length() - 4);
-	    }
+		// Remove the last " || " from the formatted response
+		if (formattedResponse.length() >= 4) {
+			formattedResponse.setLength(formattedResponse.length() - 4);
+		}
 
-	    return formattedResponse.toString();
+		return formattedResponse.toString();
+	}
+
+	public HttpResponse<String> authRequest(String bppraAuthticateCall, String bppraClientSecret) {
+		try {
+			return Unirest.post(bppraAuthticateCall).header("clientSecret", bppraClientSecret).asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Auth api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
+	public HttpResponse<String> tokenInquiryRequest(String bppraInitiateInquiryCall, String authToken,
+			String requestFormAuth, String publicKey) {
+		try {
+			return Unirest.post(bppraInitiateInquiryCall).header("Authorization", authToken)
+					.header("requestfrom", requestFormAuth).header("RSApublicKey", publicKey).asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Initiate Token Inquiry api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
+	public HttpResponse<String> tenderChallanInquiryRequest(String bppraTenderChallanInquiryCall, String billNumber,
+			String requestFormChallanEnquire, String jwt) {
+
+		try {
+			return Unirest.get(bppraTenderChallanInquiryCall).queryString("challancode", billNumber)
+					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
+					.asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Initiate Challan Inquiry api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
+	
+	public HttpResponse<String> supplierChallanInquiryRequest(String bppraSupplierChallanInquiryCall, String billNumber,
+			String requestFormChallanEnquire, String jwt) {
+
+		try {
+			return Unirest.get(bppraSupplierChallanInquiryCall).queryString("challancode", billNumber)
+					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
+					.asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Supplier Challan Inquiry api failure ----");
+			return null; // Indicate request failure
+		}
 	}
 	
 	
-	private static HttpResponse<String> authRequest(String url, String authToken, String requestFormAuth, String jwt, String branchcode, String personName) {
-        try {
-            return Unirest.post(url)
-                    .header("Authorization", authToken)
-                    .header("requestfrom", requestFormAuth)
-                    .field("EnqueryToken", jwt)
-                    .field("branchCode", branchcode)
-                    .field("personName", personName)
-                    .asString();
-        } catch (UnirestException e) {
-        	
-            return null; // Indicate request failure
-        }
-    }
-	
-	
+	public HttpResponse<String> markChallanPaidRequest(String bppraTenderChallanPaid, String billNumber,
+			String requestFormChallanEnquire, String jwt) {
+
+		try {
+			return Unirest.post(bppraTenderChallanPaid).queryString("challanCode", billNumber).queryString("paid", true)
+					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
+					.asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Mark Challan Paid api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
+	public HttpResponse<String> completeInquiryRequest(String bppraCompleteInquiryCall, String authToken,
+			String requestFormAuth, String jwt, String branchcode, String personName) {
+
+		try {
+			return Unirest.post(bppraCompleteInquiryCall).header("Authorization", authToken)
+					.header("requestfrom", requestFormAuth).field("EnqueryToken", jwt).field("branchCode", branchcode)
+					.field("personName", personName).asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Complete Inquiry api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
 	public String DecodeJwt(String jwt) {
 
 		String[] parts = jwt.split("\\.");
@@ -525,7 +577,7 @@ public class UtilMethods {
 		return subValue;
 	}
 
-	public String rsaDecryption(String jwtKey,String privatekey ) {
+	public String rsaDecryption(String jwtKey, String privatekey) {
 
 		String KeyAndIv = "";
 		try {
@@ -602,14 +654,10 @@ public class UtilMethods {
 
 	}
 
-	
 	public BigDecimal getTotalTenderFeeAmount(List<ChallanFee> challanFee) {
-        return challanFee.stream()
-            .filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
-            .map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
-            .findFirst()
-            .orElse(BigDecimal.ZERO); // Returns 0 if not found
-    }
-	
-	
+		return challanFee.stream().filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
+				.map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
+				.findFirst().orElse(BigDecimal.ZERO); // Returns 0 if not found
+	}
+
 }

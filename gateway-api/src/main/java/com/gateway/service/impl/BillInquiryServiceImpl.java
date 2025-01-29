@@ -7,8 +7,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,7 +28,8 @@ import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
-import com.gateway.model.mpay.response.billinquiry.bppra.BppraVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.bppra.BppraSupplierVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.bppra.BppraTenderVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bzu.BzuGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
@@ -69,10 +68,6 @@ import com.gateway.utils.UtilMethods;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
-import kong.unirest.json.JSONObject;
 
 @Service
 public class BillInquiryServiceImpl implements BillInquiryService {
@@ -163,12 +158,16 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Value("${bppra.authticateCall}")
 	private String bppraAuthticateCall;
 
-	@Value("${bppra.initiateInquiryCall}")
-	private String bppraInitiateInquiryCall;
+	@Value("${bppra.tokenInquiryCall}")
+	private String bppraTokenInquiryCall;
 
-	@Value("${bppra.challanInquiryCall}")
-	private String bpprachallanInquiryCall;
+	@Value("${bppra.tenderChallanInquiryCall}")
+	private String bppraTenderChallanInquiryCall;
 
+	@Value("${bppra.supplierChallanInquiryCall}")
+	private String bppraSupplierChallanInquiryCall;
+
+	
 	@Value("${bppra.clientSecret}")
 	private String bppraClientSecret;
 
@@ -183,6 +182,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Value("${bppra.privateKey}")
 	private String privateKey;
+
+	@Value("${bppra.tenderPrefix}")
+	private String tenderPrefix;
+
+	@Value("${bppra.supplierPrefix}")
+	private String supplierPrefix;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -3834,9 +3839,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
-		BigDecimal totalTenderFeeAmount= null,amountPaid= null;
-		String billerName= "", billstatus="", bankName = "", bankCode = "", branchName = "", branchCode = "", transAuthId = "", amount = "", encryptedChallandata="", decryptChallanData="" ;
-		BppraVoucherResponse bppraVoucherResponse = null;
+		BigDecimal totalTenderFeeAmount = null, amountPaid = null;
+		String billerNumber = "", billerName = "", billstatus = "", bankName = "", bankCode = "", branchName = "",
+				branchCode = "", transAuthId = "", amount = "", encryptedChallandata = "", decryptChallanData = "";
+		BppraTenderVoucherResponse bppraTenderVoucherResponse = null;
+		BppraSupplierVoucherResponse bppraSupplierVoucherResponse = null;
 		Date requestedDate = new Date();
 
 		try {
@@ -3852,39 +3859,76 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
-			try {
+			billerNumber = request.getTxnInfo().getBillNumber();
 
-				///// Authentication Call
+			//////// Tender
 
-				HttpResponse<String> authResponse = Unirest.post(bppraAuthticateCall)
-						.header("clientSecret", bppraClientSecret).asString();
+			if (billerNumber.startsWith(tenderPrefix)) {
+
+				///// Auth Call
+				HttpResponse<String> authResponse = utilMethods.authRequest(bppraAuthticateCall, bppraClientSecret);
+
+				//// Auth failure
+				if (authResponse == null) {
+
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+
+				}
 
 				/// Auth Success
-				if (authResponse.getStatus() == 200) {
+				else if (authResponse.getStatus() == 200) {
 
 					String authToken = authResponse.getBody();
-					System.out.print("authToken" + authToken);
+					System.out.print("---authToken----" + authToken);
 
-					///// InitiateInquiryCall
-					HttpResponse<String> inquiryInitiate = Unirest.post(bppraInitiateInquiryCall)
-							.header("Authorization", authToken).header("requestfrom", requestFormAuth)
-							.header("RSApublicKey", publicKey).asString();
+					///// InitiateTokenInquiry Call
+					HttpResponse<String> tokenInquiry = utilMethods.tokenInquiryRequest(
+							bppraTokenInquiryCall, authToken, requestFormAuth, publicKey);
 
-					//// InquiryInitiateSuccess
-					if (inquiryInitiate.getStatus() == 200) {
+					///// InitiateTokenInquiry failure
+					if (tokenInquiry == null) {
 
-						String jwt = inquiryInitiate.getBody();
-						System.out.println("jwt :" + jwt);
+						info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					//// InitiateTokenInquiry Success
+					if (tokenInquiry.getStatus() == 200) {
+
+						String jwt = tokenInquiry.getBody();
+						System.out.println("----jwt---- :" + jwt);
 
 						String decodeJwt = utilmethod.DecodeJwt(jwt);
 						String keyAndIv = utilmethod.rsaDecryption(decodeJwt, privateKey);
 
-						HttpResponse<String> initiateChallanInquiry = Unirest.get(bpprachallanInquiryCall)
-								.queryString("challancode", request.getTxnInfo().getBillNumber())
-								.header("requestfrom", requestFormChallanEnquire)
-								.header("Authorization", "Bearer " + jwt).asString();
+						//// InitiateChallanInquiry Call
+						HttpResponse<String> initiateChallanInquiry = utilMethods.tenderChallanInquiryRequest(
+								bppraTenderChallanInquiryCall, request.getTxnInfo().getBillNumber(),
+								requestFormChallanEnquire, jwt);
 
-						/////// InitiateChallanInquiry
+						//// InitiateChallanInquiry failure
+						if (initiateChallanInquiry == null) {
+
+							info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+						/////// InitiateChallanInquiry Success
 						if (initiateChallanInquiry.getStatus() == 200) {
 
 							LOG.info("ChallanInquiry - Success ok");
@@ -3892,22 +3936,20 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							encryptedChallandata = initiateChallanInquiry.getBody();
 							decryptChallanData = utilmethod.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
 
-							bppraVoucherResponse = mapper.readValue(decryptChallanData, BppraVoucherResponse.class);
-							System.out.print("GetBppraVoucherResponse : " + bppraVoucherResponse);
+							bppraTenderVoucherResponse = mapper.readValue(decryptChallanData, BppraTenderVoucherResponse.class);
+							System.out.print("GetBppraVoucherResponse : " + bppraTenderVoucherResponse);
 
-						
-							billerName = bppraVoucherResponse.getChallanData().getPaName();
-							
+							billerName = bppraTenderVoucherResponse.getTenderChallanData().getPaName();
 
-							totalTenderFeeAmount = utilMethods.getTotalTenderFeeAmount(bppraVoucherResponse.getChallanFee());
+							totalTenderFeeAmount = utilMethods
+									.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
 							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
 							System.out.println("Total Tender Fee Amount: " + totalTenderFeeAmount);
 
-							
 							//////// status is Paid ////
 
-							if (bppraVoucherResponse.getChallanData().isPaidStatus()) {
+							if (bppraTenderVoucherResponse.getTenderChallanData().isPaidStatus()) {
 
 								Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 										.ofNullable(combinedPaymentLogViewRepository
@@ -3953,7 +3995,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								}
 
 							}
-							
+
 							/////// UnPaid /////
 
 							else {
@@ -4072,13 +4114,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						}
 
-						////////////
-
 					}
 
-					else if (inquiryInitiate.getStatus() == 401) {
+					else if (tokenInquiry.getStatus() == 401) {
 
-						LOG.info("InitiateEnquiry - Unauthorized");
+						LOG.info("InitiateTokenInquiry : Unauthorized");
 
 						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
 								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
@@ -4088,9 +4128,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					}
 
-					else if (inquiryInitiate.getStatus() == 404) {
+					else if (tokenInquiry.getStatus() == 404) {
 
-						LOG.info("InitiateEnquiry - Not Found ");
+						LOG.info("InitiateTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
 
 						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
 								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
@@ -4100,9 +4140,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					}
 
-					else if (inquiryInitiate.getStatus() == 406) {
+					else if (tokenInquiry.getStatus() == 406) {
 
-						LOG.info("InitiateEnquiry - Invalid Client ");
+						LOG.info("InitiateTokenInquiry :  Invalid Client - Null reference Client ");
 
 						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
 								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
@@ -4114,7 +4154,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				} else if (authResponse.getStatus() == 400) {
 
-					LOG.info("Authentication - Invalid Secret key");
+					LOG.info("Authentication : Invalid Secret key");
 
 					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
 							rrn, stan);
@@ -4126,7 +4166,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else if (authResponse.getStatus() == 404) {
 
-					LOG.info("Authentication - Client with the provided Secret Not Found");
+					LOG.info("Authentication : Client with the provided Secret Not Found");
 
 					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
 							rrn, stan);
@@ -4136,16 +4176,322 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-			} catch (UnirestException e) {
+			}
 
-				LOG.info("Error occurred while calling service");
+			/////////// Supplier
 
-				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
-						stan);
+			else if (billerNumber.startsWith(supplierPrefix)) {
 
-				response = new BillInquiryResponse(info, null, null);
-				transactionStatus = Constants.Status.Fail;
-				return response;
+				///// Auth Call
+				HttpResponse<String> authResponse = utilMethods.authRequest(bppraAuthticateCall, bppraClientSecret);
+
+				//// Auth failure
+				if (authResponse == null) {
+
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+
+				}
+
+				/// Auth Success
+				else if (authResponse.getStatus() == 200) {
+
+					String authToken = authResponse.getBody();
+					System.out.print("---authToken----" + authToken);
+
+					///// InitiateTokenInquiry Call
+					HttpResponse<String> tokenInquiry = utilMethods.tokenInquiryRequest(
+							bppraTokenInquiryCall, authToken, requestFormAuth, publicKey);
+
+					///// InitiateTokenInquiry failure
+					if (tokenInquiry == null) {
+
+						info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					//// InitiateTokenInquiry Success
+					if (tokenInquiry.getStatus() == 200) {
+
+						String jwt = tokenInquiry.getBody();
+						System.out.println("----jwt---- :" + jwt);
+
+						String decodeJwt = utilmethod.DecodeJwt(jwt);
+						String keyAndIv = utilmethod.rsaDecryption(decodeJwt, privateKey);
+
+						//// SupplierChallanInquiry Call
+						HttpResponse<String> supplierChallanInquiry = utilMethods.supplierChallanInquiryRequest(
+								bppraSupplierChallanInquiryCall, request.getTxnInfo().getBillNumber(),
+								requestFormChallanEnquire, jwt);
+
+						//// InitiateChallanInquiry failure
+						if (supplierChallanInquiry == null) {
+
+							info = new Info(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+						/////// InitiateChallanInquiry Success
+						if (supplierChallanInquiry.getStatus() == 200) {
+
+							LOG.info("ChallanInquiry - Success ok");
+
+							encryptedChallandata = supplierChallanInquiry.getBody();
+							decryptChallanData = utilmethod.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+
+							bppraSupplierVoucherResponse = mapper.readValue(decryptChallanData, BppraSupplierVoucherResponse.class);
+							System.out.print("GetBppraVoucherResponse : " + bppraSupplierVoucherResponse);
+
+							billerName = bppraSupplierVoucherResponse.getSupplierChallanData().getSupplierName();
+
+							totalTenderFeeAmount = utilMethods
+									.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
+							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
+
+							System.out.println("Total Tender Fee Amount: " + totalTenderFeeAmount);
+
+							//////// status is Paid ////
+
+							if (bppraSupplierVoucherResponse.getSupplierChallanData().isPaidStatus()) {
+
+								Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
+										.ofNullable(combinedPaymentLogViewRepository
+												.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+														request.getTxnInfo().getBillNumber().trim(),
+														Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+														Constants.ACTIVITY.RBTS_FUND_TRANSFER,
+														Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+														request.getTxnInfo().getBillerId()));
+								if (combinedPaymentLogView.isPresent()) {
+
+									CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
+
+									transAuthId = paymentLog.getTranAuthId();
+									billstatus = "P";
+									amountPaid = paymentLog.getTotalAmount();
+									totalTenderFeeAmount = amountPaid;
+									billStatus = paymentLog.getBillStatus();
+
+									info = new Info(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan); // success
+
+									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), "", billstatus, "",
+											String.valueOf(totalTenderFeeAmount), "", "", "");
+
+									AdditionalInfo additionalInfo = new AdditionalInfo(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									transactionStatus = Constants.Status.Success;
+
+									response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+								}
+
+							}
+
+							/////// UnPaid /////
+
+							else {
+
+								PendingPayment pendingPayment = pendingPaymentRepository
+										.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+												request.getTxnInfo().getBillNumber().trim(),
+												request.getTxnInfo().getBillerId().trim());
+
+								if (pendingPayment != null) {
+
+									if (pendingPayment.getIgnoreTimer()) {
+
+										info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+												rrn, stan);
+										response = new BillInquiryResponse(info, null, null);
+										transactionStatus = Constants.Status.Pending;
+										billStatus = Constants.BILL_STATUS.BILL_PENDING;
+										return response;
+
+									} else {
+										LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+										LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+										// Calculate the difference in minutes
+										long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+										if (minutesDifference <= pendingThresholdMinutes) {
+
+											info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+													pendingPaymentMessage, rrn, stan);
+											response = new BillInquiryResponse(info, null, null);
+
+											transactionStatus = Constants.Status.Pending;
+											billStatus = Constants.BILL_STATUS.BILL_PENDING;
+											return response;
+
+										}
+									}
+								}
+
+								LOG.info("Calling Payment Inquiry from pg_payment_log table");
+								PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+										.findFirstByVoucherIdAndBillerIdAndBillStatus(
+												request.getTxnInfo().getBillNumber(),
+												request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
+
+								if (pgPaymentLog != null && pgPaymentLog.getTransactionStatus()
+										.equalsIgnoreCase(Constants.Status.Success)) {
+
+									info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage,
+											rrn, stan); // success
+
+									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+									response = new BillInquiryResponse(info, null, null);
+
+									return response;
+								}
+
+								transactionStatus = Constants.Status.Pending;
+
+								billstatus = "U";
+
+								info = new Info(Constants.ResponseCodes.OK,
+										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+								TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
+										String.valueOf(totalTenderFeeAmount), "", "", "");
+
+								AdditionalInfo additionalInfo = new AdditionalInfo(
+										request.getAdditionalInfo().getReserveField1(),
+										request.getAdditionalInfo().getReserveField2(),
+										request.getAdditionalInfo().getReserveField3(),
+										request.getAdditionalInfo().getReserveField4(),
+										request.getAdditionalInfo().getReserveField5(),
+										request.getAdditionalInfo().getReserveField6(),
+										request.getAdditionalInfo().getReserveField7(),
+										request.getAdditionalInfo().getReserveField8(),
+										request.getAdditionalInfo().getReserveField9(),
+										request.getAdditionalInfo().getReserveField10());
+
+								response = new BillInquiryResponse(info, txnInfo, additionalInfo);
+
+								transactionStatus = Constants.Status.Success;
+
+								billStatus = Constants.BILL_STATUS.BILL_UNPAID;
+
+							}
+
+						}
+
+						else if (supplierChallanInquiry.getStatus() == 400) {
+
+							LOG.info("SupplierChallanInquiry - Bad Request");
+
+							info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+						else if (supplierChallanInquiry.getStatus() == 404) {
+
+							LOG.info("SupplierChallanInquiry - Challan Not Found");
+
+							info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Fail;
+							return response;
+
+						}
+
+					}
+
+					else if (tokenInquiry.getStatus() == 401) {
+
+						LOG.info("InitiateTokenInquiry : Unauthorized");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					else if (tokenInquiry.getStatus() == 404) {
+
+						LOG.info("InitiateTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					else if (tokenInquiry.getStatus() == 406) {
+
+						LOG.info("InitiateTokenInquiry :  Invalid Client - Null reference Client ");
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+				} else if (authResponse.getStatus() == 400) {
+
+					LOG.info("Authentication : Invalid Secret key");
+
+					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
+							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+
+				}
+
+				else if (authResponse.getStatus() == 404) {
+
+					LOG.info("Authentication : Client with the provided Secret Not Found");
+
+					info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, Constants.ResponseDescription.UNKNOWN_ERROR,
+							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+					return response;
+
+				}
 
 			}
 
@@ -4178,8 +4524,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
-						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel,
-						billStatus,
+						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username);
 

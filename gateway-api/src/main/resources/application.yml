@@ -140,11 +140,18 @@ slic:
   billerid-2: 1702
   
 bppra:  
+   tenderPrefix: 337
+   supplierPrefix: 787 
    authticateCall: https://bppdev.vdc.services:7443/api/Aouth/authenticate
-   initiateInquiryCall: https://bppdev.vdc.services:7443/api/Aouth/Inititate-Enquery
-   challanInquiryCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/RequestChallanByChallanCode?
+   tokenInquiryCall: https://bppdev.vdc.services:7443/api/Aouth/Inititate-Enquery
+   tenderChallanInquiryCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/RequestChallanByChallanCode
    tenderChallanPaid: https://bppdev.vdc.services:7443/api/ChallanEnquire/MarkChallanPaid   
+  
+   supplierChallanInquiryCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/RequestSupplierChallanByChallanCode
+   supplierChallanPaid: https://bppdev.vdc.services:7443/api/ChallanEnquire/MarkSupplierChallanPaid   
+   
    completeInquiryCall: https://bppdev.vdc.services:7443/api/Aouth/Complete-Enquery  
+  
    clientSecret: Gsz-mtdhh3aSCscvUsLxUne2piVaoVxRnlhiZZEIJV4bUOiIh_m2SidXkKIh0NDORxL3tJDRsu3eQdfTVpat2dwPjfEi0PP80_a-DYDPrTCNMtKPbMM7B4svjBugW5fd
    requestFormAuth: client
    requestFormChallanEnquire: enquirer
