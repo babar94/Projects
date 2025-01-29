@@ -2,24 +2,14 @@ package com.gateway.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.modelmapper.ModelMapper;
@@ -43,7 +33,6 @@ import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
 import com.gateway.model.mpay.response.billinquiry.bppra.BppraVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bzu.BzuGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
-import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
@@ -3845,14 +3834,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
-		BigDecimal amountInDueToDate = null, amountPaid = null;
-
-		String billerName = "", billstatus = "";
-
-		String bankName = "", bankCode = "", branchName = "", branchCode = "", transAuthId = "", amount = "";
-
-		BppraVoucherResponse getBppraVoucherResponse = null;
-
+		BigDecimal totalTenderFeeAmount= null,amountPaid= null;
+		String billerName= "", billstatus="", bankName = "", bankCode = "", branchName = "", branchCode = "", transAuthId = "", amount = "", encryptedChallandata="", decryptChallanData="" ;
+		BppraVoucherResponse bppraVoucherResponse = null;
 		Date requestedDate = new Date();
 
 		try {
@@ -3881,64 +3865,49 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					String authToken = authResponse.getBody();
 					System.out.print("authToken" + authToken);
 
-					
 					///// InitiateInquiryCall
 					HttpResponse<String> inquiryInitiate = Unirest.post(bppraInitiateInquiryCall)
 							.header("Authorization", authToken).header("requestfrom", requestFormAuth)
 							.header("RSApublicKey", publicKey).asString();
 
-					
 					//// InquiryInitiateSuccess
 					if (inquiryInitiate.getStatus() == 200) {
 
 						String jwt = inquiryInitiate.getBody();
 						System.out.println("jwt :" + jwt);
 
-						String decodeJwt = UtilMethods.DecodeJwt(jwt);
-						String keyAndIv = UtilMethods.rsaDecryption(decodeJwt,privateKey);
+						String decodeJwt = utilmethod.DecodeJwt(jwt);
+						String keyAndIv = utilmethod.rsaDecryption(decodeJwt, privateKey);
 
 						HttpResponse<String> initiateChallanInquiry = Unirest.get(bpprachallanInquiryCall)
 								.queryString("challancode", request.getTxnInfo().getBillNumber())
 								.header("requestfrom", requestFormChallanEnquire)
 								.header("Authorization", "Bearer " + jwt).asString();
 
-						
 						/////// InitiateChallanInquiry
 						if (initiateChallanInquiry.getStatus() == 200) {
 
 							LOG.info("ChallanInquiry - Success ok");
 
-							String encryptedChallandata = initiateChallanInquiry.getBody();
-							String decryptData = UtilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+							encryptedChallandata = initiateChallanInquiry.getBody();
+							decryptChallanData = utilmethod.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
 
-							getBppraVoucherResponse = mapper.readValue(decryptData, BppraVoucherResponse.class);
-							System.out.print("GetBppraVoucherResponse : " + getBppraVoucherResponse);
+							bppraVoucherResponse = mapper.readValue(decryptChallanData, BppraVoucherResponse.class);
+							System.out.print("GetBppraVoucherResponse : " + bppraVoucherResponse);
 
-							// Parse response into a Map
-							@SuppressWarnings("unchecked")
-							Map<String, Object> parsedJson = objectMapper.readValue(decryptData, Map.class);
+						
+							billerName = bppraVoucherResponse.getChallanData().getPaName();
+							
 
-							// Extract the "challanFee" list
-							@SuppressWarnings("unchecked")
-							List<Map<String, Object>> challanFeeList = (List<Map<String, Object>>) parsedJson
-									.get("challanFee");
+							totalTenderFeeAmount = utilMethods.getTotalTenderFeeAmount(bppraVoucherResponse.getChallanFee());
+							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
-							// Iterate and fetch the "Total Tender Fee"
-							for (Map<String, Object> fee : challanFeeList) {
+							System.out.println("Total Tender Fee Amount: " + totalTenderFeeAmount);
 
-								if ("Total Tender Fee".equals(fee.get("TARIFTITLE"))) {
-									System.out.println("Total Tender Fee Amount: " + fee.get("AMOUNT"));
-									amountInDueToDate = new BigDecimal(fee.get("AMOUNT").toString());
-									amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
+							
+							//////// status is Paid ////
 
-								}
-							}
-
-							billerName = getBppraVoucherResponse.getChallanData().getPaName();
-
-							//////// status is Paid
-
-							if (getBppraVoucherResponse.getChallanData().isPaidStatus()) {
+							if (bppraVoucherResponse.getChallanData().isPaidStatus()) {
 
 								Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 										.ofNullable(combinedPaymentLogViewRepository
@@ -3955,15 +3924,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									transAuthId = paymentLog.getTranAuthId();
 									billstatus = "P";
 									amountPaid = paymentLog.getTotalAmount();
-									amountInDueToDate = amountPaid;
+									totalTenderFeeAmount = amountPaid;
 									billStatus = paymentLog.getBillStatus();
 
 									info = new Info(Constants.ResponseCodes.OK,
 											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan); // success
 
 									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-											request.getTxnInfo().getBillNumber(), "", billStatus, "",
-											String.valueOf(amountInDueToDate), "", "", "");
+											request.getTxnInfo().getBillNumber(), "", billstatus, "",
+											String.valueOf(totalTenderFeeAmount), "", "", "");
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
 											request.getAdditionalInfo().getReserveField1(),
@@ -3984,6 +3953,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								}
 
 							}
+							
+							/////// UnPaid /////
 
 							else {
 
@@ -4053,7 +4024,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 								TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
-										String.valueOf(amountInDueToDate), "", "", "");
+										String.valueOf(totalTenderFeeAmount), "", "", "");
 
 								AdditionalInfo additionalInfo = new AdditionalInfo(
 										request.getAdditionalInfo().getReserveField1(),
@@ -4070,6 +4041,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 								transactionStatus = Constants.Status.Success;
+
+								billStatus = Constants.BILL_STATUS.BILL_UNPAID;
 
 							}
 
@@ -4204,12 +4177,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel,
-						(getBppraVoucherResponse != null && !getBppraVoucherResponse.getChallanData().isPaidStatus())
-								? "Unpaid"
-								: (getBppraVoucherResponse != null
-										&& getBppraVoucherResponse.getChallanData().isPaidStatus()) ? "Paid" : "",
+						billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username);
 

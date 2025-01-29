@@ -31,12 +31,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
+import com.gateway.model.mpay.response.billinquiry.bppra.ChallanFee;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.repository.MPAYLogRepository;
 import com.gateway.utils.BillerConstant.Aiou;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
 @Component
@@ -493,7 +497,23 @@ public class UtilMethods {
 	}
 	
 	
-	public static String DecodeJwt(String jwt) {
+	private static HttpResponse<String> authRequest(String url, String authToken, String requestFormAuth, String jwt, String branchcode, String personName) {
+        try {
+            return Unirest.post(url)
+                    .header("Authorization", authToken)
+                    .header("requestfrom", requestFormAuth)
+                    .field("EnqueryToken", jwt)
+                    .field("branchCode", branchcode)
+                    .field("personName", personName)
+                    .asString();
+        } catch (UnirestException e) {
+        	
+            return null; // Indicate request failure
+        }
+    }
+	
+	
+	public String DecodeJwt(String jwt) {
 
 		String[] parts = jwt.split("\\.");
 		String payload = parts[1];
@@ -505,7 +525,7 @@ public class UtilMethods {
 		return subValue;
 	}
 
-	public static String rsaDecryption(String jwtKey,String privatekey ) {
+	public String rsaDecryption(String jwtKey,String privatekey ) {
 
 		String KeyAndIv = "";
 		try {
@@ -538,7 +558,7 @@ public class UtilMethods {
 
 	}
 
-	public static String aesPackedAlgorithm(String keyAndIv, String encryptedData) {
+	public String aesPackedAlgorithm(String keyAndIv, String encryptedData) {
 
 		String result = "";
 		try {
@@ -583,10 +603,13 @@ public class UtilMethods {
 	}
 
 	
+	public BigDecimal getTotalTenderFeeAmount(List<ChallanFee> challanFee) {
+        return challanFee.stream()
+            .filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
+            .map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
+            .findFirst()
+            .orElse(BigDecimal.ZERO); // Returns 0 if not found
+    }
 	
 	
-	
-	
-	
-
 }
