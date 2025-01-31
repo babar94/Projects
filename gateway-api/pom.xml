@@ -152,20 +152,28 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-devtools</artifactId>
-		    <version>3.3.2</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>3.3.2</version>
 		</dependency>
-		
-				<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-web</artifactId>
-		    <version>6.1.12</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>6.1.12</version>
 		</dependency>
-
-
-		
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15to18 -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15to18</artifactId>
+			<version>1.79</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.70</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>Epayment-gateway</finalName>
@@ -177,8 +185,6 @@
 					<executable>true</executable>
 				</configuration>
 			</plugin>
-			
-			
 			<!--
 		   <plugin>
 		      <groupId>org.owasp</groupId>
@@ -193,7 +199,6 @@
 		      </executions>
            </plugin>
           !-->
-        
 		</plugins>
 	</build>
 </project>

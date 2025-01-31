@@ -20,10 +20,6 @@ public class FeeTypeMapper {
 		this.modelMapper = modelMapper;
 	}
 
-//	public FeeType[] mapFeeTypeListToArray(List<FeeTypeListWrapper> feeTypesList) {
-//		return feeTypesList.stream().map(this::mapToFeeType).toArray(FeeType[]::new);
-//	}
-	
 	public FeeType[] mapFeeTypeListToArray(List<? extends BillerDetails> billerDetailsList) {
 		return billerDetailsList.stream().map(this::mapBillerDetailToFeeType).toArray(FeeType[]::new);
 	}
@@ -42,11 +38,9 @@ public class FeeTypeMapper {
 
 		return feeType;
 	}
-	
+
 	public FeeType mapToFeeType(FeeTypeListWrapper feeTypeListWrapper) {
 		return modelMapper.map(feeTypeListWrapper, FeeType.class);
 	}
-	
-	
-	
+
 }

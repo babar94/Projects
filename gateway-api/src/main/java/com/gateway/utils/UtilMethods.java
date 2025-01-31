@@ -1,7 +1,10 @@
 package com.gateway.utils;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -31,6 +34,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
+import com.gateway.model.mpay.response.billinquiry.bppra.BppraTenderVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bppra.ChallanFee;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
@@ -471,6 +475,8 @@ public class UtilMethods {
 		}
 	}
 
+	//////// Dls
+
 	public String formatFeeTypeList(DlsGetVoucherResponse dlsGetVoucherResponse) {
 		StringBuilder formattedResponse = new StringBuilder();
 		List<FeeTypeListWrapper> feeTypeList = dlsGetVoucherResponse.getResponse().getDlsgetvoucher()
@@ -524,7 +530,6 @@ public class UtilMethods {
 		}
 	}
 
-	
 	public HttpResponse<String> supplierChallanInquiryRequest(String bppraSupplierChallanInquiryCall, String billNumber,
 			String requestFormChallanEnquire, String jwt) {
 
@@ -537,9 +542,8 @@ public class UtilMethods {
 			return null; // Indicate request failure
 		}
 	}
-	
-	
-	public HttpResponse<String> markChallanPaidRequest(String bppraTenderChallanPaid, String billNumber,
+
+	public HttpResponse<String> tenderMarkChallanPaidRequest(String bppraTenderChallanPaid, String billNumber,
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
@@ -547,7 +551,20 @@ public class UtilMethods {
 					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
 					.asString();
 		} catch (UnirestException e) {
-			LOG.info("---- Mark Challan Paid api failure ----");
+			LOG.info("---- Tender Mark Challan Paid api failure ----");
+			return null; // Indicate request failure
+		}
+	}
+
+	public HttpResponse<String> supplierMarkChallanPaidRequest(String bppraSupplierChallanPaid, String billNumber,
+			String requestFormChallanEnquire, String jwt) {
+
+		try {
+			return Unirest.post(bppraSupplierChallanPaid).queryString("challanCode", billNumber)
+					.queryString("paid", true).header("requestfrom", requestFormChallanEnquire)
+					.header("Authorization", "Bearer " + jwt).asString();
+		} catch (UnirestException e) {
+			LOG.info("---- Suppplier Mark Challan Paid api failure ----");
 			return null; // Indicate request failure
 		}
 	}
@@ -577,38 +594,38 @@ public class UtilMethods {
 		return subValue;
 	}
 
-	public String rsaDecryption(String jwtKey, String privatekey) {
-
-		String KeyAndIv = "";
-		try {
-
-			byte[] privateKeyBytes = Base64.getDecoder().decode(privatekey);
-
-			// Generate the private key
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-
-			// Decode the encrypted data from Base64
-			byte[] encryptedBytes = Base64.getDecoder().decode(jwtKey);
-
-			// Initialize the cipher for decryption
-			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-			cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-			KeyAndIv = new String(decryptedBytes);
-
-			// Print the decrypted message
-			System.out.println("KeyAndIv : " + KeyAndIv);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return KeyAndIv;
-
-	}
+//	public String rsaDecryption(String jwtKey, String privatekey) {
+//
+//		String KeyAndIv = "";
+//		try {
+//
+//			byte[] privateKeyBytes = Base64.getDecoder().decode(privatekey);
+//
+//			// Generate the private key
+//			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+//			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//			PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+//
+//			// Decode the encrypted data from Base64
+//			byte[] encryptedBytes = Base64.getDecoder().decode(jwtKey);
+//
+//			// Initialize the cipher for decryption
+//			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+//			cipher.init(Cipher.DECRYPT_MODE, privateKey);
+//
+//			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+//			KeyAndIv = new String(decryptedBytes);
+//
+//			// Print the decrypted message
+//			System.out.println("KeyAndIv : " + KeyAndIv);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		return KeyAndIv;
+//
+//	}
 
 	public String aesPackedAlgorithm(String keyAndIv, String encryptedData) {
 
@@ -658,6 +675,42 @@ public class UtilMethods {
 		return challanFee.stream().filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
 				.map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
 				.findFirst().orElse(BigDecimal.ZERO); // Returns 0 if not found
+	}
+
+	public String ReadPublicPemFile(String publicKeyPemFilePath) {
+
+		String singleLinePem = "";
+
+		try {
+
+			// Read file content as a string
+			String pemContent = new String(Files.readAllBytes(Paths.get(publicKeyPemFilePath)));
+			singleLinePem = pemContent.replace("\n", " ").replace("\r", " ");
+			// Print the content
+			System.out.println(singleLinePem);
+		} catch (IOException e) {
+			System.err.println("Error reading the PEM file: " + e.getMessage());
+		}
+		return singleLinePem;
+	}
+
+	public String ReadPrivatePemFile(String privateKeyPemFilePath) {
+
+		String singleLinePem = "";
+
+		try {
+			// Get the absolute path of the file
+//           String filePath = "src/main/resources/public_key.pem";
+
+			// Read file content as a string
+			String pemContent = new String(Files.readAllBytes(Paths.get(privateKeyPemFilePath)));
+			singleLinePem = pemContent.replace("\n", " ").replace("\r", " ");
+			// Print the content
+			System.out.println(singleLinePem);
+		} catch (IOException e) {
+			System.err.println("Error reading the PEM file: " + e.getMessage());
+		}
+		return singleLinePem;
 	}
 
 }

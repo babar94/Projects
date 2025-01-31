@@ -53,8 +53,6 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBillerNumber(billerNumber);
 		paymentLog.setTransactionStatus(transactionStatus);
 		paymentLog.setAddress(address);
-		// paymentLog.setTransactionFees(transactionFees);
-		// paymentLog.setTaxAmount(taxAmount);
 		paymentLog.setTotal(total);
 		paymentLog.setChannel(channel);
 		paymentLog.setBillStatus(billStatus);
@@ -78,61 +76,6 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 
 	}
 
-//	@Async("paymentLoggingExecutor")
-//	@Override
-//	public void paymentLog(Date requestDatetime, Date responsetDatetime, String rrn, String stan, String responseCode,
-//			String responseDescription, String cnic, String mobile, String name, String consumerNumber, String billerId,
-//			BigDecimal amountPaid,BigDecimal amountwithinduedate, BigDecimal amountafterduedate, double charges, String activity, String paymentRefNo, String billerNumber,
-//			String transactionStatus, String address, double total,
-//			String channel, String billStatus, String tranDate, String tranTime, String province, String tranAuthId,String bankName,String bankCode,String branchName,String branchCode,String username,String feeDetail)
-//			throws Exception {
-//
-//		PaymentLog paymentLog = new PaymentLog();
-//		LOG.info("Inserting in table (paymentLog audit)");
-//
-//		paymentLog.setRequestDatetime(requestDatetime);
-//		paymentLog.setResponsetDatetime(responsetDatetime);
-//		paymentLog.setRrn(rrn);
-//		paymentLog.setStan(stan);
-//		paymentLog.setResponseCode(responseCode);
-//		paymentLog.setResponseDescription(responseDescription);
-//		paymentLog.setCnic(cnic);
-//		paymentLog.setMobile(mobile);
-//		paymentLog.setName(name);
-//		paymentLog.setConsumerNumber(consumerNumber);
-//		paymentLog.setBillerId(billerId);
-//		paymentLog.setAmountPaid(amountPaid);
-//		paymentLog.setAmountwithinduedate(amountwithinduedate);
-//		paymentLog.setAmountafterduedate(amountafterduedate);
-//		paymentLog.setCharges(charges);
-//		paymentLog.setActivity(activity);
-//		paymentLog.setPaymentRefNo(paymentRefNo);
-//		paymentLog.setBillerNumber(billerNumber);
-//		paymentLog.setTransactionStatus(transactionStatus);
-//		paymentLog.setAddress(address);
-//		//paymentLog.setTransactionFees(transactionFees);
-//		//paymentLog.setTaxAmount(taxAmount);
-//		paymentLog.setTotal(total);
-//		paymentLog.setChannel(channel);
-//		paymentLog.setBillStatus(billStatus);
-//		paymentLog.setTranDate(tranDate);
-//		paymentLog.setTranTime(tranTime);
-//		paymentLog.setProvince(province);
-//		paymentLog.setTranAuthId(tranAuthId);
-//		paymentLog.setBankName(bankName);
-//		paymentLog.setBankCode(bankCode);
-//		paymentLog.setBranchName(branchName);
-//		paymentLog.setBranchCode(branchCode);
-//		paymentLog.setUsername(username);
-//		paymentLog.setUsername(feeDetail);
-//		
-//		
-//		transactionDetialsLogRepository.save(paymentLog);
-//
-//		LOG.info("Inserted in table (audit)");
-//
-//	}
-
 	@Async("paymentLoggingExecutor")
 	@Override
 	public void paymentLog(Date requestedDate, Date responsedate, String rrn, String stan, String responseCode,
@@ -140,7 +83,7 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 			BigDecimal amountAfterDueDate, String billinquiry, String transactionStatus, String channel,
 			String billstatus, String tranDate, String tranTime, String transAuthId, BigDecimal amountpaid,
 			String duedate, String billingMonth, String paymentRefno, String bankName, String bankCode,
-			String branchName, String branchCode, String thirdparty_auth_id, String username) {
+			String branchName, String branchCode, String thirdparty_auth_id, String username,String feeDetail) {
 
 		PaymentLog paymentLog = new PaymentLog();
 		LOG.info("Inserting in table (paymentLog audit)");
@@ -173,8 +116,8 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		paymentLog.setBranchName(branchName);
 		paymentLog.setBranchCode(branchCode);
 		paymentLog.setThirdparty_auth_id(thirdparty_auth_id);
-//		paymentLog.setAmount(amount);
 		paymentLog.setUsername(username);
+		paymentLog.setFee_Detail(feeDetail);
 
 		transactionDetialsLogRepository.save(paymentLog);
 
