@@ -75,6 +75,60 @@ public class PaymentLoggingServiceImpl implements PaymentLoggingService {
 		return savedPaymentLog;
 
 	}
+	
+	
+	@Async("paymentLoggingExecutor")
+	@Override
+	public PaymentLog paymentLogBppra(Date requestedDate, Date responsedate, String rrn, String stan, String responseCode,
+			String responseDesc, String studentName, String billNumber, String billerId, BigDecimal amountInDueDate,
+			BigDecimal amountAfterDueDate, String billinquiry, String transactionStatus, String channel,
+			String billstatus, String tranDate, String tranTime, String transAuthId, BigDecimal amountpaid,
+			String duedate, String billingMonth, String paymentRefno, String bankName, String bankCode,
+			String branchName, String branchCode, String thirdparty_auth_id, String username,String feeDetail) {
+
+		PaymentLog paymentLog = new PaymentLog();
+		LOG.info("Inserting in table (paymentLog audit)");
+
+		paymentLog.setRequestDatetime(requestedDate);
+		paymentLog.setResponsetDatetime(responsedate);
+		paymentLog.setRrn(rrn);
+		paymentLog.setStan(stan);
+		paymentLog.setResponseCode(responseCode);
+		paymentLog.setResponseDescription(responseDesc);
+		paymentLog.setName(studentName);
+		paymentLog.setBillerNumber(billNumber);
+		paymentLog.setConsumerNumber(billNumber);
+		paymentLog.setBillerId(billerId);
+		paymentLog.setAmountwithinduedate(amountInDueDate);
+		paymentLog.setAmountafterduedate(amountAfterDueDate);
+		paymentLog.setTransactionStatus(transactionStatus);
+		paymentLog.setChannel(channel);
+		paymentLog.setBillStatus(billstatus);
+		paymentLog.setTranDate(tranDate);
+		paymentLog.setTranTime(tranTime);
+		paymentLog.setTranAuthId(transAuthId);
+		paymentLog.setActivity(billinquiry);
+		paymentLog.setAmountPaid(amountpaid);
+		paymentLog.setDuedate(duedate);
+		paymentLog.setBillingMonth(billingMonth);
+		paymentLog.setPaymentRefNo(paymentRefno);
+		paymentLog.setBankName(bankName);
+		paymentLog.setBankCode(bankCode);
+		paymentLog.setBranchName(branchName);
+		paymentLog.setBranchCode(branchCode);
+		paymentLog.setThirdparty_auth_id(thirdparty_auth_id);
+		paymentLog.setUsername(username);
+		paymentLog.setFee_Detail(feeDetail);
+		
+	
+		PaymentLog savedPaymentLog = transactionDetialsLogRepository.save(paymentLog);
+
+		LOG.info("Inserted in table (audit)");
+
+		return savedPaymentLog;
+		
+	}
+	
 
 	@Async("paymentLoggingExecutor")
 	@Override

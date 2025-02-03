@@ -144,7 +144,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Autowired
 	private RSAEncryption rsaUtility;
-	
+
 	@Value("${payment.log.table}")
 	private String paymentLogTable;
 
@@ -178,17 +178,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Value("${bppra.clientSecret}")
 	private String bppraClientSecret;
 
-	@Value("${bppra.publicKey}")
-	private String publicKey;
-
 	@Value("${bppra.requestFormAuth}")
 	private String requestFormAuth;
 
 	@Value("${bppra.requestFormChallanEnquire}")
 	private String requestFormChallanEnquire;
-
-	@Value("${bppra.privateKey}")
-	private String privateKey;
 
 	@Value("${bppra.tenderPrefix}")
 	private String tenderPrefix;
@@ -196,8 +190,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Value("${bppra.supplierPrefix}")
 	private String supplierPrefix;
 
-
-	
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
 
@@ -458,11 +450,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.BPPRA.BPPRA)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-									
+
 										switch (subBillerDetail.getSubBillerName()) {
 
 										case BillerConstant.BPPRA.BPPRA:
-											
+
 											billInquiryResponse = billInquirybprra(request, httpRequestData);
 											break;
 
@@ -3841,20 +3833,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Override
 	public BillInquiryResponse billInquirybprra(BillInquiryRequest request, HttpServletRequest httpRequestData) {
-		//Setup Private key
-		try {
-			rsaUtility.SetRSAEncryption();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
 		LOG.info("Bprra Bill Inquiry Request {} ", request.toString());
 
 		BillInquiryResponse response = null;
@@ -3864,9 +3843,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
 		BigDecimal totalTenderFeeAmount = null, amountPaid = null;
 		String billerNumber = "", billerName = "", billstatus = "", bankName = "", bankCode = "", branchName = "",
-				branchCode = "", encryptedChallandata = "", decryptChallanData = "", challanFeeData = "", transAuthId="";
+				branchCode = "", encryptedChallandata = "", decryptChallanData = "", challanFeeData = "",
+				transAuthId = "", publicKey = "", decodeJwt = "", keyAndIv = "", authToken = "", jwt = "";
 		BppraTenderVoucherResponse bppraTenderVoucherResponse = null;
 		BppraSupplierVoucherResponse bppraSupplierVoucherResponse = null;
+		List<ChallanFee> challanFees = null;
 		Date requestedDate = new Date();
 		try {
 
@@ -3880,6 +3861,17 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
 			username = result[0];
 			channel = result[1];
+
+			// Setup Private key
+			try {
+				rsaUtility.SetRSAEncryption();
+			} catch (NoSuchAlgorithmException e) {
+				LOG.info("BillInquiry - Private key - NoSuchAlgorithmException:" + e.getMessage());
+			} catch (InvalidKeySpecException e) {
+				LOG.info("BillInquiry - Private key - InvalidKeySpecException:" + e.getMessage());
+			} catch (IOException e) {
+				LOG.info("BillInquiry - Private key - IOException:" + e.getMessage());
+			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
 
@@ -3906,16 +3898,16 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				/// TenderAuth Success
 				else if (tenderAuthResponse.getStatus() == 200) {
 
-					String authToken = tenderAuthResponse.getBody();
+					authToken = tenderAuthResponse.getBody();
 					System.out.print("---authToken----" + authToken);
 
 					//// Read Public key
-					
-					String publickey=rsaUtility.getPublicKey();
-					
+
+					publicKey = rsaUtility.getPublicKey();
+
 					///// TenderTokenInquiry Call
 					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
-							authToken, requestFormAuth, publickey);
+							authToken, requestFormAuth, publicKey);
 
 					///// TenderTokenInquiry Failure
 					if (tenderTokenInquiry == null) {
@@ -3932,15 +3924,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					//// TenderTokenInquiry Success
 					if (tenderTokenInquiry.getStatus() == 200) {
 
-						String jwt = tenderTokenInquiry.getBody();
+						jwt = tenderTokenInquiry.getBody();
 						System.out.println("----jwt---- :" + jwt);
 
-						//// Read Private key
-
-						//utilMethods.ReadPrivatePemFile(privateKeyPath);
-						
-						String decodeJwt = utilmethod.DecodeJwt(jwt);
-						String keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+						decodeJwt = utilmethod.DecodeJwt(jwt);
+						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
 						//// TenderChallanInquiry Call
 						HttpResponse<String> tenderChallanInquiry = utilMethods.tenderChallanInquiryRequest(
@@ -4041,7 +4029,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 							else {
 
-								List<ChallanFee> challanFees = bppraTenderVoucherResponse.getChallanFee();
+								challanFees = bppraTenderVoucherResponse.getChallanFee();
 								challanFeeData = objectMapper.writeValueAsString(challanFees);
 
 								PendingPayment pendingPayment = pendingPaymentRepository
@@ -4158,8 +4146,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						}
 
-						
-						
 						else if (tenderChallanInquiry.getStatus() == 404) {
 
 							LOG.info("TenderChallanInquiry : Challan Not Found");
@@ -4212,7 +4198,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				
 				else if (tenderAuthResponse.getStatus() == 400) {
 
 					LOG.info("TenderAuthentication : Invalid Secret key");
@@ -4237,7 +4222,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				
 				else if (tenderAuthResponse.getStatus() == 404) {
 
 					LOG.info("TenderAuthentication : Client with the provided Secret Not Found");
@@ -4275,8 +4259,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				/// SupplierAuth Success
 				else if (supplierAuthResponse.getStatus() == 200) {
 
-					String authToken = supplierAuthResponse.getBody();
+					authToken = supplierAuthResponse.getBody();
 					System.out.print("---authToken----" + authToken);
+
+					/// Publickey
+					publicKey = rsaUtility.getPublicKey();
 
 					///// SupplierTokenInquiry Call
 					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
@@ -4297,11 +4284,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					//// SupplierTokenInquiry Success
 					if (supplierTokenInquiry.getStatus() == 200) {
 
-						String jwt = supplierTokenInquiry.getBody();
+						jwt = supplierTokenInquiry.getBody();
 						System.out.println("----jwt---- :" + jwt);
 
-						String decodeJwt = utilmethod.DecodeJwt(jwt);
-						String keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+						decodeJwt = utilmethod.DecodeJwt(jwt);
+						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
 						//// SupplierChallanInquiry Call
 						HttpResponse<String> supplierChallanInquiry = utilMethods.supplierChallanInquiryRequest(
@@ -4402,7 +4389,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 							else {
 
-								List<ChallanFee> challanFees = bppraSupplierVoucherResponse.getChallanFee();
+								challanFees = bppraSupplierVoucherResponse.getChallanFee();
 								challanFeeData = objectMapper.writeValueAsString(challanFees);
 
 								PendingPayment pendingPayment = pendingPaymentRepository
@@ -4519,7 +4506,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						}
 
-						
 						else if (supplierChallanInquiry.getStatus() == 404) {
 
 							LOG.info("SupplierChallanInquiry : Challan Not Found");

@@ -48,12 +48,10 @@ public class RSAEncryption {
 
 		}
 	}
-	
-	public String getPublicKey(){		
-		return this.publickeyPlain;
-	} 
 
-	
+	public String getPublicKey() {
+		return this.publickeyPlain;
+	}
 
 	public String RSADecrypt(String KeyValue) throws Exception {
 		// Generate RSA key pair
@@ -84,11 +82,9 @@ public class RSAEncryption {
 			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 			keystore.load(is, keystorePswd.toCharArray());
 			key = (PrivateKey) keystore.getKey(alias, privateKeyPswd.toCharArray());
-			// LOGGER.debug("Private key generate successfully {} ." ,key);
 			LOGGER.info("Private key generate successfully ");
 
 		} catch (Exception e) {
-			// System.out.println(e.getMessage().toString());
 			LOGGER.error("Exception occured to generate the private key : {} ", e.getMessage().toString());
 		}
 		return key;
@@ -117,15 +113,6 @@ public class RSAEncryption {
 		}
 		return publickeyString;
 	}
-//	 private static String convertPublicKeyToString(PublicKey publicKey) {
-//	        byte[] encodedKey = publicKey.getEncoded();
-//	        String base64Key = Base64.getEncoder().encodeToString(encodedKey);
-//
-//	        // Format the key as a PEM-style string
-//	        return "-----BEGIN PUBLIC KEY-----\n" + 
-//	                base64Key.replaceAll("(.{64})", "$1\n") + 
-//	                "\n-----END PUBLIC KEY-----";
-//	    }
 
 	private static String convertPublicKeyToString(PublicKey publicKey) {
 		byte[] encodedKey = publicKey.getEncoded();

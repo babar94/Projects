@@ -177,7 +177,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private RSAEncryption rsaUtility;
-	
+
 	@Value("${bzu.username}")
 	private String bzu_username;
 
@@ -214,17 +214,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${bppra.clientSecret}")
 	private String bppraClientSecret;
 
-	@Value("${bppra.publicKey}")
-	private String publicKey;
-
 	@Value("${bppra.requestFormAuth}")
 	private String requestFormAuth;
 
 	@Value("${bppra.requestFormChallanEnquire}")
 	private String requestFormChallanEnquire;
-
-	@Value("${bppra.privateKey}")
-	private String privateKey;
 
 	@Value("${bppra.branchCode}")
 	private String branchcode;
@@ -5560,19 +5554,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Override
 	public BillPaymentResponse billPaymentBppra(BillPaymentRequest request, HttpServletRequest httpRequestData) {
-		//Setup Private key
-				try {
-					rsaUtility.SetRSAEncryption();
-				} catch (NoSuchAlgorithmException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InvalidKeySpecException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 		LOG.info("Bppra Bill Payment Request {} ", request.toString());
 
 		BillPaymentResponse response = null;
@@ -5596,8 +5578,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
-		String bankName = "", bankCode = "", branchName = "", branchCode = "", challanFeeData = "";
-
+		String bankName = "", bankCode = "", branchName = "", branchCode = "", challanFeeData = "", publicKey,
+				decodeJwt = "", keyAndIv = "", jwt = "";
+		List<ChallanFee> challanFees = null;
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -5622,6 +5605,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				return response;
 
+			}
+
+			// Setup Private key
+			try {
+				rsaUtility.SetRSAEncryption();
+			} catch (NoSuchAlgorithmException e) {
+				LOG.info("BillPayment - Private key - NoSuchAlgorithmException:" + e.getMessage());
+			} catch (InvalidKeySpecException e) {
+				LOG.info("BillPayment - Private key - InvalidKeySpecException:" + e.getMessage());
+			} catch (IOException e) {
+				LOG.info("BillPayment - Private key - IOException:" + e.getMessage());
 			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
@@ -5652,6 +5646,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					String authToken = tenderAuthResponse.getBody();
 					System.out.print("authToken" + authToken);
 
+					publicKey = rsaUtility.getPublicKey();
+
 					///// TenderTokenInquiry Call
 					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
 							authToken, requestFormAuth, publicKey);
@@ -5671,11 +5667,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// TenderTokenInquiry Success
 					if (tenderTokenInquiry.getStatus() == 200) {
 
-						String jwt = tenderTokenInquiry.getBody();
+						jwt = tenderTokenInquiry.getBody();
 						System.out.println("jwt :" + jwt);
 
-						String decodeJwt = utilMethods.DecodeJwt(jwt);
-						String keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+						decodeJwt = utilMethods.DecodeJwt(jwt);
+						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
 						////// TenderChallanInquiry
 						HttpResponse<String> tenderChallanInquiry = utilMethods.tenderChallanInquiryRequest(
@@ -5745,7 +5741,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							else {
 
-								List<ChallanFee> challanFees = bppraTenderVoucherResponse.getChallanFee();
+								challanFees = bppraTenderVoucherResponse.getChallanFee();
 								challanFeeData = objectMapper.writeValueAsString(challanFees);
 
 								PendingPayment pendingPayment = pendingPaymentRepository
@@ -6200,6 +6196,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					String authToken = supplierAuthResponse.getBody();
 					System.out.print("authToken" + authToken);
 
+					//// publicKey
+					publicKey = rsaUtility.getPublicKey();
+
 					///// SupplierTokenInquiry Call
 					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
 							authToken, requestFormAuth, publicKey);
@@ -6219,11 +6218,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// SupplierTokenInquiry Success
 					if (supplierTokenInquiry.getStatus() == 200) {
 
-						String jwt = supplierTokenInquiry.getBody();
+						jwt = supplierTokenInquiry.getBody();
 						System.out.println("jwt :" + jwt);
 
-						String decodeJwt = utilMethods.DecodeJwt(jwt);
-						String keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+						decodeJwt = utilMethods.DecodeJwt(jwt);
+						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
 						////// SupplierChallanInquiry
 						HttpResponse<String> supplierChallanInquiry = utilMethods.supplierChallanInquiryRequest(
@@ -6293,7 +6292,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							else {
 
-								List<ChallanFee> challanFees = bppraSupplierVoucherResponse.getChallanFee();
+								challanFees = bppraSupplierVoucherResponse.getChallanFee();
 								challanFeeData = objectMapper.writeValueAsString(challanFees);
 
 								PendingPayment pendingPayment = pendingPaymentRepository
@@ -6749,13 +6748,57 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			try {
 
-				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+				PaymentLog paymentLog = paymentLoggingService.paymentLogBppra(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
 						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username, challanFeeData);
+
+				if ((billerNumber.startsWith(tenderPrefix))
+						&& (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID))) {
+					List<ChallanFee> cList = bppraTenderVoucherResponse.getChallanFee();
+
+					if (paymentLog != null) {
+						for (ChallanFee challanFee : cList) {
+							FeeType feeType = new FeeType();
+							feeType.setPaymentLogId(paymentLog.getID());
+							feeType.setFees(challanFee.getAmount());
+							feeType.setTypeDetail(challanFee.getTariffTitle());
+							feeType.setSource(paymentLogTable);
+							feeTypeRepository.save(feeType);
+
+							LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+									paymentLog.getID());
+
+						}
+					} else {
+						LOG.error("Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+					}
+				}
+
+				else if ((billerNumber.startsWith(supplierPrefix))
+						&& (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID))) {
+					List<ChallanFee> cList = bppraSupplierVoucherResponse.getChallanFee();
+
+					if (paymentLog != null) {
+						for (ChallanFee challanFee : cList) {
+							FeeType feeType = new FeeType();
+							feeType.setPaymentLogId(paymentLog.getID());
+							feeType.setFees(challanFee.getAmount());
+							feeType.setTypeDetail(challanFee.getTariffTitle());
+							feeType.setSource(paymentLogTable);
+							feeTypeRepository.save(feeType);
+
+							LOG.info("Saved FeeType {} associated with PaymentLog ID {}", feeType.getId(),
+									paymentLog.getID());
+
+						}
+					} else {
+						LOG.error("Failed to saved FeeDetails because paymentLog is null. Cannot perform operation.");
+					}
+				}
 
 				LOG.info(" --- Bppra Bill Payment Method End --- ");
 
