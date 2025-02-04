@@ -65,6 +65,8 @@ import com.gateway.service.PaymentLoggingService;
 import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.Constants;
+import com.gateway.utils.Constants.BILL_STATUS;
+import com.gateway.utils.Constants.BILL_STATUS_SINGLE_ALPHABET;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
@@ -229,8 +231,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									parentBillerId);
 							Boolean subBillerIsActive = subBillerDetail.getIsActive();
 							if (subBillerIsActive) {
-								if (billInquiryValidationResponse != null
-										&& billInquiryValidationResponse.getResponseCode().equalsIgnoreCase("00")) {
+								if (billInquiryValidationResponse != null && billInquiryValidationResponse
+										.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 									if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.Beoe.BEOE)
 											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
 										switch (subBillerDetail.getSubBillerName()) {
@@ -423,26 +425,26 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 									////////// Bahauddin zikria university ///////
 
-//									////////// State Life ///////
-//
-//									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
-//											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-//
-//										switch (subBillerDetail.getSubBillerName()) {
-//
-//										case BillerConstant.SLIC.SLIC:
-//											billInquiryResponse = billInquirySlic(request, httpRequestData);
-//											break;
-//
-//										default:
-//											LOG.info("subBiller does not exists.");
-//											info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
-//													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-//											billInquiryResponse = new BillInquiryResponse(info, null, null);
-//
-//											break;
-//										}
-//									}
+									////////// State Life ///////
+
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.SLIC.SLIC:
+											billInquiryResponse = billInquirySlic(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											info = new Info(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billInquiryResponse = new BillInquiryResponse(info, null, null);
+
+											break;
+										}
+									}
 
 									////////// State Life ///////
 
@@ -3544,13 +3546,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
 		BigDecimal amountInDueToDate = null, amountPaid = null;
 
-		String billstatus = "", tran_Auth_Id = "", collectionType = "", transAuthId = "";
-
-		String bankName = "", bankCode = "", branchName = "", branchCode = "";
-
+		String billstatus = "", collectionType = "", transAuthId = "", billerId = "", bankName = "", bankCode = "",
+				branchName = "", branchCode = "";
 		Date requestedDate = new Date();
 
 		try {
+
+			billerId = request.getTxnInfo().getBillerId();
 
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
@@ -3590,7 +3592,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				//// consumer number not exsist
+				//// Consumer number not exsist
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
@@ -3620,7 +3622,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
 						transAuthId = paymentLog.getTranAuthId();
-						billstatus = "P";
+						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();
 						amountInDueToDate = amountPaid;
 						billStatus = paymentLog.getBillStatus();
@@ -3629,7 +3631,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								rrn, stan); // success
 
 						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), "", billStatus, "",
+								request.getTxnInfo().getBillNumber(), "", billstatus, "",
 								String.valueOf(amountInDueToDate), "", transAuthId, "");
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -3649,10 +3651,19 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 					}
+					
+					else {
+						info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
+								Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
 
 				}
 
-				///// Inquiry ok response
+				///// Inquiry success response
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
 						.equalsIgnoreCase(ResponseCodes.OK)) {
@@ -3714,10 +3725,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					}
 
 					transactionStatus = Constants.Status.Pending;
+					
+					///// Loan
 
-					////////////////////////////////////////
-
-					if (request.getTxnInfo().getBillerId().equals(billerId1)) {
+					if (billerId.equals(billerId1)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
@@ -3725,7 +3736,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						collectionType = "L";
 
-					} else if (request.getTxnInfo().getBillerId().equals(billerId2)) {
+					///// Premium
+
+					} else if (billerId.equals(billerId2)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
@@ -3735,7 +3748,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					}
 
-					billstatus = "U";
+					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
@@ -3758,6 +3771,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 					transactionStatus = Constants.Status.Success;
+					billStatus = Constants.BILL_STATUS.BILL_UNPAID;
 
 				}
 
@@ -3786,7 +3800,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		catch (Exception ex) {
 
-			LOG.error("Exception {}", ex);
+			LOG.error("Bill Inquiry Exception {}", ex);
 
 		}
 
@@ -3812,15 +3826,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel,
-						slicPolicyInquiryResponse.getSlicResponse().getResponseCode().equalsIgnoreCase(ResponseCodes.OK)
-								? "Unpaid"
-								: slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
-										.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID) ? "Paid" : "",
+						billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {
-				LOG.error("{}", ex);
+				LOG.error("Payment Log Exception{}", ex);
 			}
 
 			LOG.info("----- Slic Bill Inquiry Method End -----");
@@ -3984,7 +3995,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
 									transAuthId = paymentLog.getTranAuthId();
-									billstatus = "P";
+									billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 									amountPaid = paymentLog.getTotalAmount();
 									totalTenderFeeAmount = amountPaid;
 									billStatus = paymentLog.getBillStatus();
@@ -3994,7 +4005,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 											request.getTxnInfo().getBillNumber(), "", billstatus, "",
-											String.valueOf(totalTenderFeeAmount), "", "", "");
+											String.valueOf(totalTenderFeeAmount), "", transAuthId, "");
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
 											request.getAdditionalInfo().getReserveField1(),
@@ -4091,7 +4102,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 								transactionStatus = Constants.Status.Pending;
 
-								billstatus = "U";
+								billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
 								info = new Info(Constants.ResponseCodes.OK,
 										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
@@ -4344,7 +4355,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
 									transAuthId = paymentLog.getTranAuthId();
-									billstatus = "P";
+									billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 									amountPaid = paymentLog.getTotalAmount();
 									totalTenderFeeAmount = amountPaid;
 									billStatus = paymentLog.getBillStatus();
@@ -4354,7 +4365,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 									TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 											request.getTxnInfo().getBillNumber(), "", billstatus, "",
-											String.valueOf(totalTenderFeeAmount), "", "", "");
+											String.valueOf(totalTenderFeeAmount), "", transAuthId, "");
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
 											request.getAdditionalInfo().getReserveField1(),
@@ -4451,7 +4462,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 								transactionStatus = Constants.Status.Pending;
 
-								billstatus = "U";
+								billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
 								info = new Info(Constants.ResponseCodes.OK,
 										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
@@ -4592,6 +4603,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
+			}
+			
+			else {
+				info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+						Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+				response = new BillInquiryResponse(info, null, null);
+				transactionStatus = Constants.Status.Fail;
+				return response;		
 			}
 
 		}

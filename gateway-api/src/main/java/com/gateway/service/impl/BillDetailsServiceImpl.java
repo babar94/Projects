@@ -289,26 +289,26 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 									////////// BZU ///////
 
-//									////////// SLIC ///////
-//
-//									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)) {
-//
-//										switch (subBillerDetail.getSubBillerName()) {
-//
-//										case BillerConstant.SLIC.SLIC:
-//											paymentInquiryResponse = paymentInquirySlic(request, httpRequestData);
-//											break;
-//
-//										default:
-//											LOG.info("subBiller does not exists.");
-//											info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
-//													Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
-//											paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
-//
-//											break;
-//										}
-//
-//									}
+									////////// SLIC ///////
+
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.SLIC.SLIC:
+											paymentInquiryResponse = paymentInquirySlic(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											info = new InfoPayInq(Constants.ResponseCodes.INVALID_DATA,
+													Constants.ResponseDescription.INVALID_INPUT_DATA, rrn, stan);
+											paymentInquiryResponse = new PaymentInquiryResponse(info, null, null);
+
+											break;
+										}
+
+									}
 
 									////////// SLIC ///////
 
@@ -1866,7 +1866,8 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						request.getAdditionalInfo().getReserveField8(), request.getAdditionalInfo().getReserveField9(),
 						request.getAdditionalInfo().getReserveField10());
 
-				billStatus = "Paid";
+				billStatus = Constants.BILL_STATUS.BILL_PAID;
+
 
 				transactionStatus = Constants.Status.Success;
 
@@ -2014,7 +2015,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						request.getAdditionalInfo().getReserveField8(), request.getAdditionalInfo().getReserveField9(),
 						request.getAdditionalInfo().getReserveField10());
 
-				billStatus = "Paid";
+				billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 				transactionStatus = Constants.Status.Success;
 
@@ -2040,7 +2041,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 		} finally {
 
-			LOG.info("Slic Payment Inquiry Response {}", response);
+			LOG.info("Bppra Payment Inquiry Response {}", response);
 
 			try {
 

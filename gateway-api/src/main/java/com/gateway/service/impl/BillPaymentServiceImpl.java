@@ -84,6 +84,7 @@ import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.CompAndDecompString;
 import com.gateway.utils.Constants;
+import com.gateway.utils.Constants.BILL_STATUS;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
@@ -448,26 +449,26 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 									////////// Bzu //////////
 
-//									////////// State Life ///////
-//
-//									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
-//											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
-//
-//										switch (subBillerDetail.getSubBillerName()) {
-//
-//										case BillerConstant.SLIC.SLIC:
-//											billPaymentResponse = billPaymentSlic(request, httpRequestData);
-//											break;
-//
-//										default:
-//											LOG.info("subBiller does not exists.");
-//											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
-//													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
-//											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
-//
-//											break;
-//										}
-//									}
+									////////// State Life ///////
+
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.SLIC.SLIC)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.SLIC.SLIC:
+											billPaymentResponse = billPaymentSlic(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
+										}
+									}
 
 									////////// State Life ///////
 
@@ -5163,7 +5164,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Override
 	public BillPaymentResponse billPaymentSlic(BillPaymentRequest request, HttpServletRequest httpRequestData) {
 
-		LOG.info("Bzu Bill Payment Request {} ", request.toString());
+		LOG.info("Slic Bill Payment Request {} ", request.toString());
 
 		BillPaymentResponse response = null;
 		UpdateSlicPolicyTranslationResponse updateSlicPolicyTranslationResponse = null;
@@ -5172,11 +5173,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		InfoPay infoPay = null;
 		TxnInfoPay txnInfoPay = null;
 		AdditionalInfoPay additionalInfoPay = null;
-		String transactionStatus = "";
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
-
-		LOG.info("RRN :{ }", rrn);
+		String paymentRefrence = utilMethods.getRRN();
 		String stan = request.getInfo().getStan();
+		LOG.info("RRN :{ }", rrn);
 		String transAuthId = request.getTxnInfo().getTranAuthId();
 		String channel = "", username = "";
 
@@ -5184,10 +5184,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
 		BigDecimal amountInDueToDate = null, txnAmount = null;
-		String dueDate = "", billstatus = "", billStatus = "";
-		String pattern = "\\d+\\.\\d{2}";
-		String billerId = "", billerNumber = "";
-		String paymentRefrence = utilMethods.getRRN();
+		String dueDate = "", billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
@@ -5210,22 +5207,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 
-			//// Inquiry Call to Mapay
+			//// Inquiry Call to M-Pay
 
 			slicPolicyInquiryResponse = serviceCaller.get(inquiryParams, SlicPolicyInquiryResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.SLIC.SLIC);
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-
-				billStatus = "Unpaid";
-
-				return response;
-
-			}
 
 			if (slicPolicyInquiryResponse != null) {
 
@@ -5255,7 +5240,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-				//// Already paid
+				//// Already Paid
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
 						.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
@@ -5263,13 +5248,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					billerId = request.getTxnInfo().getBillerId();
 					billerNumber = request.getTxnInfo().getBillNumber();
 
-					infoPay = new InfoPay(slicPolicyInquiryResponse.getSlicResponse().getResponseCode(),
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
 							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
 
 					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
 
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
+					additionalInfoPay = new AdditionalInfoPay("", request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
 							request.getAdditionalInfo().getReserveField5(),
@@ -5281,14 +5265,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					transactionStatus = Constants.Status.Success;
 
-					billStatus = "Paid";
+					billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 					return response;
 
 				}
 
-				/////// Inquiry ok response
+				/////// Inquiry success response
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
@@ -5349,13 +5333,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;
 					}
 
+					///// Loan
+
 					if (request.getTxnInfo().getBillerId().equals(billerId1)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
 						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
-						// collectionType = "L";
+						///// Premium
 
 					} else if (request.getTxnInfo().getBillerId().equals(billerId2)) {
 
@@ -5363,13 +5349,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
 						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
-						// collectionType = "P";
-
 					}
-
-					billstatus = "U";
-
-					billStatus = "Unpaid";
 
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.SLIC_BILL_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -5405,7 +5385,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						}
 					}
 
-					//// Mpay call to Payment
+					//// M-Pay call to Payment
 
 					updateSlicPolicyTranslationResponse = serviceCaller.get(paymentParams,
 							UpdateSlicPolicyTranslationResponse.class, rrn, Constants.ACTIVITY.BillPayment,
@@ -5435,7 +5415,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 									request.getTxnInfo().getBillNumber(), paymentRefrence);
 
-							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+							additionalInfoPay = new AdditionalInfoPay("",
 									request.getAdditionalInfo().getReserveField2(),
 									request.getAdditionalInfo().getReserveField3(),
 									request.getAdditionalInfo().getReserveField4(),
@@ -5450,7 +5430,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							transactionStatus = Constants.Status.Success;
 
-							billStatus = "Paid";
+							billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 							return response;
 
@@ -5573,9 +5553,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String channel = "", username = "";
 
 		BigDecimal totalTenderFeeAmount = null, txnAmount = null;
-		String billerName = "", dueDate = "", billstatus = "", billStatus = "", encryptedChallandata = "",
-				decryptData = "";
-		String pattern = "\\d+\\.\\d{2}";
+		String billerName = "", dueDate = "", billStatus = "", encryptedChallandata = "", decryptData = "";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		String bankName = "", bankCode = "", branchName = "", branchCode = "", challanFeeData = "", publicKey,
@@ -5594,18 +5572,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			username = result[0];
 			channel = result[1];
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-
-				billStatus = "Unpaid";
-
-				return response;
-
-			}
 
 			// Setup Private key
 			try {
@@ -6717,6 +6683,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				}
 
+			}
+
+			else {
+				infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+						Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+				response = new BillPaymentResponse(infoPay, null, null);
+				transactionStatus = Constants.Status.Fail;
+				return response;
 			}
 
 		}
