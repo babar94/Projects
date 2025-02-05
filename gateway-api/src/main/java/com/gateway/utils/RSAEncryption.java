@@ -24,7 +24,7 @@ public class RSAEncryption {
 	private static final Logger LOGGER = LogManager.getLogger(RSAEncryption.class);
 
 	@Value("${server.ssl.key-store}")
-	private String Paypak_JKS;
+	private String Bppra_JKS;
 
 	@Value("${server.ssl.key-store-password}")
 	private String KEY_STORE_PSWD;
@@ -36,13 +36,12 @@ public class RSAEncryption {
 	private String ALIAS;
 
 	private PrivateKey privatekey;
-	private PublicKey publickey;
 	private String publickeyPlain;
 
 	public void SetRSAEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
 		if (privatekey == null || publickeyPlain == null) {
-			String filePath = ResourceUtils.getFile(Paypak_JKS).getPath();
+			String filePath = ResourceUtils.getFile(Bppra_JKS).getPath();
 			privatekey = initPrivateKeys(filePath, KEY_STORE_PSWD, PRIVATE_KEY_PSWD, ALIAS);
 			publickeyPlain = initPublicKeys(filePath, KEY_STORE_PSWD, ALIAS);
 

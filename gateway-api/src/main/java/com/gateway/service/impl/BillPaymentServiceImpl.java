@@ -13,10 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +62,9 @@ import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
 import com.gateway.repository.PgPaymentLogRepository;
 import com.gateway.repository.SubBillerListRepository;
-import com.gateway.repository.TransactionParamsDao;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
-import com.gateway.response.billinquiryresponse.AdditionalInfo;
-import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
-import com.gateway.response.billinquiryresponse.TxnInfo;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
 import com.gateway.response.billpaymentresponse.InfoPay;
@@ -84,7 +78,6 @@ import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.CompAndDecompString;
 import com.gateway.utils.Constants;
-import com.gateway.utils.Constants.BILL_STATUS;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
@@ -93,8 +86,6 @@ import com.gateway.utils.UtilMethods;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
 
 @Service
 public class BillPaymentServiceImpl implements BillPaymentService {
@@ -153,12 +144,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	private String reserved;
 
 	@Autowired
-	private TransactionParamsDao transactionParamsDao;
-
-	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
 	private FeeTypeMapper feeTypeMapper;
 
 	@Autowired
@@ -185,11 +170,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${bzu.password}")
 	private String bzu_password;
 
-	@Value("${slic.billerid-1}")
-	private String billerId1;
+	@Value("${slic.billerIdLoan}")
+	private String billerIdLoan;
 
-	@Value("${slic.billerid-2}")
-	private String billerId2;
+	@Value("${slic.billerIdPremium}")
+	private String billerIdPremium;
 
 	@Value("${bppra.authticateCall}")
 	private String bppraAuthticateCall;
@@ -3472,7 +3457,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String amountWithInDueDateRes = "", amountAfterDueDateRes = "";
 		String billerNameRes = "", dueDateRes = "", billingMonthRes = "", billStatusCodeRes = "",
 				billStatusDescRes = "";
-		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 
@@ -3496,15 +3480,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			inquiryParams.add(request.getAdditionalInfo().getReserveField1().trim());
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
 			inquiryParams.add(rrnReq);
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				return response;
-
-			}
 
 			pithamgetVoucherResponse = serviceCaller.get(inquiryParams, PithamGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.Pithm.PITHM);
@@ -3799,7 +3774,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
 		BigDecimal amountInDueToDate = null, amountAfterDate = null;
-		String pattern = "\\d+\\.\\d{2}";
 		String paymentRefrence = utilMethods.getRRN();
 
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
@@ -3828,15 +3802,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			thardeepgetVoucherResponse = serviceCaller.get(inquiryParams, ThardeepGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.Thardeep.THARDEEP);
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				return response;
-
-			}
 
 			if (thardeepgetVoucherResponse != null) {
 
@@ -4075,7 +4040,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				requestAmountafterduedate = null, txnAmount = null;
 		String amountWithInDueDateRes = "", amountAfterDueDateRes, billerNameRes = "", dueDateRes = "",
 				billingMonthRes = "", billStatusRes = "";
-		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		LocalDate dueDate = null;
@@ -4104,15 +4068,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			uomgetVoucherResponse = serviceCaller.get(inquiryParams, UomGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.Uom.UOM);
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-				return response;
-
-			}
 
 			if (uomgetVoucherResponse != null) {
 
@@ -4885,7 +4840,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		BigDecimal amountInDueToDate = null, amountAfterDate = null, requestAmountafterduedate = null, txnAmount = null;
 		String amountWithInDueDate = "", studentName = "", dueDate = "", billstatus = "", fatherName = "",
 				billStatus = "";
-		String pattern = "\\d+\\.\\d{2}";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
@@ -4914,18 +4868,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			bzugetVoucherResponse = serviceCaller.get(inquiryParams, BzuGetVoucherResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.BZU.BZU);
-
-			if (!Pattern.matches(pattern, request.getTxnInfo().getTranAmount())) {
-
-				infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-						Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-				response = new BillPaymentResponse(infoPay, null, null);
-
-				billStatus = "Unpaid";
-
-				return response;
-
-			}
 
 			if (bzugetVoucherResponse != null) {
 
@@ -5184,7 +5126,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
 		BigDecimal amountInDueToDate = null, txnAmount = null;
-		String dueDate = "", billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
+		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
@@ -5335,7 +5277,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					///// Loan
 
-					if (request.getTxnInfo().getBillerId().equals(billerId1)) {
+					if (request.getTxnInfo().getBillerId().equals(billerIdLoan)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
@@ -5343,7 +5285,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						///// Premium
 
-					} else if (request.getTxnInfo().getBillerId().equals(billerId2)) {
+					} else if (request.getTxnInfo().getBillerId().equals(billerIdPremium)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
@@ -5361,28 +5303,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
-					if (utilMethods.isValidInput(dueDate)) {
+					try {
 
-						try {
-
-							if (txnAmount.compareTo(amountInDueToDate) != 0) {
-								infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-										Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-								response = new BillPaymentResponse(infoPay, null, null);
-								return response;
-							}
-
-						} catch (DateTimeParseException e) {
-							LOG.error("Error parsing due date: " + e.getMessage());
-						}
-					} else {
-						LOG.info("Invalid due date input");
 						if (txnAmount.compareTo(amountInDueToDate) != 0) {
 							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 							response = new BillPaymentResponse(infoPay, null, null);
 							return response;
 						}
+
+					} catch (DateTimeParseException e) {
+						LOG.error("Error parsing due date: " + e.getMessage());
 					}
 
 					//// M-Pay call to Payment
@@ -5487,7 +5418,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 		}
 
-		catch (Exception e) {
+		catch (
+
+		Exception e) {
 
 			LOG.info("Exception in bill payment ");
 		}
@@ -5517,7 +5450,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
+						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "",
 						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username, "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
@@ -5529,8 +5462,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		}
 		return response;
 	}
-
-	///////////////////////////////
 
 	@Override
 	public BillPaymentResponse billPaymentBppra(BillPaymentRequest request, HttpServletRequest httpRequestData) {
@@ -5553,7 +5484,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String channel = "", username = "";
 
 		BigDecimal totalTenderFeeAmount = null, txnAmount = null;
-		String billerName = "", dueDate = "", billStatus = "", encryptedChallandata = "", decryptData = "";
+		String billerName = "",billStatus = "", encryptedChallandata = "", decryptData = "";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		String bankName = "", bankCode = "", branchName = "", branchCode = "", challanFeeData = "", publicKey,
@@ -5573,15 +5504,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			username = result[0];
 			channel = result[1];
 
-			// Setup Private key
+			// Setup keys
 			try {
 				rsaUtility.SetRSAEncryption();
 			} catch (NoSuchAlgorithmException e) {
-				LOG.info("BillPayment - Private key - NoSuchAlgorithmException:" + e.getMessage());
+				LOG.info("BillPayment - keys - NoSuchAlgorithmException:" + e.getMessage());
 			} catch (InvalidKeySpecException e) {
-				LOG.info("BillPayment - Private key - InvalidKeySpecException:" + e.getMessage());
+				LOG.info("BillPayment - keys - InvalidKeySpecException:" + e.getMessage());
 			} catch (IOException e) {
-				LOG.info("BillPayment - Private key - IOException:" + e.getMessage());
+				LOG.info("BillPayment - keys - IOException:" + e.getMessage());
 			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
@@ -5777,28 +5708,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
-								if (utilMethods.isValidInput(dueDate)) {
+								try {
 
-									try {
-
-										if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
-											infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-													Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-											response = new BillPaymentResponse(infoPay, null, null);
-											return response;
-										}
-
-									} catch (DateTimeParseException e) {
-										LOG.error("Error parsing due date: " + e.getMessage());
-									}
-								} else {
-									LOG.info("Invalid due date input");
 									if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
 										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 										response = new BillPaymentResponse(infoPay, null, null);
 										return response;
 									}
+
+								} catch (DateTimeParseException e) {
+									LOG.error("Error parsing due date: " + e.getMessage());
 								}
 
 								///// Amount work --- End ////
@@ -6328,28 +6248,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
-								if (utilMethods.isValidInput(dueDate)) {
+								try {
 
-									try {
-
-										if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
-											infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-													Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-											response = new BillPaymentResponse(infoPay, null, null);
-											return response;
-										}
-
-									} catch (DateTimeParseException e) {
-										LOG.error("Error parsing due date: " + e.getMessage());
-									}
-								} else {
-									LOG.info("Invalid due date input");
 									if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
 										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 										response = new BillPaymentResponse(infoPay, null, null);
 										return response;
 									}
+
+								} catch (DateTimeParseException e) {
+									LOG.error("Error parsing due date: " + e.getMessage());
 								}
 
 								///// Amount work --- End ////
@@ -6686,6 +6595,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 
 			else {
+				LOG.info("Bill Payment - Tender or Supplier prefix not found in bill number");
 				infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 						Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 				response = new BillPaymentResponse(infoPay, null, null);
@@ -6727,7 +6637,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), String.valueOf(dueDate), "",
+						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "",
 						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username, challanFeeData);
 
 				if ((billerNumber.startsWith(tenderPrefix))

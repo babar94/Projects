@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,6 @@ import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherRe
 import com.gateway.model.mpay.response.billinquiry.uom.UomGetVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.CombinedPaymentLogViewRepository;
-import com.gateway.repository.FeeTypeRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
 import com.gateway.repository.PgPaymentLogRepository;
@@ -65,10 +63,8 @@ import com.gateway.service.PaymentLoggingService;
 import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.Constants;
-import com.gateway.utils.Constants.BILL_STATUS;
 import com.gateway.utils.Constants.BILL_STATUS_SINGLE_ALPHABET;
 import com.gateway.utils.Constants.ResponseCodes;
-import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.RSAEncryption;
 import com.gateway.utils.UtilMethods;
@@ -123,12 +119,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
-	private FeeTypeMapper feeTypeMapper;
-
 	@Value("${uom.bank.mnemonic}")
 	private String bankMnemonic;
 
@@ -142,9 +132,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	private CombinedPaymentLogViewRepository combinedPaymentLogViewRepository;
 
 	@Autowired
-	private FeeTypeRepository feeTypeRepository;
-
-	@Autowired
 	private RSAEncryption rsaUtility;
 
 	@Value("${payment.log.table}")
@@ -156,11 +143,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Value("${bzu.password}")
 	private String bzu_password;
 
-	@Value("${slic.billerid-1}")
-	private String billerId1;
+	@Value("${slic.billerIdLoan}")
+	private String billerIdLoan;
 
-	@Value("${slic.billerid-2}")
-	private String billerId2;
+	@Value("${slic.billerIdPremium}")
+	private String billerIdPremium;
 
 	@Autowired
 	private UtilMethods utilmethod;
@@ -3572,7 +3559,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 
-			//// Mpay call Inquiry
+			//// M-Pay Call Inquiry
 
 			slicPolicyInquiryResponse = serviceCaller.get(inquiryParams, SlicPolicyInquiryResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.SLIC.SLIC);
@@ -3651,7 +3638,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 					}
-					
+
 					else {
 						info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
 								Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
@@ -3663,7 +3650,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				///// Inquiry success response
+				///// Inquiry Success Response
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
 						.equalsIgnoreCase(ResponseCodes.OK)) {
@@ -3725,10 +3712,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					}
 
 					transactionStatus = Constants.Status.Pending;
-					
+
 					///// Loan
 
-					if (billerId.equals(billerId1)) {
+					if (billerId.equals(billerIdLoan)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
@@ -3738,7 +3725,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					///// Premium
 
-					} else if (billerId.equals(billerId2)) {
+					} else if (billerId.equals(billerIdPremium)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
@@ -3817,7 +3804,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						channel, username);
 
 			} catch (Exception ex) {
-				LOG.error("{}", ex);
+				LOG.error("Audit Log Exception : {}", ex);
 			}
 
 			try {
@@ -3825,13 +3812,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
-						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel,
-						billStatus,
+						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {
-				LOG.error("Payment Log Exception{}", ex);
+				LOG.error("Payment Log Exception : {}", ex);
 			}
 
 			LOG.info("----- Slic Bill Inquiry Method End -----");
@@ -3873,15 +3859,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
-			// Setup Private key
+			// Setup keys
 			try {
 				rsaUtility.SetRSAEncryption();
 			} catch (NoSuchAlgorithmException e) {
-				LOG.info("BillInquiry - Private key - NoSuchAlgorithmException:" + e.getMessage());
+				LOG.info("BillInquiry - keys - NoSuchAlgorithmException:" + e.getMessage());
 			} catch (InvalidKeySpecException e) {
-				LOG.info("BillInquiry - Private key - InvalidKeySpecException:" + e.getMessage());
+				LOG.info("BillInquiry - keys - InvalidKeySpecException:" + e.getMessage());
 			} catch (IOException e) {
-				LOG.info("BillInquiry - Private key - IOException:" + e.getMessage());
+				LOG.info("BillInquiry - keys - IOException:" + e.getMessage());
 			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
@@ -4604,13 +4590,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				}
 
 			}
-			
+
 			else {
+
+				LOG.info("Bill Inquiry - Tender or Supplier prefix not found in bill number");
 				info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 						Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 				response = new BillInquiryResponse(info, null, null);
 				transactionStatus = Constants.Status.Fail;
-				return response;		
+				return response;
 			}
 
 		}
