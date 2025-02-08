@@ -11,9 +11,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -21,7 +21,7 @@ import org.springframework.util.ResourceUtils;
 @Component
 public class RSAEncryption {
 
-	private static final Logger LOGGER = LogManager.getLogger(RSAEncryption.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RSAEncryption.class);
 
 	@Value("${server.ssl.key-store}")
 	private String Bppra_JKS;

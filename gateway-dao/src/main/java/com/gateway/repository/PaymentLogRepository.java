@@ -13,7 +13,7 @@ import com.gateway.entity.PaymentLog;
 public interface PaymentLogRepository extends JpaRepository<PaymentLog, Long> {
 
 	
-	PaymentLog findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
+	 PaymentLog findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
 			String billerId, String billerNumber, String billStatus, String activity, String responseCode);
 
 	public List<PaymentLog> findByRrn(String rrn);

@@ -144,8 +144,8 @@ service:
 mpay.calls.simulator: 0 
 
 slic:
-  billerIdLoan: 1701
-  billerIdPremium: 1702
+   billerIdLoan: 1701
+   billerIdPremium: 1702
   
 bppra:  
    tenderPrefix: 337

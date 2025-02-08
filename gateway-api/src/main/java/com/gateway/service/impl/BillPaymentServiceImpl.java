@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.entity.BillerConfiguration;
+import com.gateway.entity.CombinedPaymentLogView;
 import com.gateway.entity.FeeType;
 import com.gateway.entity.PaymentLog;
 import com.gateway.entity.PendingPayment;
@@ -57,6 +58,7 @@ import com.gateway.model.mpay.response.billpayment.slic.UpdateSlicPolicyTranslat
 import com.gateway.model.mpay.response.billpayment.thardeep.ThardeepUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.uom.UomUpdateVoucherResponse;
 import com.gateway.repository.BillerConfigurationRepo;
+import com.gateway.repository.CombinedPaymentLogViewRepository;
 import com.gateway.repository.FeeTypeRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
@@ -64,7 +66,10 @@ import com.gateway.repository.PgPaymentLogRepository;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.billinquiryresponse.AdditionalInfo;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
+import com.gateway.response.billinquiryresponse.TxnInfo;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
 import com.gateway.response.billpaymentresponse.InfoPay;
@@ -78,6 +83,9 @@ import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.CompAndDecompString;
 import com.gateway.utils.Constants;
+import com.gateway.utils.Constants.ACTIVITY;
+import com.gateway.utils.Constants.BILL_STATUS;
+import com.gateway.utils.Constants.BILL_STATUS_SINGLE_ALPHABET;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
@@ -130,6 +138,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private ReservedFieldsValidationService reservedFieldsValidationService;
+
+	@Autowired
+	private CombinedPaymentLogViewRepository combinedPaymentLogViewRepository;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -5125,7 +5136,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		BigDecimal amountInDueToDate = null, txnAmount = null;
+		BigDecimal amountInDueToDate = null, txnAmount = null, totalAmount = null, dbPaidAmount = null;
 		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
@@ -5185,7 +5196,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				//// Already Paid
 
 				else if (slicPolicyInquiryResponse.getSlicResponse().getResponseCode()
-						.equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
+						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
 
 					billerId = request.getTxnInfo().getBillerId();
 					billerNumber = request.getTxnInfo().getBillNumber();
@@ -5283,13 +5294,111 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								.getSlicPolicyInquiry().getResultWrapper().get(0).getDueAmt());
 						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
-						///// Premium
+						if (amountInDueToDate.compareTo(BigDecimal.ZERO) == 0) {
 
-					} else if (request.getTxnInfo().getBillerId().equals(billerIdPremium)) {
+							Optional<CombinedPaymentLogView> combinedPaymentLogViewCheck = Optional
+									.ofNullable(combinedPaymentLogViewRepository
+											.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+													request.getTxnInfo().getBillNumber().trim(),
+													Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+													Constants.ACTIVITY.RBTS_FUND_TRANSFER,
+													Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+													request.getTxnInfo().getBillerId()));
+
+							if (combinedPaymentLogViewCheck.isPresent()) {
+
+								totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
+								dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
+
+								if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
+
+									billerId = request.getTxnInfo().getBillerId();
+									billerNumber = request.getTxnInfo().getBillNumber();
+
+									infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+											Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+									txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+									additionalInfoPay = new AdditionalInfoPay("",
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									transactionStatus = Constants.Status.Success;
+
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+									return response;
+								}
+
+							}
+						}
+
+					} 
+					
+					///// Premium
+
+					else if (request.getTxnInfo().getBillerId().equals(billerIdPremium)) {
 
 						amountInDueToDate = new BigDecimal(slicPolicyInquiryResponse.getSlicResponse()
 								.getSlicPolicyInquiry().getResultWrapper().get(1).getDueAmt());
 						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
+
+						if (amountInDueToDate.compareTo(BigDecimal.ZERO) == 0) {
+
+							Optional<CombinedPaymentLogView> combinedPaymentLogViewCheck = Optional
+									.ofNullable(combinedPaymentLogViewRepository
+											.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+													request.getTxnInfo().getBillNumber().trim(),
+													Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+													Constants.ACTIVITY.RBTS_FUND_TRANSFER,
+													Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+													request.getTxnInfo().getBillerId()));
+
+							if (combinedPaymentLogViewCheck.isPresent()) {
+
+								totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
+								dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
+
+								if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
+
+									billerId = request.getTxnInfo().getBillerId();
+									billerNumber = request.getTxnInfo().getBillNumber();
+
+									infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+											Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+									txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+									additionalInfoPay = new AdditionalInfoPay("",
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									transactionStatus = Constants.Status.Success;
+
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+									return response;
+								}
+
+							}
+						}
 
 					}
 
@@ -5450,8 +5559,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "",
-						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username, "");
+						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "", paymentRefrence, bankName,
+						bankCode, branchName, branchCode, "", username, "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
 
@@ -5484,7 +5593,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String channel = "", username = "";
 
 		BigDecimal totalTenderFeeAmount = null, txnAmount = null;
-		String billerName = "",billStatus = "", encryptedChallandata = "", decryptData = "";
+		String billerName = "", billStatus = "", encryptedChallandata = "", decryptData = "";
 		String billerId = "", billerNumber = "";
 		String paymentRefrence = utilMethods.getRRN();
 		String bankName = "", bankCode = "", branchName = "", branchCode = "", challanFeeData = "", publicKey,
@@ -5541,7 +5650,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (tenderAuthResponse.getStatus() == 200) {
 
 					String authToken = tenderAuthResponse.getBody();
-					System.out.print("authToken" + authToken);
+					LOG.info("authToken" + authToken);
 
 					publicKey = rsaUtility.getPublicKey();
 
@@ -5565,7 +5674,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					if (tenderTokenInquiry.getStatus() == 200) {
 
 						jwt = tenderTokenInquiry.getBody();
-						System.out.println("jwt :" + jwt);
+						LOG.info("jwt :" + jwt);
 
 						decodeJwt = utilMethods.DecodeJwt(jwt);
 						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
@@ -5597,7 +5706,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							bppraTenderVoucherResponse = mapper.readValue(decryptData,
 									BppraTenderVoucherResponse.class);
-							System.out.print("BppraTenderVoucherResponse : " + bppraTenderVoucherResponse);
+							LOG.info("BppraTenderVoucherResponse : " + bppraTenderVoucherResponse);
 
 							billerName = bppraTenderVoucherResponse.getTenderChallanData().getPaName();
 
@@ -5704,7 +5813,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
 								totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
-								System.out.println("Total Tender Fee Amount: " + totalTenderFeeAmount);
+								LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
 
 								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
@@ -6080,7 +6189,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				if (supplierAuthResponse.getStatus() == 200) {
 
 					String authToken = supplierAuthResponse.getBody();
-					System.out.print("authToken" + authToken);
+					LOG.info("authToken" + authToken);
 
 					//// publicKey
 					publicKey = rsaUtility.getPublicKey();
@@ -6105,7 +6214,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					if (supplierTokenInquiry.getStatus() == 200) {
 
 						jwt = supplierTokenInquiry.getBody();
-						System.out.println("jwt :" + jwt);
+						LOG.info("jwt :" + jwt);
 
 						decodeJwt = utilMethods.DecodeJwt(jwt);
 						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
@@ -6137,7 +6246,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							bppraSupplierVoucherResponse = mapper.readValue(decryptData,
 									BppraSupplierVoucherResponse.class);
-							System.out.print("BppraSupplierVoucherResponse : " + bppraSupplierVoucherResponse);
+							LOG.info("BppraSupplierVoucherResponse : " + bppraSupplierVoucherResponse);
 
 							billerName = bppraSupplierVoucherResponse.getSupplierChallanData().getSupplierName();
 
@@ -6244,7 +6353,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
 								totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
-								System.out.println("Total Tender Fee Amount: " + totalTenderFeeAmount);
+								LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
 
 								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
@@ -6637,8 +6746,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "",
-						paymentRefrence, bankName, bankCode, branchName, branchCode, "", username, challanFeeData);
+						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "", paymentRefrence, bankName,
+						bankCode, branchName, branchCode, "", username, challanFeeData);
 
 				if ((billerNumber.startsWith(tenderPrefix))
 						&& (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID))) {
