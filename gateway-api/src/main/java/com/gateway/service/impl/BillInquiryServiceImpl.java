@@ -64,8 +64,6 @@ import com.gateway.service.PaymentLoggingService;
 import com.gateway.servicecaller.ServiceCaller;
 import com.gateway.utils.BillerConstant;
 import com.gateway.utils.Constants;
-import com.gateway.utils.Constants.ACTIVITY;
-import com.gateway.utils.Constants.BILL_STATUS;
 import com.gateway.utils.Constants.BILL_STATUS_SINGLE_ALPHABET;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
@@ -3637,9 +3635,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								request.getAdditionalInfo().getReserveField10());
 
 						transactionStatus = Constants.Status.Success;
+						
+						billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
-
+                        return response;
+						
 					}
 
 					else {
@@ -3772,6 +3773,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											request.getAdditionalInfo().getReserveField10());
 
 									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 									response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 									return response;
@@ -3838,6 +3840,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											request.getAdditionalInfo().getReserveField10());
 
 									transactionStatus = Constants.Status.Success;
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 									response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 									return response;
