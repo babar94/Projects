@@ -3572,6 +3572,67 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				}
 
 				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+					
+					
+					////////////////////////
+					
+					
+					PendingPayment pendingPayment = pendingPaymentRepository
+							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+									request.getTxnInfo().getBillNumber().trim(),
+									request.getTxnInfo().getBillerId().trim());
+
+					if (pendingPayment != null) {
+
+						if (pendingPayment.getIgnoreTimer()) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+									stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Pending;
+							return response;
+
+						} else {
+							LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+							LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+							// Calculate the difference in minutes
+							long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+							if (minutesDifference <= pendingThresholdMinutes) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+										stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								transactionStatus = Constants.Status.Pending;
+								return response;
+
+							}
+						}
+					}
+
+					LOG.info("Calling Payment Inquiry from pg_payment_log table");
+					PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+							request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
+							Constants.BILL_STATUS.BILL_PAID);
+
+					if (pgPaymentLog != null
+							&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn,
+								stan); // success
+
+						transactionStatus = Constants.Status.Success;
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;
+					
+					}
+					
+					///////////////////////
+					
 
 					billerNameRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
 							.getStudentName();
@@ -3864,6 +3925,66 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+					
+					
+					///////////////////////////////
+					
+					PendingPayment pendingPayment = pendingPaymentRepository
+							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+									request.getTxnInfo().getBillNumber().trim(),
+									request.getTxnInfo().getBillerId().trim());
+
+					if (pendingPayment != null) {
+
+						if (pendingPayment.getIgnoreTimer()) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+									stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Pending;
+							return response;
+
+						} else {
+							LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+							LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+							// Calculate the difference in minutes
+							long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+							if (minutesDifference <= pendingThresholdMinutes) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+										stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								transactionStatus = Constants.Status.Pending;
+								return response;
+
+							}
+						}
+					}
+
+					LOG.info("Calling Payment Inquiry from pg_payment_log table");
+					PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+							request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
+							Constants.BILL_STATUS.BILL_PAID);
+
+					if (pgPaymentLog != null
+							&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn,
+								stan); // success
+
+						transactionStatus = Constants.Status.Success;
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;
+					
+					}
+					
+					///////////////////////
+
 
 					billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
 					billingMonthRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher()
@@ -5365,10 +5486,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 							if (combinedPaymentLogViewCheck.isPresent()) {
 
-								totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
-								dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
+								//totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
+								//dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
 
-								if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
+								//if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
 
 									billerId = request.getTxnInfo().getBillerId();
 									billerNumber = request.getTxnInfo().getBillNumber();
@@ -5397,7 +5518,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 									return response;
 								}
 
-							}
+							//}
 						}
 
 					}

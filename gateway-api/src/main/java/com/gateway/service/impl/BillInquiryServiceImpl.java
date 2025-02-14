@@ -2182,65 +2182,121 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				}
 
 				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.BILL_ALREADY_PAID)) {
-					PaymentLog paymentLog = paymentLogRepository
-							.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-									request.getTxnInfo().getBillerId().trim(),
-									request.getTxnInfo().getBillNumber().trim(), Constants.BILL_STATUS.BILL_PAID,
-									Constants.ACTIVITY.BillPayment, Constants.ResponseCodes.OK);
 
-					if (paymentLog != null) {
+					Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
+							.ofNullable(combinedPaymentLogViewRepository
+									.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+											request.getTxnInfo().getBillNumber().trim(),
+											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+											Constants.ACTIVITY.RBTS_FUND_TRANSFER, Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+											request.getTxnInfo().getBillerId()));
+					if (combinedPaymentLogView.isPresent()) {
 
-						billstatus = "P";
-						billStatus = "Paid";
+						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
-						transAuthId = paymentLog.getTranAuthId();
-						amountInDueToDate = paymentLog.getAmountwithinduedate();
-						amountAfterDate = paymentLog.getAmountafterduedate();
 						billerName = paymentLog.getName();
-						amountPaid = paymentLog.getAmountPaid();
-						dueDate = paymentLog.getDuedate();
-						billingMonth = paymentLog.getBillingMonth();
+						transAuthId = paymentLog.getTranAuthId();
+						billstatus = Constants.BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
+						amountPaid = paymentLog.getTotalAmount();
+						amountInDueToDate = amountPaid;
+						amountAfterDate = amountPaid;
+						billStatus = paymentLog.getBillStatus();
+
+						info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
+								rrn, stan); // success
+
+						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
+								request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
+								String.valueOf(amountInDueToDate), String.valueOf(amountAfterDate), transAuthId, "");
+
+						AdditionalInfo additionalInfo = new AdditionalInfo(
+								request.getAdditionalInfo().getReserveField1(),
+								request.getAdditionalInfo().getReserveField2(),
+								request.getAdditionalInfo().getReserveField3(),
+								request.getAdditionalInfo().getReserveField4(),
+								request.getAdditionalInfo().getReserveField5(),
+								request.getAdditionalInfo().getReserveField6(),
+								request.getAdditionalInfo().getReserveField7(),
+								request.getAdditionalInfo().getReserveField8(),
+								request.getAdditionalInfo().getReserveField9(),
+								request.getAdditionalInfo().getReserveField10());
 
 						transactionStatus = Constants.Status.Success;
 
-					} else {
+						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
+					}
+
+					else {
 						info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
 								Constants.ResponseDescription.PAYMENT_NOT_FOUND, rrn, stan);
+						response = new BillInquiryResponse(info, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+				}
+
+				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
+
+					//////////////////////////
+
+					PendingPayment pendingPayment = pendingPaymentRepository
+							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+									request.getTxnInfo().getBillNumber().trim(),
+									request.getTxnInfo().getBillerId().trim());
+
+					if (pendingPayment != null) {
+
+						if (pendingPayment.getIgnoreTimer()) {
+
+							info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Pending;
+							billStatus = Constants.BILL_STATUS.BILL_PENDING;
+							return response;
+
+						} else {
+							LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+							LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+							// Calculate the difference in minutes
+							long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+							if (minutesDifference <= pendingThresholdMinutes) {
+
+								info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+										stan);
+								response = new BillInquiryResponse(info, null, null);
+
+								transactionStatus = Constants.Status.Pending;
+								billStatus = Constants.BILL_STATUS.BILL_PENDING;
+								return response;
+
+							}
+						}
+					}
+
+					LOG.info("Calling Payment Inquiry from pg_payment_log table");
+					PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+							request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
+							Constants.BILL_STATUS.BILL_PAID);
+
+					if (pgPaymentLog != null
+							&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn, stan); // success
+
+						transactionStatus = Constants.Status.Success;
+						billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 						response = new BillInquiryResponse(info, null, null);
-
-						transactionStatus = Constants.Status.Fail;
 
 						return response;
 					}
 
-					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
-							rrn, stan);
-
-					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
-							String.valueOf(amountInDueToDate), String.valueOf(amountAfterDate), transAuthId, "");
-
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
-
-					transactionStatus = Constants.Status.Success;
-
-					return response;
-				}
-
-				else if (pithamgetVoucherResponse.getResponseCode().equalsIgnoreCase(ResponseCodes.OK)) {
+					/////////////////////////
 
 					billerNameRes = pithamgetVoucherResponse.getPithmGetVoucher().getGetInquiryResult()
 							.getStudentName();
@@ -2505,6 +2561,67 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				else if (thardeepgetVoucherResponse.getResponse().getResponseCode()
 						.equalsIgnoreCase(ResponseCodes.OK)) {
+					
+					
+					/////////////////////////////////////////////
+					
+					PendingPayment pendingPayment = pendingPaymentRepository
+							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+									request.getTxnInfo().getBillNumber().trim(),
+									request.getTxnInfo().getBillerId().trim());
+
+					if (pendingPayment != null) {
+
+						if (pendingPayment.getIgnoreTimer()) {
+
+							info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn, stan);
+							response = new BillInquiryResponse(info, null, null);
+							transactionStatus = Constants.Status.Pending;
+							billStatus = Constants.BILL_STATUS.BILL_PENDING;
+							return response;
+
+						} else {
+							LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+							LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+							// Calculate the difference in minutes
+							long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+							if (minutesDifference <= pendingThresholdMinutes) {
+
+								info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+										stan);
+								response = new BillInquiryResponse(info, null, null);
+
+								transactionStatus = Constants.Status.Pending;
+								billStatus = Constants.BILL_STATUS.BILL_PENDING;
+								return response;
+
+							}
+						}
+					}
+
+					LOG.info("Calling Payment Inquiry from pg_payment_log table");
+					PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+							request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
+							Constants.BILL_STATUS.BILL_PAID);
+
+					if (pgPaymentLog != null
+							&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+						info = new Info(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn, stan); // success
+
+						transactionStatus = Constants.Status.Success;
+						billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+						response = new BillInquiryResponse(info, null, null);
+
+						return response;
+					}
+
+					
+					////////////////////////////////////////////
+					
 
 					billStatusRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getBillStatus();
 					billerNameRes = thardeepgetVoucherResponse.getResponse().getThardeepGetVoucher().getConsumerName();
@@ -3519,8 +3636,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	}
 
-	//////////////////
-
 	@Override
 	public BillInquiryResponse billInquirySlic(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
@@ -3635,12 +3750,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								request.getAdditionalInfo().getReserveField10());
 
 						transactionStatus = Constants.Status.Success;
-						
+
 						billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 						response = new BillInquiryResponse(info, txnInfo, additionalInfo);
-                        return response;
-						
+						return response;
+
 					}
 
 					else {
@@ -3807,10 +3922,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 							if (combinedPaymentLogViewCheck.isPresent()) {
 
-								totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
-								dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
+								//totalAmount = combinedPaymentLogViewCheck.get().getTotalAmount();
+								//dbPaidAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
 
-								if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
+								//if (dbPaidAmount.compareTo(amountInDueToDate) != 0) {
 
 									CombinedPaymentLogView paymentLog = combinedPaymentLogViewCheck.get();
 
@@ -3845,7 +3960,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 									return response;
 
-								}
+								//}
 
 							}
 						}
