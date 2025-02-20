@@ -162,4 +162,12 @@ bppra:
    requestFormChallanEnquire: enquirer
    branchCode: 9211
    personName: Ali
+   
+
+bise:
+  kohat:
+     username: nbpapitest
+     password: nbpapitest
+   
+   
 

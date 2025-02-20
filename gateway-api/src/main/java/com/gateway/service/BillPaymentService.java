@@ -36,7 +36,8 @@ public interface BillPaymentService {
 
 	public BillPaymentResponse billPaymentBppra(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
-	
+	public BillPaymentResponse billPaymentBiseKohat(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
 	
 	
 

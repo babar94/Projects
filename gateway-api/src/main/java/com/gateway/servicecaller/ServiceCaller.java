@@ -37,10 +37,6 @@ public class ServiceCaller {
 	@Autowired
 	private UtilMethods utilMethods;
 
-	/*
-	 * @Autowired private PrettyPrinter prettyPrinter;
-	 */
-
 	private static final Logger LOG = LoggerFactory.getLogger(ServiceCaller.class);
 
 	public <T> T get(List<String> params, Class<T> type, String rrn, String userName, String billername) {
@@ -68,7 +64,7 @@ public class ServiceCaller {
 			long endTime = System.currentTimeMillis();
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;
-			
+
 			if (result == null || result.toString().isEmpty()) {
 				LOG.info("MPAY Response: " + "Response null: timeout");
 				utilMethods.insertMpayLog("Response", new Date(), userName, rrn, "Response null: timeout", billername);
@@ -162,7 +158,7 @@ public class ServiceCaller {
 	}
 
 	private String getEndpoint() {
-			return queueForwardingUrl;
+		return queueForwardingUrl;
 
 	}
 

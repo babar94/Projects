@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -34,7 +31,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.gateway.entity.MPAYLog;
-import com.gateway.model.mpay.response.billinquiry.bppra.BppraTenderVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.bppra.ChallanFee;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
@@ -699,8 +695,6 @@ public class UtilMethods {
 		String singleLinePem = "";
 
 		try {
-			// Get the absolute path of the file
-//           String filePath = "src/main/resources/public_key.pem";
 
 			// Read file content as a string
 			String pemContent = new String(Files.readAllBytes(Paths.get(privateKeyPemFilePath)));

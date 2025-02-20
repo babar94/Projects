@@ -115,36 +115,29 @@ public class Constants {
 		public static final String PRAL_FBR_BILL_PAYMENT = "pral-fbr-updatevoucher";
 		public static final String AIOU_BILL_INQUIRY = "aiou-getvoucher";
 		public static final String AIOU_BILL_PAYMENT = "aiou-updatevoucher-call";
-
 		public static final String PITHAM_BILL_INQUIRY = "pithm-getvoucher";
 		public static final String PITHAM_BILL_PAYMENT = "pithm-updatevoucher";
-
 		public static final String THARDEEP_BILL_INQUIRY = "thardeep-getvoucher";
 		public static final String THARDEEP_BILL_PAYMENT = "thardeep-updatevoucher";
 		public static final String THARDEEP_BILL_PAYMENT_CHECK = "thardeep-paymentinquiry";
-
 		public static final String UOM_BILL_INQUIRY = "uom-getvoucher";
-		public static final String UOM_BILL_PAYMENT = "uom-updatevoucher";
-		
-		
+		public static final String UOM_BILL_PAYMENT = "uom-updatevoucher";	
 		public static final String DLS_BILL_INQUIRY = "dls-getvoucher";
 		public static final String DLS_BILL_PAYMENT = "dls-updatevoucher";
-		
-		
 		public static final String BZU_BILL_INQUIRY = "bzu-getvoucher";
 		public static final String BZU_BILL_PAYMENT = "bzu-updatevoucher";
-		
 		public static final String SLIC_BILL_INQUIRY = "slic-policyInquiry";
 		public static final String SLIC_BILL_PAYMENT = "slic-policyTranslation";
-		
+		public static final String BISE_KOHAT_INQUIRY = "bise-kohat-billinquiry";
+		public static final String BISE_KOHAT_PAYMENT = "bise-kohat-billpayment";
 
 	}
 
 	public static class BILL_STATUS {
 
-		public static final String BILL_PAID = "Paid"; // Nadra Call for voucher inquiry
-		public static final String BILL_UNPAID = "Unpaid"; // Nadra Call for voucher payment
-		public static final String BILL_BLOCK = "Block"; // Nadra Call for voucher payment
+		public static final String BILL_PAID = "Paid"; 
+		public static final String BILL_UNPAID = "Unpaid"; 
+		public static final String BILL_BLOCK = "Block"; 
 		public static final String BILL_EXPIRED = "Expired";
 		public static final String BILL_PENDING = "Pending";
 

@@ -14,13 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class SlicPolicyInquiryResponse {
-	
+
 	@JsonProperty("response")
 	private SlicResponse slicResponse;
-	
-	
-
-	
-	
 
 }

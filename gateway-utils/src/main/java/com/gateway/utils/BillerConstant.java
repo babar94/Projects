@@ -66,4 +66,9 @@ public interface BillerConstant {
 		String BPPRA = "BPPRA";
 	}
 
+	interface BISEKOHAT {
+
+		String BISEKOHAT = "BISE-KOHAT";
+	}
+	
 }
