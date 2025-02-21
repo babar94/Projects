@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -477,7 +476,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 										case BillerConstant.BISEKOHAT.BISEKOHAT:
 
-											billInquiryResponse = billInquirybprra(request, httpRequestData);
+											billInquiryResponse = billInquiryBiseKohat(request, httpRequestData);
 											break;
 
 										default:
@@ -4902,13 +4901,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
-				billerId = "", bankName = "", bankCode = "", branchName = "", branchCode = "";
+				billerId = "", billerName = "", billingMonth = "", dueDate = "", bankName = "", bankCode = "",
+				branchName = "", branchCode = "", billerNumber = "";
 
 		BigDecimal amountInDueToDate = null, amountPaid = null;
 		Date requestedDate = new Date();
 		try {
-
-			billerId = request.getTxnInfo().getBillerId();
 
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
@@ -4978,6 +4976,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
+						billerName = paymentLog.getName();
 						transAuthId = paymentLog.getTranAuthId();
 						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();
@@ -4988,7 +4987,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								rrn, stan); // success
 
 						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), "", billstatus, "",
+								request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
 								String.valueOf(amountInDueToDate), "", transAuthId, "");
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -5084,8 +5083,18 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						return response;
 					}
 
-					amountInDueToDate = new BigDecimal(
-							biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry().getAmount());
+					billerId = request.getTxnInfo().getBillerId();
+					billerNumber = request.getTxnInfo().getBillNumber();
+					billerName = biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getCustomerName();
+					billingMonth = utilmethod.formatDateAnyFormat(biseKohatBillInquiryResponse.getBiseKohatResponse()
+							.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getBillingMonth());
+
+					dueDate = utilmethod.transactionDateFormater(biseKohatBillInquiryResponse.getBiseKohatResponse()
+							.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getDueDate());
+
+					amountInDueToDate = new BigDecimal(biseKohatBillInquiryResponse.getBiseKohatResponse()
+							.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getAmount());
 					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
@@ -5093,9 +5102,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
 
-					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "", billstatus, "", String.valueOf(amountInDueToDate),
-							"", "", "");
+					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
+							String.valueOf(amountInDueToDate), "", "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
 							request.getAdditionalInfo().getReserveField2(),
@@ -5163,11 +5171,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
-						"", bankName, bankCode, branchName, branchCode, "", username, "");
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, dueDate,
+						billingMonth, "", bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {
 				LOG.error("Payment Log Exception : {}", ex);

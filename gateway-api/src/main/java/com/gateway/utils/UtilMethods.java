@@ -10,12 +10,14 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -116,6 +118,25 @@ public class UtilMethods {
 		LocalDate date = LocalDate.parse(inputDate, DateTimeFormatter.BASIC_ISO_DATE);
 		String formattedDate = date.format(DateTimeFormatter.ofPattern("yy-MM-dd"));
 		return formattedDate;
+	}
+
+	public String formatDateAnyFormat(String inputDate) {
+		try {
+			// Try parsing as LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            LocalDateTime dateTime = LocalDateTime.parse(inputDate, formatter);
+
+            // Extract only date part
+            LocalDate date = dateTime.toLocalDate();
+
+            // Convert to YYMM format
+            return date.format(DateTimeFormatter.ofPattern("yyMM"));
+		} catch (DateTimeParseException e) {
+
+			LOG.error("Date Formatting error for input: {} with pattern {}: {}", inputDate, e.getMessage());
+			return "Invalid Date";
+		}
+
 	}
 
 	public String getDueDate(String tranDate) {

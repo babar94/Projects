@@ -16,10 +16,9 @@ public class BiseKohatResponse {
 	@JsonProperty("response_code")
 	private String responseCode;
 
-	@JsonProperty("bise-kohat-billinquiry")
-	private BisekohatBillinquiry bisekohatbillinquiry;
-
 	@JsonProperty("response_desc")
 	private String response_desc;
 
+	@JsonProperty("bise-kohat-billinquiry")
+	private BisekohatBillinquiry bisekohatbillinquiry;
 }

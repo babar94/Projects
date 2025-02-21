@@ -12,14 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class BiseKohatBillPayment {
-
-	@JsonProperty("success")
-	private String success;
-
 	@JsonProperty("data")
 	private String data;
-
-	@JsonProperty("Massage")
-	private String massage;
 
 }

@@ -1,7 +1,6 @@
 package com.gateway.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.hibernate.annotations.Immutable;
 
@@ -20,9 +19,9 @@ public class CombinedPaymentLogView {
 	@Id
 	private Long logId;
 
-	@Column(name="name")
+	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "request_date_time")
 	private String requestDateTime;
 
@@ -43,7 +42,23 @@ public class CombinedPaymentLogView {
 
 	@Column(name = "source")
 	private String source;
-	
+
 	@Column(name = "biller_id")
 	private String billerId;
+
+   //Added on 18-02-2025 (Muhammad Sajid)
+	@Column(name = "payment_ref_no")
+	private String paymentRefNo;
+
+	@Column(name = "tran_date")
+	private String tranDate;
+
+	@Column(name = "tran_time")
+	private String tranTime;
+
+//	@Column(name = "nbp_charges_value")
+//	private double nbpChargesValue;
+
+//	@Column(name = "others_charges_value")
+//	private double othersChargesValue;
 }

@@ -13,25 +13,7 @@ import lombok.ToString;
 @ToString
 public class BisekohatBillinquiry {
 
-	@JsonProperty("p_ConsumerNumber")
-	private String consumerNumber;
-	
-	@JsonProperty("p_CustomerName")
-	private String customerName;
-	
-	@JsonProperty("p_Amount")
-	private String amount;
-	
-	@JsonProperty("p_Purpose")
-	private String purpose;
-	
-	@JsonProperty("p_BillingMonth")
-	private String billingMonth;
-	
-	@JsonProperty("p_DueDate")
-	private String dueDate;
-	
-	@JsonProperty("p_AmountAfterDueDate")
-	private String amountAfterDueDate;
+	@JsonProperty("data")
+	private BiseKohatBillinquiryData biseKohatBillinquiryData;
 
 }

@@ -499,6 +499,30 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 									////////// BPPRA ///////
 
+									////////// BISE-KOHAT ///////
+
+									else if (billerDetail.getBillerName()
+											.equalsIgnoreCase(BillerConstant.BISEKOHAT.BISEKOHAT)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.BISEKOHAT.BISEKOHAT:
+											billPaymentResponse = billPaymentBiseKohat(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
+										}
+									}
+
+									////////// BISE-KOHAT ///////
+
 									// AIOU
 									// PTA
 
@@ -6939,7 +6963,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
 		BigDecimal amountInDueToDate = null, txnAmount = null;
-		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
+		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "", billerName = "",
+				billingMonth = "", dueDate = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
@@ -7091,11 +7116,20 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;
 					}
 
+					billerName = biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getCustomerName();
+					billingMonth =  utilMethods.formatDateAnyFormat(biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getBillingMonth());
+
+					dueDate = utilMethods.transactionDateFormater(biseKohatBillInquiryResponse.getBiseKohatResponse()
+							.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getDueDate());
+
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.BISE_KOHAT_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
 					paymentParams.add(request.getInfo().getRrn());
 					paymentParams.add(request.getTxnInfo().getTranAmount());
-					paymentParams.add(biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry().getPurpose());
+					paymentParams.add(biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getPurpose());
 					paymentParams.add(kusername);
 					paymentParams.add(kpassword);
 					paymentParams.add(channel);
@@ -7105,6 +7139,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
 					try {
+
+						amountInDueToDate = new BigDecimal(biseKohatBillInquiryResponse.getBiseKohatResponse()
+								.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getAmount());
+						amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
 						if (txnAmount.compareTo(amountInDueToDate) != 0) {
 							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
@@ -7246,12 +7284,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "", paymentRefrence, bankName,
-						bankCode, branchName, branchCode, "", username, "");
+						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDate, billingMonth, paymentRefrence,
+						bankName, bankCode, branchName, branchCode, "", username, "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
 
