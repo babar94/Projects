@@ -120,7 +120,7 @@ public class UtilMethods {
 		return formattedDate;
 	}
 
-	public String formatDateAnyFormat(String inputDate) {
+	public String formatDateFormat(String inputDate) {
 		try {
 			// Try parsing as LocalDateTime
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);

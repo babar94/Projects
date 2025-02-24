@@ -7118,7 +7118,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					billerName = biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
 							.getBiseKohatBillinquiryData().getCustomerName();
-					billingMonth =  utilMethods.formatDateAnyFormat(biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+					billingMonth =  utilMethods.formatDateFormat(biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
 							.getBiseKohatBillinquiryData().getBillingMonth());
 
 					dueDate = utilMethods.transactionDateFormater(biseKohatBillInquiryResponse.getBiseKohatResponse()

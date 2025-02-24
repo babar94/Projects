@@ -46,7 +46,6 @@ public class CombinedPaymentLogView {
 	@Column(name = "biller_id")
 	private String billerId;
 
-   //Added on 18-02-2025 (Muhammad Sajid)
 	@Column(name = "payment_ref_no")
 	private String paymentRefNo;
 
@@ -56,9 +55,16 @@ public class CombinedPaymentLogView {
 	@Column(name = "tran_time")
 	private String tranTime;
 
-//	@Column(name = "nbp_charges_value")
-//	private double nbpChargesValue;
+	@Column(name = "due_date")
+	private String due_date;
 
-//	@Column(name = "others_charges_value")
-//	private double othersChargesValue;
+	@Column(name = "amount_within_duedate")
+	private BigDecimal amount_within_duedate;
+
+	@Column(name = "amount_after_duedate")
+	private BigDecimal amount_after_duedate;
+
+	@Column(name = "billing_month")
+	private String billing_month;
+
 }

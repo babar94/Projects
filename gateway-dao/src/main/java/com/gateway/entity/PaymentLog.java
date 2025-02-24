@@ -25,9 +25,6 @@ import lombok.ToString;
 @ToString
 public class PaymentLog implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2516248315446279127L;
 
 	@Id
@@ -69,7 +66,7 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "amountPaid")
 	private BigDecimal amountPaid;
-	
+
 	@Column(name = "charges")
 	private double charges;
 
@@ -88,21 +85,12 @@ public class PaymentLog implements Serializable {
 	@Column(name = "address")
 	private String address;
 
-//	@Column(name = "transaction_Fees")
-//	private double transactionFees;
-
-//	@Column(name = "tax_Amount")
-//	private double taxAmount;
-
-//	@Column(name = "amount")
-//	private String amount;
-	
 	@Column(name = "total")
 	private double total;
 
 	@Column(name = "channel")
 	private String channel;
-	
+
 	@Column(name = "username")
 	private String username;
 
@@ -128,39 +116,35 @@ public class PaymentLog implements Serializable {
 
 	@Column(name = "amount_afterduedate")
 	private BigDecimal amountafterduedate;
-	
+
 	@Column(name = "duedate")
 	private String duedate;
 
 	@Column(name = "billing_month")
 	private String billingMonth;
-	
+
 	@Column(name = "bank_name")
 	private String bankName;
 
 	@Column(name = "bank_code")
 	private String bankCode;
-	
+
 	@Column(name = "branch_name")
 	private String branchName;
-	
+
 	@Column(name = "branch_code")
 	private String branchCode;
-	
+
 	// new added on 20-03-2024
 
 	// changed on 31-05-2024
 
 	@Column(name = "thirdparty_auth_id")
 	private String thirdparty_auth_id;
-	
-	
+
 	// new added on 05-06-2024
 
 	@Column(name = "fee_detail")
 	private String fee_Detail;
-
-	
-
 
 }
