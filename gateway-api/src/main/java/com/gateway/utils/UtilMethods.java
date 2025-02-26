@@ -123,14 +123,14 @@ public class UtilMethods {
 	public String formatDateFormat(String inputDate) {
 		try {
 			// Try parsing as LocalDateTime
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-            LocalDateTime dateTime = LocalDateTime.parse(inputDate, formatter);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+			LocalDateTime dateTime = LocalDateTime.parse(inputDate, formatter);
 
-            // Extract only date part
-            LocalDate date = dateTime.toLocalDate();
+			// Extract only date part
+			LocalDate date = dateTime.toLocalDate();
 
-            // Convert to YYMM format
-            return date.format(DateTimeFormatter.ofPattern("yyMM"));
+			// Convert to YYMM format
+			return date.format(DateTimeFormatter.ofPattern("yyMM"));
 		} catch (DateTimeParseException e) {
 
 			LOG.error("Date Formatting error for input: {} with pattern {}: {}", inputDate, e.getMessage());
@@ -285,31 +285,6 @@ public class UtilMethods {
 		return billerId;
 	}
 
-//		public String convertAmountToISOFormat(String amount) {
-//			StringBuilder resultAmount = new StringBuilder();
-//			int decimalPlaces = amount.length() - amount.indexOf(".") - 1;
-//			if(decimalPlaces<2) {
-//				amount = amount.replace(".", "0");
-//			}else {
-//				amount = amount.replace(".", "");
-//			}
-//			
-//			int additionalZerosLenght = 14 - amount.length();
-//			try {
-//				
-//				resultAmount.append("+");
-//
-//				for (int j = 0; j < additionalZerosLenght; j++) {
-//					resultAmount.append("0");
-//				}
-//
-//				resultAmount = resultAmount.append(amount);
-//			} catch (Exception ex) {
-//				ex.printStackTrace();
-//			}
-//			return resultAmount.toString();
-//		}
-
 	// muhamamad Sajid updated IsoFormatTo 14 digit format
 	public String convertAmountToISOFormat(String amount) {
 		StringBuilder resultAmount = new StringBuilder();
@@ -422,23 +397,6 @@ public class UtilMethods {
 	}
 
 	// muhammad Sajid
-
-//	public double bigDecimalToDouble(BigDecimal decimal) {
-////			DecimalFormat df = new DecimalFormat("0.00");
-////			double value;
-////			value= Double.parseDouble(df.format(decimal));
-////		    
-////		    String formatted = String.format("%.2f", value);
-////		    double parsedValue = Double.parseDouble(formatted);
-////		   
-////		    return parsedValue;
-//		DecimalFormat df = new DecimalFormat("0.00");
-//		return Double.parseDouble(df.format(decimal));
-//	}
-//	public double bigDecimalToDouble(BigDecimal decimal) {
-//		// Format BigDecimal as a string without scientific notation
-//		return decimal.doubleValue();
-//	}
 
 	// muhammad sajid
 
@@ -610,39 +568,6 @@ public class UtilMethods {
 		System.out.println(subValue);
 		return subValue;
 	}
-
-//	public String rsaDecryption(String jwtKey, String privatekey) {
-//
-//		String KeyAndIv = "";
-//		try {
-//
-//			byte[] privateKeyBytes = Base64.getDecoder().decode(privatekey);
-//
-//			// Generate the private key
-//			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-//			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//			PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-//
-//			// Decode the encrypted data from Base64
-//			byte[] encryptedBytes = Base64.getDecoder().decode(jwtKey);
-//
-//			// Initialize the cipher for decryption
-//			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-//			cipher.init(Cipher.DECRYPT_MODE, privateKey);
-//
-//			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-//			KeyAndIv = new String(decryptedBytes);
-//
-//			// Print the decrypted message
-//			System.out.println("KeyAndIv : " + KeyAndIv);
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//		return KeyAndIv;
-//
-//	}
 
 	public String aesPackedAlgorithm(String keyAndIv, String encryptedData) {
 

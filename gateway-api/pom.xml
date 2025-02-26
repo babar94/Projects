@@ -185,11 +185,12 @@
 					<executable>true</executable>
 				</configuration>
 			</plugin>
-			<!--
+		
+		<!--	
 		   <plugin>
 		      <groupId>org.owasp</groupId>
 		      <artifactId>dependency-check-maven</artifactId>
-		      <version>8.4.1</version>
+		      <version>10.0.3</version>
 		      <executions>
 		        <execution>
 		          <goals>
@@ -198,7 +199,8 @@
 		        </execution>
 		      </executions>
            </plugin>
-          !-->
+         !--> 
+          
 		</plugins>
 	</build>
 </project>

@@ -2468,14 +2468,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(),
-						(billerNameRes == null ? billerName : billerNameRes), request.getTxnInfo().getBillNumber(),
+						(billerNameRes == null || billerNameRes.equals("") ? billerName : billerNameRes), request.getTxnInfo().getBillNumber(),
 						request.getTxnInfo().getBillerId(),
-						(amountDueDateRes == null ? amountInDueToDate : amountDueDateRes),
-						(amounAfterDateRes == null ? amountAfterDate : amounAfterDateRes),
+						(amountDueDateRes == null || amountDueDateRes.equals("") ? amountInDueToDate : amountDueDateRes),
+						(amounAfterDateRes == null || amounAfterDateRes.equals("") ? amountAfterDate : amounAfterDateRes),
 						Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, null,
-						(dueDateRes == null ? dueDate : dueDateRes),
-						(billingMonthRes == null ? billingMonth : billingMonthRes), "", bankName, bankCode, branchName,
+						(dueDateRes == null || dueDateRes.equals("") ? dueDate : dueDateRes),
+						(billingMonthRes == null || billingMonthRes.equals("") ? billingMonth : billingMonthRes), "", bankName, bankCode, branchName,
 						branchCode, "", username, "");
 
 			} catch (Exception ex) {
@@ -4058,7 +4058,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {
@@ -4876,7 +4876,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), totalTenderFeeAmount,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
-						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), "", amountPaid, "", "",
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, amountPaid, "", "",
 						"", bankName, bankCode, branchName, branchCode, "", username, challanFeeData);
 
 			} catch (Exception ex) {
@@ -5175,7 +5175,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						billerNumber, billerId, amountInDueToDate, null, Constants.ACTIVITY.BillInquiry,
 						transactionStatus, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), "", amountPaid, dueDate, billingMonth, "", bankName,
+						request.getTxnInfo().getTranTime(), transAuthId, amountPaid, dueDate, billingMonth, "", bankName,
 						bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {

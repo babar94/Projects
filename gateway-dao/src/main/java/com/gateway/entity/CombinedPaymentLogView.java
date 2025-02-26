@@ -67,4 +67,6 @@ public class CombinedPaymentLogView {
 	@Column(name = "billing_month")
 	private String billing_month;
 
+	 
+	
 }
