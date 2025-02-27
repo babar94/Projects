@@ -4902,7 +4902,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
 				billerId = "", billerName = "", billingMonth = "", dueDate = "", bankName = "", bankCode = "",
-				branchName = "", branchCode = "", billerNumber = "";
+				branchName = "", branchCode = "", billerNumber = "" , paymentpurpose="";
 
 		BigDecimal amountInDueToDate = null, amountPaid = null;
 		Date requestedDate = new Date();
@@ -5097,16 +5097,19 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					amountInDueToDate = new BigDecimal(biseKohatBillInquiryResponse.getBiseKohatResponse()
 							.getBisekohatbillinquiry().getBiseKohatBillinquiryData().getAmount());
 					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
-
+					LOG.info("p :"+biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getPurpose());			
+					paymentpurpose = biseKohatBillInquiryResponse.getBiseKohatResponse().getBisekohatbillinquiry()
+							.getBiseKohatBillinquiryData().getPurpose();
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
-
+					
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
-
+					
 					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
 							String.valueOf(amountInDueToDate), "", "", "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(paymentpurpose,
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
