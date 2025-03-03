@@ -8,6 +8,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -6961,6 +6962,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				billingMonth = "", dueDate = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
+		LocalDateTime nowDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String localDateTime = nowDateTime.format(formatter);
+		
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -7127,6 +7132,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(kusername);
 					paymentParams.add(kpassword);
 					paymentParams.add(channel);
+					paymentParams.add(localDateTime);
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 
