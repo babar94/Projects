@@ -130,6 +130,8 @@ public class Constants {
 		public static final String SLIC_BILL_PAYMENT = "slic-policyTranslation";
 		public static final String BISE_KOHAT_INQUIRY = "bise-kohat-billinquiry";
 		public static final String BISE_KOHAT_PAYMENT = "bise-kohat-billpayment";
+		public static final String LESCO_BILL_INQUIRY = "lesco-billinquiry";
+		public static final String LESCO_BILL_PAYMENT = "lesco-billpayment";
 
 	}
 

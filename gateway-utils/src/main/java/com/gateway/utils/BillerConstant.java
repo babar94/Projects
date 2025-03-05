@@ -71,4 +71,9 @@ public interface BillerConstant {
 		String BISEKOHAT = "BISE-KOHAT";
 	}
 	
+	interface LESCO {
+
+		String LESCO = "LESCO";
+	}
+	
 }
