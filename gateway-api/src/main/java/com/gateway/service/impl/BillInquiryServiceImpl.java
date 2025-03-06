@@ -5223,7 +5223,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Override
 	public BillInquiryResponse billInquirylesco(BillInquiryRequest request, HttpServletRequest httpRequestData) {
 
-		LOG.info("BiseKohat Bill Inquiry Request {} ", request.toString());
+		LOG.info("Lesco Bill Inquiry Request {} ", request.toString());
 
 		BillInquiryResponse response = null;
 		LescoBillInquiryResponse lescoBillInquiryResponse = null;
@@ -5258,7 +5258,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			//// M-Pay Call Inquiry
 
 			lescoBillInquiryResponse = serviceCaller.get(inquiryParams, LescoBillInquiryResponse.class, rrn,
-					Constants.ACTIVITY.BillInquiry, BillerConstant.BISEKOHAT.BISEKOHAT);
+					Constants.ACTIVITY.BillInquiry, BillerConstant.LESCO.LESCO);
 
 			if (lescoBillInquiryResponse != null) {
 
@@ -5423,11 +5423,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDueDate());
 
 					amountInDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountWithInDue());
+							.getLescobillinquirydata().getAmountWithInDueDate());
 					amountInDueDate = amountInDueDate.setScale(2, RoundingMode.UP);
 
 					amountAfterDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountAfterDue());
+							.getLescobillinquirydata().getAmountAfterDueDate());
 					amountAfterDueDate = amountAfterDueDate.setScale(2, RoundingMode.UP);
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
@@ -5514,7 +5514,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				LOG.error("Payment Log Exception : {}", ex);
 			}
 
-			LOG.info("----- Bise Kohat BillInquiry Method End -----");
+			LOG.info("----- Lesco BillInquiry Method End -----");
 
 		}
 

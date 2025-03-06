@@ -38,6 +38,8 @@ public interface BillPaymentService {
 
 	public BillPaymentResponse billPaymentBiseKohat(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
+	public BillPaymentResponse billPaymentLesco(BillPaymentRequest request, HttpServletRequest httpRequestData);
+
 	
 	
 

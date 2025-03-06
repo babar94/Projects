@@ -170,4 +170,6 @@ bise:
      password: nbpapitest
    
    
-
+lesco:
+   coll_Mechanism_Code: 13
+   bank_Branch_Code: 22001

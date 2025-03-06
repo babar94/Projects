@@ -14,7 +14,7 @@ import lombok.ToString;
 public class LescoBillinquiryData {
 
 	@JsonProperty("CardType")
-    private int cardType;
+    private String cardType;
 
     @JsonProperty("ReferenceNo")
     private String referenceNo;
@@ -35,12 +35,12 @@ public class LescoBillinquiryData {
     private String address;
 
     @JsonProperty("AmountWithInDue")
-    private double amountWithInDue;
+    private String amountWithInDueDate;
 
     @JsonProperty("AmountAfterDue")
-    private double amountAfterDue;
+    private String amountAfterDueDate;
 
     @JsonProperty("CustID")
-    private long custId;
+    private String custId;
 	
 }
