@@ -34,6 +34,9 @@ public interface BillDetailsService {
 	public PaymentInquiryResponse paymentInquiryBiseKohat(PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData);
 
+	public PaymentInquiryResponse paymentInquiryLesco(PaymentInquiryRequest request,
+			HttpServletRequest httpRequestData);
+
 	public BillerListResponse getBillerList(HttpServletRequest httpRequestData);
 
 }
