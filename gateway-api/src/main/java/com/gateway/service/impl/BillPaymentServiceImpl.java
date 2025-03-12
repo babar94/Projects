@@ -234,16 +234,16 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${bise.kohat.password}")
 	private String kpassword;
 
-	@Value("lesco.coll_Mechanism_Code")
+	@Value("${lesco.coll_Mechanism_Code}")
 	private String collMechanismCode;
 
-	@Value("lesco.bank_Branch_Code")
+	@Value("${lesco.bank_Branch_Code}")
 	private String bankBranchCode;
 
-	@Value("lesco.userName")
+	@Value("${lesco.userName}")
 	private String lescoUserName;
 
-	@Value("lesco.password")
+	@Value("${lesco.password}")
 	private String lescoPassword;
 
 	@Override
@@ -5793,7 +5793,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
-
+			jwt = request.getAdditionalInfo().getReserveField2();
+			LOG.info("jwt :" + jwt);
+			
 			//////// Tender //////
 
 			if (billerNumber.startsWith(tenderPrefix)) {
@@ -5822,27 +5824,28 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					publicKey = rsaUtility.getPublicKey();
 
-					///// TenderTokenInquiry Call
-					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
-							authToken, requestFormAuth, publicKey);
-
-					///// TenderTokenInquiry Failure
-					if (tenderTokenInquiry == null) {
-
-						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
+					
+					//// - Below code is comment out because of not use in  bill payment 
+					
+					
+//					///// TenderTokenInquiry Call
+//					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
+//							authToken, requestFormAuth, publicKey);
+//
+//					///// TenderTokenInquiry Failure
+//					if (tenderTokenInquiry == null) {
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+//								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+//
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
 					//// TenderTokenInquiry Success
-					if (tenderTokenInquiry.getStatus() == 200) {
-
-						jwt = tenderTokenInquiry.getBody();
-						LOG.info("jwt :" + jwt);
+				//	if (tenderTokenInquiry.getStatus() == 200) {
 
 						decodeJwt = utilMethods.DecodeJwt(jwt);
 						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
@@ -6257,43 +6260,43 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						////////////
 
-					}
+					//}
 
-					else if (tenderTokenInquiry.getStatus() == 401) {
+//					else if (tenderTokenInquiry.getStatus() == 401) {
+//
+//						LOG.info("TenderTokenInquiry : Unauthorized");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
-						LOG.info("TenderTokenInquiry : Unauthorized");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
-
-					else if (tenderTokenInquiry.getStatus() == 404) {
-
-						LOG.info("TenderTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
-
-					else if (tenderTokenInquiry.getStatus() == 406) {
-
-						LOG.info("TenderTokenInquiry :  Invalid Client - Null reference Client ");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
+//					else if (tenderTokenInquiry.getStatus() == 404) {
+//
+//						LOG.info("TenderTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
+//
+//					else if (tenderTokenInquiry.getStatus() == 406) {
+//
+//						LOG.info("TenderTokenInquiry :  Invalid Client - Null reference Client ");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
 				} else if (tenderAuthResponse.getStatus() == 400) {
 
@@ -6362,26 +6365,30 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// publicKey
 					publicKey = rsaUtility.getPublicKey();
 
-					///// SupplierTokenInquiry Call
-					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
-							authToken, requestFormAuth, publicKey);
+					
+					//// - Below code is comment out because of not use in  bill payment 
 
-					///// SupplierTokenInquiry Failure
-					if (supplierTokenInquiry == null) {
-
-						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
+					
+//					///// SupplierTokenInquiry Call
+//					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
+//							authToken, requestFormAuth, publicKey);
+//
+//					///// SupplierTokenInquiry Failure
+//					if (supplierTokenInquiry == null) {
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+//								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+//
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
 					//// SupplierTokenInquiry Success
-					if (supplierTokenInquiry.getStatus() == 200) {
+					//if (supplierTokenInquiry.getStatus() == 200) {
 
-						jwt = supplierTokenInquiry.getBody();
+						//jwt = supplierTokenInquiry.getBody();
 						LOG.info("jwt :" + jwt);
 
 						decodeJwt = utilMethods.DecodeJwt(jwt);
@@ -6795,43 +6802,43 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						}
 
-					}
+//					}
+//
+//					else if (supplierTokenInquiry.getStatus() == 401) {
+//
+//						LOG.info("SupplierTokenInquiry : Unauthorized");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
-					else if (supplierTokenInquiry.getStatus() == 401) {
-
-						LOG.info("SupplierTokenInquiry : Unauthorized");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
-
-					else if (supplierTokenInquiry.getStatus() == 404) {
-
-						LOG.info("SupplierTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
-
-					else if (supplierTokenInquiry.getStatus() == 406) {
-
-						LOG.info("SupplierTokenInquiry :  Invalid Client - Null reference Client ");
-
-						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-						response = new BillPaymentResponse(infoPay, null, null);
-						transactionStatus = Constants.Status.Fail;
-						return response;
-
-					}
+//					else if (supplierTokenInquiry.getStatus() == 404) {
+//
+//						LOG.info("SupplierTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
+//
+//					else if (supplierTokenInquiry.getStatus() == 406) {
+//
+//						LOG.info("SupplierTokenInquiry :  Invalid Client - Null reference Client ");
+//
+//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+//						response = new BillPaymentResponse(infoPay, null, null);
+//						transactionStatus = Constants.Status.Fail;
+//						return response;
+//
+//					}
 
 				} else if (supplierAuthResponse.getStatus() == 400) {
 

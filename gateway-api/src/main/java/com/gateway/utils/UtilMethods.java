@@ -474,6 +474,7 @@ public class UtilMethods {
 
 	public HttpResponse<String> authRequest(String bppraAuthticateCall, String bppraClientSecret) {
 		try {
+			LOG.info("---- Auth token initiated ----");
 			return Unirest.post(bppraAuthticateCall).header("clientSecret", bppraClientSecret).asString();
 		} catch (UnirestException e) {
 			LOG.info("---- Auth api failure ----");
@@ -484,6 +485,7 @@ public class UtilMethods {
 	public HttpResponse<String> tokenInquiryRequest(String bppraInitiateInquiryCall, String authToken,
 			String requestFormAuth, String publicKey) {
 		try {
+			LOG.info("---- Token inquiry initiated ----");
 			return Unirest.post(bppraInitiateInquiryCall).header("Authorization", authToken)
 					.header("requestfrom", requestFormAuth).header("RSApublicKey", publicKey).asString();
 		} catch (UnirestException e) {
@@ -496,6 +498,8 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
+
+			LOG.info("---- Tender challan inquiry initiated ----");
 			return Unirest.get(bppraTenderChallanInquiryCall).queryString("challancode", billNumber)
 					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
 					.asString();
@@ -509,6 +513,8 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
+			LOG.info("---- Supplier challan inquiry initiated -----");
+
 			return Unirest.get(bppraSupplierChallanInquiryCall).queryString("challancode", billNumber)
 					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
 					.asString();
@@ -522,6 +528,9 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
+			
+			LOG.info("---- Tender mark challan paid initiated -----");
+
 			return Unirest.post(bppraTenderChallanPaid).queryString("challanCode", billNumber).queryString("paid", true)
 					.header("requestfrom", requestFormChallanEnquire).header("Authorization", "Bearer " + jwt)
 					.asString();
@@ -535,6 +544,9 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
+			
+			LOG.info("---- Supplier mark challan paid initiated -----");
+
 			return Unirest.post(bppraSupplierChallanPaid).queryString("challanCode", billNumber)
 					.queryString("paid", true).header("requestfrom", requestFormChallanEnquire)
 					.header("Authorization", "Bearer " + jwt).asString();
@@ -548,6 +560,9 @@ public class UtilMethods {
 			String requestFormAuth, String jwt, String branchcode, String personName) {
 
 		try {
+			
+			LOG.info("---- Completed inquiry initiated ----");
+
 			return Unirest.post(bppraCompleteInquiryCall).header("Authorization", authToken)
 					.header("requestfrom", requestFormAuth).field("EnqueryToken", jwt).field("branchCode", branchcode)
 					.field("personName", personName).asString();

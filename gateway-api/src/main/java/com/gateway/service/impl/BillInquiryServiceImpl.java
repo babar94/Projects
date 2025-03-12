@@ -4372,7 +4372,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
 								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName,
-										request.getAdditionalInfo().getReserveField2(),
+										jwt,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
@@ -4731,7 +4731,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
 								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName,
-										request.getAdditionalInfo().getReserveField2(),
+										jwt,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
