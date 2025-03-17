@@ -240,11 +240,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${lesco.bank_Branch_Code}")
 	private String bankBranchCode;
 
-	@Value("${lesco.userName}")
-	private String lescoUserName;
-
-	@Value("${lesco.password}")
-	private String lescoPassword;
+	@Value("${pithm.paymentMode}")
+	private String paymentMode;
 
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
@@ -3742,7 +3739,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(request.getAdditionalInfo().getReserveField1());
 					paymentParams.add(request.getTxnInfo().getTranAmount().trim());
 					paymentParams.add(request.getTxnInfo().getTranDate().trim());
-					paymentParams.add(request.getAdditionalInfo().getReserveField2());
+					paymentParams.add(paymentMode);
 					paymentParams.add(rrnReq);
 
 					if (utilMethods.isValidInput(dueDateRes)) {
@@ -5317,7 +5314,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
 		BigDecimal amountInDueToDate = null, txnAmount = null;
-		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "";
+		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "", billerName = "",
+				due_Date = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		try {
@@ -5578,6 +5576,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 
+					billerName = slicPolicyInquiryResponse.getSlicResponse().getSlicPolicyInquiry().getPolicy_holder();
+					due_Date = utilMethods
+							.DueDate(slicPolicyInquiryResponse.getSlicResponse().getSlicPolicyInquiry().getDue_date());
+
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
 					try {
@@ -5723,11 +5725,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			try {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
-						new BigDecimal(request.getTxnInfo().getTranAmount()), "", "", paymentRefrence, bankName,
+						new BigDecimal(request.getTxnInfo().getTranAmount()), due_Date, "", paymentRefrence, bankName,
 						bankCode, branchName, branchCode, "", username, "");
 
 				LOG.info(" --- Bill Payment Method End --- ");
@@ -5795,7 +5797,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			billerNumber = request.getTxnInfo().getBillNumber();
 			jwt = request.getAdditionalInfo().getReserveField2();
 			LOG.info("jwt :" + jwt);
-			
+
 			//////// Tender //////
 
 			if (billerNumber.startsWith(tenderPrefix)) {
@@ -5824,10 +5826,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					publicKey = rsaUtility.getPublicKey();
 
-					
-					//// - Below code is comment out because of not use in  bill payment 
-					
-					
+					//// - Below code is comment out because of not use in bill payment
+
 //					///// TenderTokenInquiry Call
 //					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
 //							authToken, requestFormAuth, publicKey);
@@ -5845,422 +5845,419 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 //					}
 
 					//// TenderTokenInquiry Success
-				//	if (tenderTokenInquiry.getStatus() == 200) {
+					// if (tenderTokenInquiry.getStatus() == 200) {
 
-						decodeJwt = utilMethods.DecodeJwt(jwt);
-						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+					decodeJwt = utilMethods.DecodeJwt(jwt);
+					keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
-						////// TenderChallanInquiry
-						HttpResponse<String> tenderChallanInquiry = utilMethods.tenderChallanInquiryRequest(
-								bppraChallanInquiryCall, request.getTxnInfo().getBillNumber(),
-								requestFormChallanEnquire, jwt);
+					////// TenderChallanInquiry
+					HttpResponse<String> tenderChallanInquiry = utilMethods.tenderChallanInquiryRequest(
+							bppraChallanInquiryCall, request.getTxnInfo().getBillNumber(), requestFormChallanEnquire,
+							jwt);
 
-						//// TenderChallanInquiry Failure
-						if (tenderChallanInquiry == null) {
+					//// TenderChallanInquiry Failure
+					if (tenderChallanInquiry == null) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					/////// TenderChallanInquiry Success
+					if (tenderChallanInquiry.getStatus() == 200) {
+
+						LOG.info("TenderChallanInquiry : Success ");
+
+						encryptedChallandata = tenderChallanInquiry.getBody();
+						decryptData = utilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+
+						bppraTenderVoucherResponse = mapper.readValue(decryptData, BppraTenderVoucherResponse.class);
+						LOG.info("BppraTenderVoucherResponse : " + bppraTenderVoucherResponse);
+
+						billerName = bppraTenderVoucherResponse.getTenderChallanData().getPaName();
+
+						//////// status is Paid (True) ////
+
+						if (bppraTenderVoucherResponse.getTenderChallanData().isPaidStatus()) {
+
+							billerId = request.getTxnInfo().getBillerId();
+							billerNumber = request.getTxnInfo().getBillNumber();
+
+							infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							transactionStatus = Constants.Status.Success;
+
+							billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 							return response;
 
 						}
 
-						/////// TenderChallanInquiry Success
-						if (tenderChallanInquiry.getStatus() == 200) {
+						////// Status is Unpaid(False) /////
 
-							LOG.info("TenderChallanInquiry : Success ");
+						else {
 
-							encryptedChallandata = tenderChallanInquiry.getBody();
-							decryptData = utilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+							challanFees = bppraTenderVoucherResponse.getChallanFee();
+							challanFeeData = objectMapper.writeValueAsString(challanFees);
 
-							bppraTenderVoucherResponse = mapper.readValue(decryptData,
-									BppraTenderVoucherResponse.class);
-							LOG.info("BppraTenderVoucherResponse : " + bppraTenderVoucherResponse);
+							PendingPayment pendingPayment = pendingPaymentRepository
+									.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim(),
+											request.getTxnInfo().getBillerId().trim());
 
-							billerName = bppraTenderVoucherResponse.getTenderChallanData().getPaName();
+							if (pendingPayment != null) {
 
-							//////// status is Paid (True) ////
+								if (pendingPayment.getIgnoreTimer()) {
 
-							if (bppraTenderVoucherResponse.getTenderChallanData().isPaidStatus()) {
+									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+											rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									transactionStatus = Constants.Status.Pending;
+									billStatus = Constants.BILL_STATUS.BILL_PENDING;
+									return response;
 
-								billerId = request.getTxnInfo().getBillerId();
-								billerNumber = request.getTxnInfo().getBillNumber();
+								} else {
+									LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+									LocalDateTime now = LocalDateTime.now(); // Current date and time
 
-								infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
-										Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+									// Calculate the difference in minutes
+									long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
 
-								txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-
-								additionalInfoPay = new AdditionalInfoPay(
-										request.getAdditionalInfo().getReserveField1(),
-										request.getAdditionalInfo().getReserveField2(),
-										request.getAdditionalInfo().getReserveField3(),
-										request.getAdditionalInfo().getReserveField4(),
-										request.getAdditionalInfo().getReserveField5(),
-										request.getAdditionalInfo().getReserveField6(),
-										request.getAdditionalInfo().getReserveField7(),
-										request.getAdditionalInfo().getReserveField8(),
-										request.getAdditionalInfo().getReserveField9(),
-										request.getAdditionalInfo().getReserveField10());
-
-								transactionStatus = Constants.Status.Success;
-
-								billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-								response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-								return response;
-
-							}
-
-							////// Status is Unpaid(False) /////
-
-							else {
-
-								challanFees = bppraTenderVoucherResponse.getChallanFee();
-								challanFeeData = objectMapper.writeValueAsString(challanFees);
-
-								PendingPayment pendingPayment = pendingPaymentRepository
-										.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
-												request.getTxnInfo().getBillNumber().trim(),
-												request.getTxnInfo().getBillerId().trim());
-
-								if (pendingPayment != null) {
-
-									if (pendingPayment.getIgnoreTimer()) {
+									if (minutesDifference <= pendingThresholdMinutes) {
 
 										infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
 												pendingPaymentMessage, rrn, stan);
 										response = new BillPaymentResponse(infoPay, null, null);
+
 										transactionStatus = Constants.Status.Pending;
 										billStatus = Constants.BILL_STATUS.BILL_PENDING;
 										return response;
 
-									} else {
-										LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
-										LocalDateTime now = LocalDateTime.now(); // Current date and time
-
-										// Calculate the difference in minutes
-										long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
-
-										if (minutesDifference <= pendingThresholdMinutes) {
-
-											infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-													pendingPaymentMessage, rrn, stan);
-											response = new BillPaymentResponse(infoPay, null, null);
-
-											transactionStatus = Constants.Status.Pending;
-											billStatus = Constants.BILL_STATUS.BILL_PENDING;
-											return response;
-
-										}
 									}
 								}
+							}
 
-								LOG.info("Calling Payment Inquiry from pg_payment_log table");
-								PgPaymentLog pgPaymentLog = pgPaymentLogRepository
-										.findFirstByVoucherIdAndBillerIdAndBillStatus(
-												request.getTxnInfo().getBillNumber(),
-												request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
+							LOG.info("Calling Payment Inquiry from pg_payment_log table");
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+									.findFirstByVoucherIdAndBillerIdAndBillStatus(request.getTxnInfo().getBillNumber(),
+											request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
 
-								if (pgPaymentLog != null && pgPaymentLog.getTransactionStatus()
-										.equalsIgnoreCase(Constants.Status.Success)) {
+							if (pgPaymentLog != null
+									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
 
-									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-											pendingVoucherUpdateMessage, rrn, stan); // success
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										pendingVoucherUpdateMessage, rrn, stan); // success
+
+								transactionStatus = Constants.Status.Success;
+								billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								return response;
+							}
+
+							///// Amount work --- Start ////
+
+							totalTenderFeeAmount = utilMethods
+									.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
+							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
+
+							LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
+
+							txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
+
+							try {
+
+								if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
+									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									return response;
+								}
+
+							} catch (DateTimeParseException e) {
+								LOG.error("Error parsing due date: " + e.getMessage());
+							}
+
+							///// Amount work --- End ////
+
+							/// TenderMarkChallanPaid Call
+							HttpResponse<String> tenderMarkChallanPaid = utilMethods.tenderMarkChallanPaidRequest(
+									bppraTenderChallanPaidCall, request.getTxnInfo().getBillNumber(),
+									requestFormChallanEnquire, jwt);
+
+							/// TenderMarkChallanPaid Failure
+							if (tenderMarkChallanPaid == null) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+										Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							/// TenderMarkChallanPaid Success
+							if (tenderMarkChallanPaid.getStatus() == 200) {
+
+								/////// TenderCompleteInquiry Call /////
+
+								HttpResponse<String> tenderCompleteInquiry = utilMethods.completeInquiryRequest(
+										bppraCompleteInquiryCall, authToken, requestFormAuth, jwt, branchcode,
+										personName);
+
+								/// TenderCompleteInquiry Failure
+								if (tenderCompleteInquiry == null) {
+
+									HttpResponse<String> tenderCompleteInquiryRetry = utilMethods
+											.completeInquiryRequest(bppraCompleteInquiryCall, authToken,
+													requestFormAuth, jwt, branchcode, personName);
+
+									if (tenderCompleteInquiryRetry == null
+											|| tenderCompleteInquiryRetry.getStatus() == 400
+											|| tenderCompleteInquiryRetry.getStatus() == 401
+											|| tenderCompleteInquiryRetry.getStatus() == 404) {
+
+										LOG.info(
+												"TenderCompleteInquiryRetry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
+												rrn, stan);
+
+										infoPay = new InfoPay(Constants.ResponseCodes.OK,
+												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+												request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+										additionalInfoPay = new AdditionalInfoPay(
+												request.getAdditionalInfo().getReserveField1(),
+												request.getAdditionalInfo().getReserveField2(),
+												request.getAdditionalInfo().getReserveField3(),
+												request.getAdditionalInfo().getReserveField4(),
+												request.getAdditionalInfo().getReserveField5(),
+												request.getAdditionalInfo().getReserveField6(),
+												request.getAdditionalInfo().getReserveField7(),
+												request.getAdditionalInfo().getReserveField8(),
+												request.getAdditionalInfo().getReserveField9(),
+												request.getAdditionalInfo().getReserveField10());
+
+										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+										transactionStatus = Constants.Status.Success;
+
+										billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+										return response;
+
+									}
+
+									else if (tenderCompleteInquiryRetry.getStatus() == 200) {
+
+										LOG.info(
+												"TenderCompleteInquiryRetry : Enquery Completed Successfully :  rrn: {} - stan: {}",
+												rrn, stan);
+
+										infoPay = new InfoPay(Constants.ResponseCodes.OK,
+												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+												request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+										additionalInfoPay = new AdditionalInfoPay(
+												request.getAdditionalInfo().getReserveField1(),
+												request.getAdditionalInfo().getReserveField2(),
+												request.getAdditionalInfo().getReserveField3(),
+												request.getAdditionalInfo().getReserveField4(),
+												request.getAdditionalInfo().getReserveField5(),
+												request.getAdditionalInfo().getReserveField6(),
+												request.getAdditionalInfo().getReserveField7(),
+												request.getAdditionalInfo().getReserveField8(),
+												request.getAdditionalInfo().getReserveField9(),
+												request.getAdditionalInfo().getReserveField10());
+
+										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+										transactionStatus = Constants.Status.Success;
+
+										billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+										return response;
+
+									}
+
+								}
+
+								//// TenderCompleteInquiry Success
+								if (tenderCompleteInquiry.getStatus() == 200) {
+
+									LOG.info(
+											"TenderCompleteInquiry : Enquery Completed Successfully :  rrn: {} - stan: {}",
+											rrn, stan);
+
+									infoPay = new InfoPay(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+									additionalInfoPay = new AdditionalInfoPay(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
 									transactionStatus = Constants.Status.Success;
+
 									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-									response = new BillPaymentResponse(infoPay, null, null);
-
-									return response;
-								}
-
-								///// Amount work --- Start ////
-
-								totalTenderFeeAmount = utilMethods
-										.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
-								totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
-
-								LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
-
-								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
-
-								try {
-
-									if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
-										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-										response = new BillPaymentResponse(infoPay, null, null);
-										return response;
-									}
-
-								} catch (DateTimeParseException e) {
-									LOG.error("Error parsing due date: " + e.getMessage());
-								}
-
-								///// Amount work --- End ////
-
-								/// TenderMarkChallanPaid Call
-								HttpResponse<String> tenderMarkChallanPaid = utilMethods.tenderMarkChallanPaidRequest(
-										bppraTenderChallanPaidCall, request.getTxnInfo().getBillNumber(),
-										requestFormChallanEnquire, jwt);
-
-								/// TenderMarkChallanPaid Failure
-								if (tenderMarkChallanPaid == null) {
-
-									infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-											Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
 									return response;
 
 								}
 
-								/// TenderMarkChallanPaid Success
-								if (tenderMarkChallanPaid.getStatus() == 200) {
+								else if (tenderCompleteInquiry.getStatus() == 400
+										|| tenderCompleteInquiry.getStatus() == 401
+										|| tenderCompleteInquiry.getStatus() == 404) {
 
-									/////// TenderCompleteInquiry Call /////
+									LOG.info(
+											"TenderCompleteInquiry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
+											rrn, stan);
 
-									HttpResponse<String> tenderCompleteInquiry = utilMethods.completeInquiryRequest(
-											bppraCompleteInquiryCall, authToken, requestFormAuth, jwt, branchcode,
-											personName);
+									infoPay = new InfoPay(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
-									/// TenderCompleteInquiry Failure
-									if (tenderCompleteInquiry == null) {
+									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), paymentRefrence);
 
-										HttpResponse<String> tenderCompleteInquiryRetry = utilMethods
-												.completeInquiryRequest(bppraCompleteInquiryCall, authToken,
-														requestFormAuth, jwt, branchcode, personName);
+									additionalInfoPay = new AdditionalInfoPay(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
 
-										if (tenderCompleteInquiryRetry == null
-												|| tenderCompleteInquiryRetry.getStatus() == 400
-												|| tenderCompleteInquiryRetry.getStatus() == 401
-												|| tenderCompleteInquiryRetry.getStatus() == 404) {
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
-											LOG.info(
-													"TenderCompleteInquiryRetry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
-													rrn, stan);
+									transactionStatus = Constants.Status.Success;
 
-											infoPay = new InfoPay(Constants.ResponseCodes.OK,
-													Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
-
-											response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-											transactionStatus = Constants.Status.Success;
-
-											billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-											return response;
-
-										}
-
-										else if (tenderCompleteInquiryRetry.getStatus() == 200) {
-
-											LOG.info(
-													"TenderCompleteInquiryRetry : Enquery Completed Successfully :  rrn: {} - stan: {}",
-													rrn, stan);
-
-											infoPay = new InfoPay(Constants.ResponseCodes.OK,
-													Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
-
-											response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-											transactionStatus = Constants.Status.Success;
-
-											billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-											return response;
-
-										}
-
-									}
-
-									//// TenderCompleteInquiry Success
-									if (tenderCompleteInquiry.getStatus() == 200) {
-
-										LOG.info(
-												"TenderCompleteInquiry : Enquery Completed Successfully :  rrn: {} - stan: {}",
-												rrn, stan);
-
-										infoPay = new InfoPay(Constants.ResponseCodes.OK,
-												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-										transactionStatus = Constants.Status.Success;
-
-										billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-										return response;
-
-									}
-
-									else if (tenderCompleteInquiry.getStatus() == 400
-											|| tenderCompleteInquiry.getStatus() == 401
-											|| tenderCompleteInquiry.getStatus() == 404) {
-
-										LOG.info(
-												"TenderCompleteInquiry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
-												rrn, stan);
-
-										infoPay = new InfoPay(Constants.ResponseCodes.OK,
-												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-										transactionStatus = Constants.Status.Success;
-
-										billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-										return response;
-
-									}
-
-								}
-
-								else if (tenderMarkChallanPaid.getStatus() == 400) {
-
-									LOG.info("TenderMarkChallanPaid : BadRequest");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-											Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
-									return response;
-
-								}
-
-								else if (tenderMarkChallanPaid.getStatus() == 401) {
-
-									LOG.info("TenderMarkChallanPaid : UnAuthorized");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-											Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
-									return response;
-
-								}
-
-								else if (tenderMarkChallanPaid.getStatus() == 404) {
-
-									LOG.info("TenderMarkChallanPaid : Challan Not Found");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-											Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
 									return response;
 
 								}
 
 							}
 
+							else if (tenderMarkChallanPaid.getStatus() == 400) {
+
+								LOG.info("TenderMarkChallanPaid : BadRequest");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							else if (tenderMarkChallanPaid.getStatus() == 401) {
+
+								LOG.info("TenderMarkChallanPaid : UnAuthorized");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+										Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							else if (tenderMarkChallanPaid.getStatus() == 404) {
+
+								LOG.info("TenderMarkChallanPaid : Challan Not Found");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+										Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
 						}
 
-						else if (tenderChallanInquiry.getStatus() == 400) {
+					}
 
-							LOG.info("TenderChallanInquiry : Bad Request");
+					else if (tenderChallanInquiry.getStatus() == 400) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("TenderChallanInquiry : Bad Request");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
 
-						else if (tenderChallanInquiry.getStatus() == 401) {
+					}
 
-							LOG.info("TenderChallanInquiry : UnAuthorized");
+					else if (tenderChallanInquiry.getStatus() == 401) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("TenderChallanInquiry : UnAuthorized");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
 
-						else if (tenderChallanInquiry.getStatus() == 404) {
+					}
 
-							LOG.info("TenderChallanInquiry : Challan Not Found");
+					else if (tenderChallanInquiry.getStatus() == 404) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("TenderChallanInquiry : Challan Not Found");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
 
-						////////////
+					}
 
-					//}
+					////////////
+
+					// }
 
 //					else if (tenderTokenInquiry.getStatus() == 401) {
 //
@@ -6365,10 +6362,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// publicKey
 					publicKey = rsaUtility.getPublicKey();
 
-					
-					//// - Below code is comment out because of not use in  bill payment 
+					//// - Below code is comment out because of not use in bill payment
 
-					
 //					///// SupplierTokenInquiry Call
 //					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
 //							authToken, requestFormAuth, publicKey);
@@ -6386,421 +6381,419 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 //					}
 
 					//// SupplierTokenInquiry Success
-					//if (supplierTokenInquiry.getStatus() == 200) {
+					// if (supplierTokenInquiry.getStatus() == 200) {
 
-						//jwt = supplierTokenInquiry.getBody();
-						LOG.info("jwt :" + jwt);
+					// jwt = supplierTokenInquiry.getBody();
+					LOG.info("jwt :" + jwt);
 
-						decodeJwt = utilMethods.DecodeJwt(jwt);
-						keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
+					decodeJwt = utilMethods.DecodeJwt(jwt);
+					keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
 
-						////// SupplierChallanInquiry
-						HttpResponse<String> supplierChallanInquiry = utilMethods.supplierChallanInquiryRequest(
-								bppraSupplierChallanInquiryCall, request.getTxnInfo().getBillNumber(),
-								requestFormChallanEnquire, jwt);
+					////// SupplierChallanInquiry
+					HttpResponse<String> supplierChallanInquiry = utilMethods.supplierChallanInquiryRequest(
+							bppraSupplierChallanInquiryCall, request.getTxnInfo().getBillNumber(),
+							requestFormChallanEnquire, jwt);
 
-						//// SupplierChallanInquiry Failure
-						if (supplierChallanInquiry == null) {
+					//// SupplierChallanInquiry Failure
+					if (supplierChallanInquiry == null) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
+
+					/////// SupplierChallanInquiry Success
+					if (supplierChallanInquiry.getStatus() == 200) {
+
+						LOG.info("TenderChallanInquiry : Success ");
+
+						encryptedChallandata = supplierChallanInquiry.getBody();
+						decryptData = utilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+
+						bppraSupplierVoucherResponse = mapper.readValue(decryptData,
+								BppraSupplierVoucherResponse.class);
+						LOG.info("BppraSupplierVoucherResponse : " + bppraSupplierVoucherResponse);
+
+						billerName = bppraSupplierVoucherResponse.getSupplierChallanData().getSupplierName();
+
+						//////// status is Paid (True) ////
+
+						if (bppraSupplierVoucherResponse.getSupplierChallanData().isPaidStatus()) {
+
+							billerId = request.getTxnInfo().getBillerId();
+							billerNumber = request.getTxnInfo().getBillNumber();
+
+							infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							transactionStatus = Constants.Status.Success;
+
+							billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 							return response;
 
 						}
 
-						/////// SupplierChallanInquiry Success
-						if (supplierChallanInquiry.getStatus() == 200) {
+						////// Status is Unpaid(False) /////
 
-							LOG.info("TenderChallanInquiry : Success ");
+						else {
 
-							encryptedChallandata = supplierChallanInquiry.getBody();
-							decryptData = utilMethods.aesPackedAlgorithm(keyAndIv, encryptedChallandata);
+							challanFees = bppraSupplierVoucherResponse.getChallanFee();
+							challanFeeData = objectMapper.writeValueAsString(challanFees);
 
-							bppraSupplierVoucherResponse = mapper.readValue(decryptData,
-									BppraSupplierVoucherResponse.class);
-							LOG.info("BppraSupplierVoucherResponse : " + bppraSupplierVoucherResponse);
+							PendingPayment pendingPayment = pendingPaymentRepository
+									.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+											request.getTxnInfo().getBillNumber().trim(),
+											request.getTxnInfo().getBillerId().trim());
 
-							billerName = bppraSupplierVoucherResponse.getSupplierChallanData().getSupplierName();
+							if (pendingPayment != null) {
 
-							//////// status is Paid (True) ////
+								if (pendingPayment.getIgnoreTimer()) {
 
-							if (bppraSupplierVoucherResponse.getSupplierChallanData().isPaidStatus()) {
+									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage,
+											rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									transactionStatus = Constants.Status.Pending;
+									billStatus = Constants.BILL_STATUS.BILL_PENDING;
+									return response;
 
-								billerId = request.getTxnInfo().getBillerId();
-								billerNumber = request.getTxnInfo().getBillNumber();
+								} else {
+									LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+									LocalDateTime now = LocalDateTime.now(); // Current date and time
 
-								infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
-										Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+									// Calculate the difference in minutes
+									long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
 
-								txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-
-								additionalInfoPay = new AdditionalInfoPay(
-										request.getAdditionalInfo().getReserveField1(),
-										request.getAdditionalInfo().getReserveField2(),
-										request.getAdditionalInfo().getReserveField3(),
-										request.getAdditionalInfo().getReserveField4(),
-										request.getAdditionalInfo().getReserveField5(),
-										request.getAdditionalInfo().getReserveField6(),
-										request.getAdditionalInfo().getReserveField7(),
-										request.getAdditionalInfo().getReserveField8(),
-										request.getAdditionalInfo().getReserveField9(),
-										request.getAdditionalInfo().getReserveField10());
-
-								transactionStatus = Constants.Status.Success;
-
-								billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-								response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-								return response;
-
-							}
-
-							////// Status is Unpaid(False) /////
-
-							else {
-
-								challanFees = bppraSupplierVoucherResponse.getChallanFee();
-								challanFeeData = objectMapper.writeValueAsString(challanFees);
-
-								PendingPayment pendingPayment = pendingPaymentRepository
-										.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
-												request.getTxnInfo().getBillNumber().trim(),
-												request.getTxnInfo().getBillerId().trim());
-
-								if (pendingPayment != null) {
-
-									if (pendingPayment.getIgnoreTimer()) {
+									if (minutesDifference <= pendingThresholdMinutes) {
 
 										infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
 												pendingPaymentMessage, rrn, stan);
 										response = new BillPaymentResponse(infoPay, null, null);
+
 										transactionStatus = Constants.Status.Pending;
 										billStatus = Constants.BILL_STATUS.BILL_PENDING;
 										return response;
 
-									} else {
-										LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
-										LocalDateTime now = LocalDateTime.now(); // Current date and time
-
-										// Calculate the difference in minutes
-										long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
-
-										if (minutesDifference <= pendingThresholdMinutes) {
-
-											infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-													pendingPaymentMessage, rrn, stan);
-											response = new BillPaymentResponse(infoPay, null, null);
-
-											transactionStatus = Constants.Status.Pending;
-											billStatus = Constants.BILL_STATUS.BILL_PENDING;
-											return response;
-
-										}
 									}
 								}
+							}
 
-								LOG.info("Calling Payment Inquiry from pg_payment_log table");
-								PgPaymentLog pgPaymentLog = pgPaymentLogRepository
-										.findFirstByVoucherIdAndBillerIdAndBillStatus(
-												request.getTxnInfo().getBillNumber(),
-												request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
+							LOG.info("Calling Payment Inquiry from pg_payment_log table");
+							PgPaymentLog pgPaymentLog = pgPaymentLogRepository
+									.findFirstByVoucherIdAndBillerIdAndBillStatus(request.getTxnInfo().getBillNumber(),
+											request.getTxnInfo().getBillerId(), Constants.BILL_STATUS.BILL_PAID);
 
-								if (pgPaymentLog != null && pgPaymentLog.getTransactionStatus()
-										.equalsIgnoreCase(Constants.Status.Success)) {
+							if (pgPaymentLog != null
+									&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
 
-									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-											pendingVoucherUpdateMessage, rrn, stan); // success
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										pendingVoucherUpdateMessage, rrn, stan); // success
+
+								transactionStatus = Constants.Status.Success;
+								billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								return response;
+							}
+
+							///// Amount work --- Start ////
+
+							totalTenderFeeAmount = utilMethods
+									.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
+							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
+
+							LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
+
+							txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
+
+							try {
+
+								if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
+									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									return response;
+								}
+
+							} catch (DateTimeParseException e) {
+								LOG.error("Error parsing due date: " + e.getMessage());
+							}
+
+							///// Amount work --- End ////
+
+							/// SupplierMarkChallanPaid Call
+							HttpResponse<String> supplierMarkChallanPaid = utilMethods.supplierMarkChallanPaidRequest(
+									bppraSupplierChallanPaidCall, request.getTxnInfo().getBillNumber(),
+									requestFormChallanEnquire, jwt);
+
+							/// SupplierMarkChallanPaid Failure
+							if (supplierMarkChallanPaid == null) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+										Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							/// SupplierMarkChallanPaid Success
+							if (supplierMarkChallanPaid.getStatus() == 200) {
+
+								/////// SupplierCompleteInquiry Call
+
+								HttpResponse<String> supplierCompleteInquiry = utilMethods.completeInquiryRequest(
+										bppraCompleteInquiryCall, authToken, requestFormAuth, jwt, branchcode,
+										personName);
+
+								////// SupplierCompleteInquiry Failure
+								if (supplierCompleteInquiry == null) {
+
+									HttpResponse<String> supplierCompleteInquiryRetry = utilMethods
+											.completeInquiryRequest(bppraCompleteInquiryCall, authToken,
+													requestFormAuth, jwt, branchcode, personName);
+
+									if (supplierCompleteInquiryRetry == null
+											|| supplierCompleteInquiryRetry.getStatus() == 400
+											|| supplierCompleteInquiryRetry.getStatus() == 401
+											|| supplierCompleteInquiryRetry.getStatus() == 404) {
+
+										LOG.info(
+												"SupplierCompleteInquiryRetry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
+												rrn, stan);
+
+										infoPay = new InfoPay(Constants.ResponseCodes.OK,
+												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+												request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+										additionalInfoPay = new AdditionalInfoPay(
+												request.getAdditionalInfo().getReserveField1(),
+												request.getAdditionalInfo().getReserveField2(),
+												request.getAdditionalInfo().getReserveField3(),
+												request.getAdditionalInfo().getReserveField4(),
+												request.getAdditionalInfo().getReserveField5(),
+												request.getAdditionalInfo().getReserveField6(),
+												request.getAdditionalInfo().getReserveField7(),
+												request.getAdditionalInfo().getReserveField8(),
+												request.getAdditionalInfo().getReserveField9(),
+												request.getAdditionalInfo().getReserveField10());
+
+										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+										transactionStatus = Constants.Status.Success;
+
+										billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+										return response;
+
+									}
+
+									else if (supplierCompleteInquiryRetry.getStatus() == 200) {
+
+										LOG.info(
+												"SupplierCompleteInquiryRetry : Enquery Completed Successfully :  rrn: {} - stan: {}",
+												rrn, stan);
+
+										infoPay = new InfoPay(Constants.ResponseCodes.OK,
+												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+												request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+										additionalInfoPay = new AdditionalInfoPay(
+												request.getAdditionalInfo().getReserveField1(),
+												request.getAdditionalInfo().getReserveField2(),
+												request.getAdditionalInfo().getReserveField3(),
+												request.getAdditionalInfo().getReserveField4(),
+												request.getAdditionalInfo().getReserveField5(),
+												request.getAdditionalInfo().getReserveField6(),
+												request.getAdditionalInfo().getReserveField7(),
+												request.getAdditionalInfo().getReserveField8(),
+												request.getAdditionalInfo().getReserveField9(),
+												request.getAdditionalInfo().getReserveField10());
+
+										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+										transactionStatus = Constants.Status.Success;
+
+										billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+										return response;
+
+									}
+
+								}
+
+								//// SupplierCompleteInquiry Success
+								if (supplierCompleteInquiry.getStatus() == 200) {
+
+									LOG.info(
+											"SupplierCompleteInquiry : Enquery Completed Successfully :  rrn: {} - stan: {}",
+											rrn, stan);
+
+									infoPay = new InfoPay(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+									additionalInfoPay = new AdditionalInfoPay(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
+
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
 									transactionStatus = Constants.Status.Success;
+
 									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-									response = new BillPaymentResponse(infoPay, null, null);
-
-									return response;
-								}
-
-								///// Amount work --- Start ////
-
-								totalTenderFeeAmount = utilMethods
-										.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
-								totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
-
-								LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
-
-								txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
-
-								try {
-
-									if (txnAmount.compareTo(totalTenderFeeAmount) != 0) {
-										infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
-												Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
-										response = new BillPaymentResponse(infoPay, null, null);
-										return response;
-									}
-
-								} catch (DateTimeParseException e) {
-									LOG.error("Error parsing due date: " + e.getMessage());
-								}
-
-								///// Amount work --- End ////
-
-								/// SupplierMarkChallanPaid Call
-								HttpResponse<String> supplierMarkChallanPaid = utilMethods
-										.supplierMarkChallanPaidRequest(bppraSupplierChallanPaidCall,
-												request.getTxnInfo().getBillNumber(), requestFormChallanEnquire, jwt);
-
-								/// SupplierMarkChallanPaid Failure
-								if (supplierMarkChallanPaid == null) {
-
-									infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-											Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
 									return response;
 
 								}
 
-								/// SupplierMarkChallanPaid Success
-								if (supplierMarkChallanPaid.getStatus() == 200) {
+								else if (supplierCompleteInquiry.getStatus() == 400
+										|| supplierCompleteInquiry.getStatus() == 401
+										|| supplierCompleteInquiry.getStatus() == 404) {
 
-									/////// SupplierCompleteInquiry Call
+									LOG.info(
+											"SupplierCompleteInquiry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
+											rrn, stan);
 
-									HttpResponse<String> supplierCompleteInquiry = utilMethods.completeInquiryRequest(
-											bppraCompleteInquiryCall, authToken, requestFormAuth, jwt, branchcode,
-											personName);
+									infoPay = new InfoPay(Constants.ResponseCodes.OK,
+											Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
 
-									////// SupplierCompleteInquiry Failure
-									if (supplierCompleteInquiry == null) {
+									txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+											request.getTxnInfo().getBillNumber(), paymentRefrence);
 
-										HttpResponse<String> supplierCompleteInquiryRetry = utilMethods
-												.completeInquiryRequest(bppraCompleteInquiryCall, authToken,
-														requestFormAuth, jwt, branchcode, personName);
+									additionalInfoPay = new AdditionalInfoPay(
+											request.getAdditionalInfo().getReserveField1(),
+											request.getAdditionalInfo().getReserveField2(),
+											request.getAdditionalInfo().getReserveField3(),
+											request.getAdditionalInfo().getReserveField4(),
+											request.getAdditionalInfo().getReserveField5(),
+											request.getAdditionalInfo().getReserveField6(),
+											request.getAdditionalInfo().getReserveField7(),
+											request.getAdditionalInfo().getReserveField8(),
+											request.getAdditionalInfo().getReserveField9(),
+											request.getAdditionalInfo().getReserveField10());
 
-										if (supplierCompleteInquiryRetry == null
-												|| supplierCompleteInquiryRetry.getStatus() == 400
-												|| supplierCompleteInquiryRetry.getStatus() == 401
-												|| supplierCompleteInquiryRetry.getStatus() == 404) {
+									response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
 
-											LOG.info(
-													"SupplierCompleteInquiryRetry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
-													rrn, stan);
+									transactionStatus = Constants.Status.Success;
 
-											infoPay = new InfoPay(Constants.ResponseCodes.OK,
-													Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+									billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
-
-											response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-											transactionStatus = Constants.Status.Success;
-
-											billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-											return response;
-
-										}
-
-										else if (supplierCompleteInquiryRetry.getStatus() == 200) {
-
-											LOG.info(
-													"SupplierCompleteInquiryRetry : Enquery Completed Successfully :  rrn: {} - stan: {}",
-													rrn, stan);
-
-											infoPay = new InfoPay(Constants.ResponseCodes.OK,
-													Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
-
-											response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-											transactionStatus = Constants.Status.Success;
-
-											billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-											return response;
-
-										}
-
-									}
-
-									//// SupplierCompleteInquiry Success
-									if (supplierCompleteInquiry.getStatus() == 200) {
-
-										LOG.info(
-												"SupplierCompleteInquiry : Enquery Completed Successfully :  rrn: {} - stan: {}",
-												rrn, stan);
-
-										infoPay = new InfoPay(Constants.ResponseCodes.OK,
-												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-										transactionStatus = Constants.Status.Success;
-
-										billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-										return response;
-
-									}
-
-									else if (supplierCompleteInquiry.getStatus() == 400
-											|| supplierCompleteInquiry.getStatus() == 401
-											|| supplierCompleteInquiry.getStatus() == 404) {
-
-										LOG.info(
-												"SupplierCompleteInquiry : BadRequest/UnAuthorized/Enquery Instance with Provided GUID Not Found : rrn: {} - stan: {}",
-												rrn, stan);
-
-										infoPay = new InfoPay(Constants.ResponseCodes.OK,
-												Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
-
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);
-
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-
-										response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-
-										transactionStatus = Constants.Status.Success;
-
-										billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-										return response;
-
-									}
-
-								}
-
-								else if (supplierMarkChallanPaid.getStatus() == 400) {
-
-									LOG.info("SupplierMarkChallanPaid : BadRequest");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-											Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
-									return response;
-
-								}
-
-								else if (supplierMarkChallanPaid.getStatus() == 401) {
-
-									LOG.info("SupplierMarkChallanPaid : UnAuthorized");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-											Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
-									return response;
-
-								}
-
-								else if (supplierMarkChallanPaid.getStatus() == 404) {
-
-									LOG.info("SupplierMarkChallanPaid : Challan Not Found");
-
-									infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-											Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-									response = new BillPaymentResponse(infoPay, null, null);
-									transactionStatus = Constants.Status.Fail;
 									return response;
 
 								}
 
 							}
 
+							else if (supplierMarkChallanPaid.getStatus() == 400) {
+
+								LOG.info("SupplierMarkChallanPaid : BadRequest");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							else if (supplierMarkChallanPaid.getStatus() == 401) {
+
+								LOG.info("SupplierMarkChallanPaid : UnAuthorized");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+										Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
+							else if (supplierMarkChallanPaid.getStatus() == 404) {
+
+								LOG.info("SupplierMarkChallanPaid : Challan Not Found");
+
+								infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+										Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+								transactionStatus = Constants.Status.Fail;
+								return response;
+
+							}
+
 						}
 
-						else if (supplierChallanInquiry.getStatus() == 400) {
+					}
 
-							LOG.info("SupplierChallanInquiry : Bad Request");
+					else if (supplierChallanInquiry.getStatus() == 400) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("SupplierChallanInquiry : Bad Request");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
 
-						else if (supplierChallanInquiry.getStatus() == 401) {
+					}
 
-							LOG.info("SupplierChallanInquiry : UnAuthorized");
+					else if (supplierChallanInquiry.getStatus() == 401) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("SupplierChallanInquiry : UnAuthorized");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
 
-						else if (supplierChallanInquiry.getStatus() == 404) {
+					}
 
-							LOG.info("SupplierChallanInquiry : Challan Not Found");
+					else if (supplierChallanInquiry.getStatus() == 404) {
 
-							infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
-									Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-							response = new BillPaymentResponse(infoPay, null, null);
-							transactionStatus = Constants.Status.Fail;
-							return response;
+						LOG.info("SupplierChallanInquiry : Challan Not Found");
 
-						}
+						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+						response = new BillPaymentResponse(infoPay, null, null);
+						transactionStatus = Constants.Status.Fail;
+						return response;
+
+					}
 
 //					}
 //
@@ -7523,17 +7516,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;
 					}
 
-					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getName();
+					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getName();
 
 					billingMonth = utilMethods.formatDateFormat(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getBillMonth());
+							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getBillMonth());
 
 					dueDate = utilMethods.transactionDateFormater(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDueDate());
+							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getDueDate());
 
-					cardType = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getCardType();
-					ru_Code = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getRuCode();
-					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getCustId();
+					cardType = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getCardType();
+					ru_Code = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getRuCode();
+					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getCustId();
 
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.LESCO_BILL_PAYMENT);
 					paymentParams.add(cardType);
@@ -7544,25 +7537,23 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(collMechanismCode);
 					paymentParams.add(customer_Id);
 					paymentParams.add(bankBranchCode);
-					paymentParams.add(lescoUserName);
-					paymentParams.add(lescoPassword);
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
-					amountInDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+					amountInDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0)
 							.getAmountWithInDueDate();
 
-					amountAfterDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+					amountAfterDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0)
 							.getAmountAfterDueDate();
 
 					amountInDueToDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountWithInDueDate());
+							.getLescobillinquirydata().getDataWrapper().get(0).getAmountWithInDueDate());
 					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
 
 					amountAfterDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountAfterDueDate());
+							.getLescobillinquirydata().getDataWrapper().get(0).getAmountAfterDueDate());
 					amountAfterDueDate = amountAfterDueDate.setScale(2, RoundingMode.UP);
 
 					if (utilMethods.isValidInput(dueDate)) {

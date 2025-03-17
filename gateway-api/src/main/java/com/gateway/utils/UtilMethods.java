@@ -9,8 +9,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
@@ -202,6 +204,20 @@ public class UtilMethods {
 
 		return formattedDate;
 	}
+	
+	
+	public String DueDate(String inputDate) {
+		
+        LocalDate date = Instant.parse(inputDate).atZone(ZoneId.of("UTC")).toLocalDate();
+        
+        // Format to yyyyMMdd
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        System.out.println(formattedDate);
+		
+        return formattedDate;
+	}
+	
 
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date

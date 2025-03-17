@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -3704,9 +3705,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String transactionStatus = "", billStatus = "", username = "", channel = "";
 		BigDecimal amountInDueToDate = null, amountPaid = null;
 
-		String billstatus = "", collectionType = "", transAuthId = "", billerId = "", bankName = "", bankCode = "",
-				branchName = "", branchCode = "";
+		String billerName = "", billstatus = "", collectionType = "", transAuthId = "", billerId = "", bankName = "",
+				bankCode = "", due_Date = "", branchName = "", branchCode = "";
 		Date requestedDate = new Date();
+		LocalDate dueDate;
 		try {
 
 			billerId = request.getTxnInfo().getBillerId();
@@ -3778,6 +3780,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
+						billerName = paymentLog.getName();
+						due_Date = paymentLog.getDue_date();
 						transAuthId = paymentLog.getTranAuthId();
 						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();
@@ -3788,7 +3792,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								rrn, stan); // success
 
 						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), "", billstatus, "",
+								request.getTxnInfo().getBillNumber(), billerName, billstatus, due_Date,
 								String.valueOf(amountInDueToDate), "", transAuthId, "");
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -3911,6 +3915,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 								CombinedPaymentLogView paymentLog = combinedPaymentLogViewCheck.get();
 
+								billerName = paymentLog.getName();
+								due_Date = paymentLog.getDue_date();
 								transAuthId = paymentLog.getTranAuthId();
 								billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 								amountPaid = paymentLog.getTotalAmount();
@@ -3921,7 +3927,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan); // success
 
 								TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-										request.getTxnInfo().getBillNumber(), "", billstatus, "",
+										request.getTxnInfo().getBillNumber(), billerName, billstatus, due_Date,
 										String.valueOf(amountInDueToDate), "", transAuthId, "");
 
 								AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -3971,6 +3977,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 								CombinedPaymentLogView paymentLog = combinedPaymentLogViewCheck.get();
 
+								billerName = paymentLog.getName();
+								due_Date = paymentLog.getDue_date();
 								transAuthId = paymentLog.getTranAuthId();
 								billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 								amountPaid = paymentLog.getTotalAmount();
@@ -3981,7 +3989,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan); // success
 
 								TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-										request.getTxnInfo().getBillNumber(), "", billstatus, "",
+										request.getTxnInfo().getBillNumber(), billerName, billstatus, due_Date,
 										String.valueOf(amountInDueToDate), "", transAuthId, "");
 
 								AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -4008,13 +4016,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					}
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
-
+					billerName = slicPolicyInquiryResponse.getSlicResponse().getSlicPolicyInquiry().getPolicy_holder();
+					due_Date = utilMethods
+							.DueDate(slicPolicyInquiryResponse.getSlicResponse().getSlicPolicyInquiry().getDue_date());
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), "", billstatus, "", String.valueOf(amountInDueToDate),
-							"", "", "");
+							request.getTxnInfo().getBillNumber(), billerName, billstatus, due_Date,
+							String.valueOf(amountInDueToDate), "", "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(collectionType,
 							request.getAdditionalInfo().getReserveField2(),
@@ -4082,11 +4092,11 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			try {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
-						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), "",
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
 						null, Constants.ACTIVITY.BillInquiry, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId, amountPaid,
-						"", "", "", bankName, bankCode, branchName, branchCode, "", username, "");
+						due_Date, "", "", bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {
 				LOG.error("Payment Log Exception : {}", ex);
@@ -4371,8 +4381,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
-								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName,
-										jwt,
+								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, jwt,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
@@ -4730,8 +4739,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
-								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName,
-										jwt,
+								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, jwt,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
@@ -5231,9 +5239,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
-				billerId = "", billerName = "", billingMonth = "", dueDate = "", bankName = "", bankCode = "",
+				billerId = "", billerName = "", billingMonth = "", bankName = "", bankCode = "",
 				branchName = "", branchCode = "", billerNumber = "";
 
+        LocalDate dueDate =null;
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
 		try {
@@ -5259,7 +5268,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 			lescoBillInquiryResponse = serviceCaller.get(inquiryParams, LescoBillInquiryResponse.class, rrn,
 					Constants.ACTIVITY.BillInquiry, BillerConstant.LESCO.LESCO);
-
 			if (lescoBillInquiryResponse != null) {
 
 				if (lescoBillInquiryResponse.getLescoBillInquiry() == null) {
@@ -5311,13 +5319,13 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						amountInDueDate = paymentLog.getAmount_within_duedate();
 						amountAfterDueDate = paymentLog.getAmount_after_duedate();
 						billingMonth = paymentLog.getBilling_month();
-						dueDate = paymentLog.getDue_date();
+						//dueDate = paymentLog.getDue_date();
 
 						info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 								rrn, stan); // success
 
 						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
+								request.getTxnInfo().getBillNumber(), billerName, billstatus, String.valueOf(dueDate),
 								String.valueOf(amountInDueDate), "", transAuthId, "");
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
@@ -5415,19 +5423,19 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					billerId = request.getTxnInfo().getBillerId();
 					billerNumber = request.getTxnInfo().getBillNumber();
-					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getName();
+					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getName();
 					billingMonth = utilmethod.formatDateString(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getBillMonth());
+							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getBillMonth());
 
-					dueDate = utilmethod.transactionDateFormater(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDueDate());
+					dueDate = utilmethod.parseDueDateWithoutDashes(
+							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getDueDate());
 
 					amountInDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountWithInDueDate());
+							.getLescobillinquirydata().getDataWrapper().get(0).getAmountWithInDueDate());
 					amountInDueDate = amountInDueDate.setScale(2, RoundingMode.UP);
 
 					amountAfterDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
-							.getLescobillinquirydata().getAmountAfterDueDate());
+							.getLescobillinquirydata().getDataWrapper().get(0).getAmountAfterDueDate());
 					amountAfterDueDate = amountAfterDueDate.setScale(2, RoundingMode.UP);
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
@@ -5435,7 +5443,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
 
-					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
+					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, String.valueOf(dueDate),
 							String.valueOf(amountInDueDate), String.valueOf(amountAfterDueDate), "", "");
 
 					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
@@ -5507,7 +5515,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
 						billerNumber, billerId, amountInDueDate, null, Constants.ACTIVITY.BillInquiry,
 						transactionStatus, channel, billStatus, request.getTxnInfo().getTranDate(),
-						request.getTxnInfo().getTranTime(), transAuthId, amountPaid, dueDate, billingMonth, "",
+						request.getTxnInfo().getTranTime(), transAuthId, amountPaid, String.valueOf(dueDate), billingMonth, "",
 						bankName, bankCode, branchName, branchCode, "", username, "");
 
 			} catch (Exception ex) {

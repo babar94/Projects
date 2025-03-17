@@ -18,16 +18,21 @@ import lombok.ToString;
 public class SlicPolicyInquiry {
 
 	@JsonProperty("policy_no")
-    private String policyNo;
+	private String policyNo;
 
-    @JsonProperty("message")
-    private String message;
+	@JsonProperty("policy_holder")
+	private String policy_holder;
 
-    @JsonProperty("result_wrapper")
-    private List<ResultWrapper> resultWrapper;
+	@JsonProperty("due_date")
+	private String due_date;
 
-    @JsonProperty("status")
-    private String status;
+	@JsonProperty("message")
+	private String message;
 
-	
+	@JsonProperty("result_wrapper")
+	private List<ResultWrapper> resultWrapper;
+
+	@JsonProperty("status")
+	private String status;
+
 }
