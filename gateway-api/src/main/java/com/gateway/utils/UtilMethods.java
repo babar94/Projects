@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -217,6 +218,38 @@ public class UtilMethods {
 		
         return formattedDate;
 	}
+	
+     public String getFormattedBillingMonth(String billingmonth) {
+    	 
+    	 try {
+             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM-yy", Locale.ENGLISH);
+             YearMonth yearMonth = YearMonth.parse(billingmonth, formatter);
+
+             return yearMonth.format(DateTimeFormatter.ofPattern("yyMM"));
+
+         } catch (DateTimeParseException e) {
+             return "Invalid date format";
+         }
+    
+     }
+    	 
+        	 	 
+     public String getFormattedDueDate(String dueDate) {
+    	 
+    	 try {
+             // Define the input format (DDMMYYYY)
+             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
+             LocalDate date = LocalDate.parse(dueDate, inputFormatter);
+
+             // Define the output format (YYYYMMDD)
+             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+             return date.format(outputFormatter);
+         } catch (DateTimeParseException e) {
+             return "Invalid date format";
+         }
+    	 
+    	 
+     }
 	
 
 	// Muhammad Said

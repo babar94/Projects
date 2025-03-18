@@ -20,7 +20,7 @@ public class LescoBillData {
     @JsonProperty("ReferenceNo")
     private String referenceNo;
 
-    @JsonProperty("RU_code")
+    @JsonProperty("RU_Code")
     private String ruCode;
 
     @JsonProperty("DueDate")

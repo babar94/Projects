@@ -7360,15 +7360,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		ArrayList<String> inquiryParams = new ArrayList<String>();
 		ArrayList<String> paymentParams = new ArrayList<String>();
 
-		BigDecimal amountInDueToDate = null, amountAfterDueDate = null, txnAmount = null;
+		BigDecimal amountInDueDate = null, amountAfterDueDate = null, txnAmount = null;
 		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "", billerName = "",
 				billingMonth = "", dueDate = "", cardType = "", ru_Code = "", customer_Id = "", amountInDueDateRes = "",
 				amountAfterDueDateRes = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
 		LocalDateTime nowDateTime = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-DD-YYYY");
-		String localDateTime = nowDateTime.format(formatter);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		String PaymentDate = nowDateTime.format(formatter);
 
 		try {
 
@@ -7422,38 +7422,38 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-				//// Already Paid
-
-				else if (lescoBillInquiryResponse.getLescoBillInquiry().getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
-
-					billerId = request.getTxnInfo().getBillerId();
-					billerNumber = request.getTxnInfo().getBillNumber();
-
-					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
-							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-
-					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
-
-					transactionStatus = Constants.Status.Success;
-
-					billStatus = Constants.BILL_STATUS.BILL_PAID;
-
-					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-					return response;
-
-				}
+//				//// Already Paid
+//
+//				else if (lescoBillInquiryResponse.getLescoBillInquiry().getResponseCode()
+//						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+//
+//					billerId = request.getTxnInfo().getBillerId();
+//					billerNumber = request.getTxnInfo().getBillNumber();
+//
+//					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+//							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+//
+//					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+//
+//					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+//							request.getAdditionalInfo().getReserveField2(),
+//							request.getAdditionalInfo().getReserveField3(),
+//							request.getAdditionalInfo().getReserveField4(),
+//							request.getAdditionalInfo().getReserveField5(),
+//							request.getAdditionalInfo().getReserveField6(),
+//							request.getAdditionalInfo().getReserveField7(),
+//							request.getAdditionalInfo().getReserveField8(),
+//							request.getAdditionalInfo().getReserveField9(),
+//							request.getAdditionalInfo().getReserveField10());
+//
+//					transactionStatus = Constants.Status.Success;
+//
+//					billStatus = Constants.BILL_STATUS.BILL_PAID;
+//
+//					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+//					return response;
+//
+//				}
 
 				/////// Inquiry success response
 
@@ -7518,10 +7518,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getName();
 
-					billingMonth = utilMethods.formatDateFormat(
+					billingMonth = utilMethods.getFormattedBillingMonth(
 							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getBillMonth());
 
-					dueDate = utilMethods.transactionDateFormater(
+					dueDate = utilMethods.getFormattedDueDate(
 							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getDueDate());
 
 					cardType = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getCardType();
@@ -7532,7 +7532,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(cardType);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
 					paymentParams.add(ru_Code);
-					paymentParams.add(localDateTime);
+					paymentParams.add(PaymentDate);
 					paymentParams.add(request.getTxnInfo().getTranAmount());
 					paymentParams.add(collMechanismCode);
 					paymentParams.add(customer_Id);
@@ -7548,9 +7548,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					amountAfterDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0)
 							.getAmountAfterDueDate();
 
-					amountInDueToDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
+					amountInDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
 							.getLescobillinquirydata().getDataWrapper().get(0).getAmountWithInDueDate());
-					amountInDueToDate = amountInDueToDate.setScale(2, RoundingMode.UP);
+					amountInDueDate = amountInDueDate.setScale(2, RoundingMode.UP);
 
 					amountAfterDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
 							.getLescobillinquirydata().getDataWrapper().get(0).getAmountAfterDueDate());
@@ -7598,7 +7598,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// M-Pay call to Payment
 
 					lescoBillPaymentResponse = serviceCaller.get(paymentParams, LescoBillPaymentResponse.class, rrn,
-							Constants.ACTIVITY.BillPayment, BillerConstant.BISEKOHAT.BISEKOHAT);
+							Constants.ACTIVITY.BillPayment, BillerConstant.LESCO.LESCO);
 
 					if (lescoBillPaymentResponse != null) {
 
@@ -7614,6 +7614,41 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							return response;
 
 						}
+						
+						
+					     //// Already Paid
+
+						else if (lescoBillPaymentResponse.getLescoBillPayment().getResponseCode()
+								.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+
+							billerId = request.getTxnInfo().getBillerId();
+							billerNumber = request.getTxnInfo().getBillNumber();
+
+							infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+									Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							transactionStatus = Constants.Status.Success;
+
+							billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+							return response;
+
+						}
+						
 
 						else if (lescoBillPaymentResponse.getLescoBillPayment().getResponseCode()
 								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
@@ -7725,8 +7760,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
-						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueToDate,
-						null, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueDate,
+						amountAfterDueDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
 						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDate, billingMonth, paymentRefrence,
 						bankName, bankCode, branchName, branchCode, "", username, "");
