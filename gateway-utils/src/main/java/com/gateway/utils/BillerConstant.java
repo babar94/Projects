@@ -60,7 +60,7 @@ public interface BillerConstant {
 
 		String SLIC = "SLIC";
 	}
-	
+
 	interface BPPRA {
 
 		String BPPRA = "BPPRA";
@@ -70,10 +70,20 @@ public interface BillerConstant {
 
 		String BISEKOHAT = "BISE-KOHAT";
 	}
-	
+
 	interface LESCO {
 
 		String LESCO = "LESCO";
 	}
-	
+
+	interface WASA {
+
+		String WASA = "WASA";
+	}
+
+	interface PU {
+
+		String PU = "PU";
+	}
+
 }

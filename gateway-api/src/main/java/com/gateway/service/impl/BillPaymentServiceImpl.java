@@ -49,6 +49,7 @@ import com.gateway.model.mpay.response.billinquiry.pta.PtaGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.slic.SlicPolicyInquiryResponse;
 import com.gateway.model.mpay.response.billinquiry.thardeep.ThardeepGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.uom.UomGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.wasa.WasaBillnquiryResponse;
 import com.gateway.model.mpay.response.billpayment.UpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.aiou.AiouUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.bisekohat.UpdateBiseKohatResponse;
@@ -62,6 +63,7 @@ import com.gateway.model.mpay.response.billpayment.pta.PtaUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.slic.UpdateSlicPolicyTranslationResponse;
 import com.gateway.model.mpay.response.billpayment.thardeep.ThardeepUpdateVoucherResponse;
 import com.gateway.model.mpay.response.billpayment.uom.UomUpdateVoucherResponse;
+import com.gateway.model.mpay.response.billpayment.wasa.WasaBillPaymentResponse;
 import com.gateway.repository.BillerConfigurationRepo;
 import com.gateway.repository.CombinedPaymentLogViewRepository;
 import com.gateway.repository.FeeTypeRepository;
@@ -551,6 +553,29 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 									}
 
 									////////// LESCO ///////
+
+									////////// WASA ///////
+
+									else if (billerDetail.getBillerName().equalsIgnoreCase(BillerConstant.WASA.WASA)
+											&& type.equalsIgnoreCase(Constants.BillerType.ONLINE_BILLER)) {
+
+										switch (subBillerDetail.getSubBillerName()) {
+
+										case BillerConstant.WASA.WASA:
+											billPaymentResponse = billPaymentWasa(request, httpRequestData);
+											break;
+
+										default:
+											LOG.info("subBiller does not exists.");
+											infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
+													Constants.ResponseDescription.INVALID_BILLER_ID, rrn, stan);
+											billPaymentResponse = new BillPaymentResponse(infoPay, null, null);
+
+											break;
+										}
+									}
+
+									////////// WASA ///////
 
 									// AIOU
 									// PTA
@@ -7422,39 +7447,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					return response;
 				}
 
-//				//// Already Paid
-//
-//				else if (lescoBillInquiryResponse.getLescoBillInquiry().getResponseCode()
-//						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
-//
-//					billerId = request.getTxnInfo().getBillerId();
-//					billerNumber = request.getTxnInfo().getBillNumber();
-//
-//					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
-//							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
-//
-//					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
-//
-//					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-//							request.getAdditionalInfo().getReserveField2(),
-//							request.getAdditionalInfo().getReserveField3(),
-//							request.getAdditionalInfo().getReserveField4(),
-//							request.getAdditionalInfo().getReserveField5(),
-//							request.getAdditionalInfo().getReserveField6(),
-//							request.getAdditionalInfo().getReserveField7(),
-//							request.getAdditionalInfo().getReserveField8(),
-//							request.getAdditionalInfo().getReserveField9(),
-//							request.getAdditionalInfo().getReserveField10());
-//
-//					transactionStatus = Constants.Status.Success;
-//
-//					billStatus = Constants.BILL_STATUS.BILL_PAID;
-//
-//					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
-//					return response;
-//
-//				}
-
 				/////// Inquiry success response
 
 				else if (lescoBillInquiryResponse.getLescoBillInquiry().getResponseCode()
@@ -7516,17 +7508,21 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;
 					}
 
-					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getName();
+					billerName = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+							.getDataWrapper().get(0).getName();
 
-					billingMonth = utilMethods.getFormattedBillingMonth(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getBillMonth());
+					billingMonth = utilMethods.getFormattedBillingMonth(lescoBillInquiryResponse.getLescoBillInquiry()
+							.getLescobillinquirydata().getDataWrapper().get(0).getBillMonth());
 
-					dueDate = utilMethods.getFormattedDueDate(
-							lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getDueDate());
+					dueDate = utilMethods.getFormattedDueDate(lescoBillInquiryResponse.getLescoBillInquiry()
+							.getLescobillinquirydata().getDataWrapper().get(0).getDueDate());
 
-					cardType = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getCardType();
-					ru_Code = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getRuCode();
-					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0).getCustId();
+					cardType = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper()
+							.get(0).getCardType();
+					ru_Code = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper()
+							.get(0).getRuCode();
+					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+							.getDataWrapper().get(0).getCustId();
 
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.LESCO_BILL_PAYMENT);
 					paymentParams.add(cardType);
@@ -7542,11 +7538,11 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
-					amountInDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0)
-							.getAmountWithInDueDate();
+					amountInDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+							.getDataWrapper().get(0).getAmountWithInDueDate();
 
-					amountAfterDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper().get(0)
-							.getAmountAfterDueDate();
+					amountAfterDueDateRes = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+							.getDataWrapper().get(0).getAmountAfterDueDate();
 
 					amountInDueDate = new BigDecimal(lescoBillInquiryResponse.getLescoBillInquiry()
 							.getLescobillinquirydata().getDataWrapper().get(0).getAmountWithInDueDate());
@@ -7614,9 +7610,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							return response;
 
 						}
-						
-						
-					     //// Already Paid
+
+						//// Already Paid
 
 						else if (lescoBillPaymentResponse.getLescoBillPayment().getResponseCode()
 								.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
@@ -7648,9 +7643,406 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							return response;
 
 						}
-						
 
 						else if (lescoBillPaymentResponse.getLescoBillPayment().getResponseCode()
+								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.OK,
+									Constants.ResponseDescription.OPERATION_SUCCESSFULL, rrn, stan);
+
+							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
+									request.getTxnInfo().getBillNumber(), paymentRefrence);
+
+							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+									request.getAdditionalInfo().getReserveField2(),
+									request.getAdditionalInfo().getReserveField3(),
+									request.getAdditionalInfo().getReserveField4(),
+									request.getAdditionalInfo().getReserveField5(),
+									request.getAdditionalInfo().getReserveField6(),
+									request.getAdditionalInfo().getReserveField7(),
+									request.getAdditionalInfo().getReserveField8(),
+									request.getAdditionalInfo().getReserveField9(),
+									request.getAdditionalInfo().getReserveField10());
+
+							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
+							transactionStatus = Constants.Status.Success;
+
+							billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+							return response;
+
+						}
+
+						else {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+									Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Fail;
+						}
+
+					} else {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						transactionStatus = Constants.Status.Fail;
+
+						return response;
+
+					}
+
+				}
+
+				else {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+
+				}
+
+			}
+
+			else {
+
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+						rrn, stan);
+
+				response = new BillPaymentResponse(infoPay, null, null);
+
+				transactionStatus = Constants.Status.Fail;
+
+				return response;
+			}
+		}
+
+		catch (
+
+		Exception e) {
+
+			LOG.info("Exception in bill payment ");
+		}
+
+		finally {
+
+			LOG.info("Bill Payment Response {}", response);
+
+			try {
+
+				String requestAsString = objectMapper.writeValueAsString(request);
+				String responseAsString = objectMapper.writeValueAsString(response);
+
+				auditLoggingService.auditLog(Constants.ACTIVITY.BillPayment, response.getInfo().getResponseCode(),
+						response.getInfo().getResponseDesc(), requestAsString, responseAsString, requestedDate,
+						new Date(), request.getInfo().getRrn(), request.getTxnInfo().getBillerId(),
+						request.getTxnInfo().getBillNumber(), channel, username);
+
+			} catch (Exception ex) {
+				LOG.error("{Exception Audit Logs}", ex);
+			}
+
+			try {
+
+				paymentLoggingService.paymentLog(requestedDate, new Date(), rrn, stan,
+						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), billerName,
+						request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(), amountInDueDate,
+						amountAfterDueDate, Constants.ACTIVITY.BillPayment, transactionStatus, channel, billStatus,
+						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), transAuthId,
+						new BigDecimal(request.getTxnInfo().getTranAmount()), dueDate, billingMonth, paymentRefrence,
+						bankName, bankCode, branchName, branchCode, "", username, "");
+
+				LOG.info(" --- Bill Payment Method End --- ");
+
+			} catch (Exception ex) {
+				LOG.error("{Exception payment Logs}", ex);
+			}
+
+		}
+		return response;
+	}
+
+	@Override
+	public BillPaymentResponse billPaymentWasa(BillPaymentRequest request, HttpServletRequest httpRequestData) {
+
+		LOG.info("Lesco Bill Payment Request {} ", request.toString());
+
+		BillPaymentResponse response = null;
+		WasaBillPaymentResponse wasaBillPaymentResponse = null;
+		WasaBillnquiryResponse wasaBillnquiryResponse = null;
+		Date requestedDate = new Date();
+		InfoPay infoPay = null;
+		TxnInfoPay txnInfoPay = null;
+		AdditionalInfoPay additionalInfoPay = null;
+		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
+		String paymentRefrence = utilMethods.getRRN();
+		String stan = request.getInfo().getStan();
+		LOG.info("RRN :{ }", rrn);
+		String transAuthId = request.getTxnInfo().getTranAuthId();
+		String channel = "", username = "";
+
+		ArrayList<String> inquiryParams = new ArrayList<String>();
+		ArrayList<String> paymentParams = new ArrayList<String>();
+
+		BigDecimal amountInDueDate = null, amountAfterDueDate = null, txnAmount = null;
+		String billStatus = "", transactionStatus = "", billerId = "", billerNumber = "", billerName = "",
+				billingMonth = "", dueDate = "", cardType = "", ru_Code = "", customer_Id = "", amountInDueDateRes = "",
+				amountAfterDueDateRes = "";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+
+		LocalDateTime nowDateTime = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		String PaymentDate = nowDateTime.format(formatter);
+
+		try {
+
+			if (request.getBranchInfo() != null) {
+				bankName = request.getBranchInfo().getBankName();
+				bankCode = request.getBranchInfo().getBankCode();
+				branchName = request.getBranchInfo().getBranchName();
+				branchCode = request.getBranchInfo().getBranchCode();
+			}
+
+			String[] result = jwtTokenUtil.getTokenInformation(httpRequestData);
+
+			username = result[0];
+			channel = result[1];
+
+			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.WASA_BILL_INQUIRY);
+			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
+			inquiryParams.add(rrn);
+			inquiryParams.add(stan);
+
+			//// Inquiry Call to M-Pay
+
+			wasaBillnquiryResponse = serviceCaller.get(inquiryParams, WasaBillnquiryResponse.class, rrn,
+					Constants.ACTIVITY.BillInquiry, BillerConstant.LESCO.LESCO);
+
+			if (wasaBillnquiryResponse != null) {
+
+				if (wasaBillnquiryResponse.getWasaResponse() == null) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					transactionStatus = Constants.Status.Fail;
+
+					return response;
+
+				}
+
+				//// consumer number not exsist
+
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
+
+					response = new BillPaymentResponse(infoPay, null, null);
+
+					return response;
+				}
+
+				//// Already Paid
+
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+
+					billerId = request.getTxnInfo().getBillerId();
+					billerNumber = request.getTxnInfo().getBillNumber();
+
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_ALREADY_PAID,
+							Constants.ResponseDescription.BILL_ALREADY_PAID, rrn, stan);
+
+					txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
+
+					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+							request.getAdditionalInfo().getReserveField2(),
+							request.getAdditionalInfo().getReserveField3(),
+							request.getAdditionalInfo().getReserveField4(),
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
+
+					transactionStatus = Constants.Status.Success;
+
+					billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+					response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+					return response;
+
+				}
+
+				/////// Inquiry success response
+
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
+						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+
+					PendingPayment pendingPayment = pendingPaymentRepository
+							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
+									request.getTxnInfo().getBillNumber().trim(),
+									request.getTxnInfo().getBillerId().trim());
+
+					if (pendingPayment != null) {
+
+						if (pendingPayment.getIgnoreTimer()) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+									stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Pending;
+							billStatus = Constants.BILL_STATUS.BILL_PENDING;
+							return response;
+
+						} else {
+							LocalDateTime transactionDateTime = pendingPayment.getTransactionDate();
+							LocalDateTime now = LocalDateTime.now(); // Current date and time
+
+							// Calculate the difference in minutes
+							long minutesDifference = Duration.between(transactionDateTime, now).toMinutes();
+
+							if (minutesDifference <= pendingThresholdMinutes) {
+
+								infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingPaymentMessage, rrn,
+										stan);
+								response = new BillPaymentResponse(infoPay, null, null);
+
+								transactionStatus = Constants.Status.Pending;
+								billStatus = Constants.BILL_STATUS.BILL_PENDING;
+								return response;
+
+							}
+						}
+					}
+
+					LOG.info("Calling Payment Inquiry from pg_payment_log table");
+					PgPaymentLog pgPaymentLog = pgPaymentLogRepository.findFirstByVoucherIdAndBillerIdAndBillStatus(
+							request.getTxnInfo().getBillNumber(), request.getTxnInfo().getBillerId(),
+							Constants.BILL_STATUS.BILL_PAID);
+
+					if (pgPaymentLog != null
+							&& pgPaymentLog.getTransactionStatus().equalsIgnoreCase(Constants.Status.Success)) {
+
+						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR, pendingVoucherUpdateMessage, rrn,
+								stan); // success
+
+						transactionStatus = Constants.Status.Success;
+						billStatus = Constants.BILL_STATUS.BILL_PAID;
+
+						response = new BillPaymentResponse(infoPay, null, null);
+
+						return response;
+					}
+
+					billerId = request.getTxnInfo().getBillerId();
+					billerNumber = request.getTxnInfo().getBillNumber();
+					billerName = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getConsumername();
+
+					amountInDueDateRes = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getBillAmount();
+
+					amountAfterDueDateRes = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry()
+							.getBillAmountAfterDueDate();
+
+					amountInDueDate = new BigDecimal(
+							wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getBillAmount());
+					amountInDueDate = amountInDueDate.setScale(2, RoundingMode.UP);
+
+					amountAfterDueDate = new BigDecimal(
+							wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getBillAmountAfterDueDate());
+					amountAfterDueDate = amountAfterDueDate.setScale(2, RoundingMode.UP);
+
+					dueDate = utilMethods.getDueDateFormatted(
+							wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getDueDate());
+
+					billingMonth = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getPeriod();
+
+					paymentParams.add(Constants.MPAY_REQUEST_METHODS.WASA_BILL_PAYMENT);
+					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+					paymentParams.add(request.getTxnInfo().getTranAmount());
+					paymentParams.add("4667676"); /// consumerCell
+					paymentParams.add("1"); /// payMode
+					paymentParams.add(rrn);
+					paymentParams.add(request.getTxnInfo().getTranDate());
+					paymentParams.add("1"); /// tranStatus
+					paymentParams.add(rrn);
+					paymentParams.add(stan);
+
+					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
+
+					if (utilMethods.isValidInput(dueDate)) {
+						LocalDate currentDate = LocalDate.now();
+
+						try {
+							LocalDate localDueDate = utilMethods.parseDueDateWithoutDashes(dueDate);
+
+							///// Check due date conditions///
+
+							if (utilMethods.isPaymentWithinDueDate(currentDate, localDueDate)) {
+								if (Double.valueOf(request.getTxnInfo().getTranAmount())
+										.compareTo(Double.valueOf(amountInDueDateRes)) != 0) {
+									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									return response;
+								}
+							} else {
+								if (Double.valueOf(request.getTxnInfo().getTranAmount())
+										.compareTo(Double.valueOf(amountAfterDueDateRes)) != 0) {
+									infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+											Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+									response = new BillPaymentResponse(infoPay, null, null);
+									return response;
+								}
+							}
+						} catch (DateTimeParseException e) {
+							LOG.error("Error parsing due date: " + e.getMessage());
+						}
+					} else {
+						LOG.info("Invalid due date input");
+						if (Double.valueOf(request.getTxnInfo().getTranAmount())
+								.compareTo(Double.valueOf(amountInDueDateRes)) != 0) {
+							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							return response;
+						}
+					}
+
+					//// M-Pay call to Payment
+
+					wasaBillPaymentResponse = serviceCaller.get(paymentParams, WasaBillPaymentResponse.class, rrn,
+							Constants.ACTIVITY.BillPayment, BillerConstant.WASA.WASA);
+
+					if (wasaBillPaymentResponse != null) {
+
+						if (wasaBillPaymentResponse.getWasaBillPayment() == null) {
+
+							infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+									Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+
+							response = new BillPaymentResponse(infoPay, null, null);
+
+							transactionStatus = Constants.Status.Fail;
+
+							return response;
+
+						}
+
+						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode()
 								.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
 
 							infoPay = new InfoPay(Constants.ResponseCodes.OK,

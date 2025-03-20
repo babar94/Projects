@@ -132,7 +132,11 @@ public class Constants {
 		public static final String BISE_KOHAT_PAYMENT = "bise-kohat-billpayment";
 		public static final String LESCO_BILL_INQUIRY = "lesco-billinquiry";
 		public static final String LESCO_BILL_PAYMENT = "lesco-billpayment";
+		public static final String WASA_BILL_INQUIRY = "wasa-billinquiry";
+		public static final String WASA_BILL_PAYMENT = "wasa-billpayment";
 
+		
+		
 	}
 
 	public static class BILL_STATUS {

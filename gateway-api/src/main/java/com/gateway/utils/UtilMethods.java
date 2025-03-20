@@ -251,7 +251,27 @@ public class UtilMethods {
     	 
      }
 	
+      public String getDueDateFormatted(String dueDate) {
+    	 
+    	 try {
+             // Define the input format (DDMMYYYY)
+             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+             LocalDate date = LocalDate.parse(dueDate, inputFormatter);
 
+             // Define the output format (YYYYMMDD)
+             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+             return date.format(outputFormatter);
+         } catch (DateTimeParseException e) {
+             return "Invalid date format";
+         }
+    	 
+    	 
+     }
+
+     
+     
+     
+     
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
