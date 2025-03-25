@@ -62,6 +62,7 @@ public class ServiceCaller {
 			long startTime = System.currentTimeMillis();
 			result = Unirest.get(endPoint + query).asString().getBody();
 			result = result.replace("fees_wrapper", "fees");
+
 			long endTime = System.currentTimeMillis();
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;

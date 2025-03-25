@@ -134,6 +134,8 @@ public class Constants {
 		public static final String LESCO_BILL_PAYMENT = "lesco-billpayment";
 		public static final String WASA_BILL_INQUIRY = "wasa-billinquiry";
 		public static final String WASA_BILL_PAYMENT = "wasa-billpayment";
+		public static final String PU_BILL_INQUIRY = "pu-billinquiry";
+		public static final String PU_BILL_PAYMENT = "pu-billpayment";
 
 		
 		

@@ -44,6 +44,8 @@ public interface BillInquiryService {
 	
 	public BillInquiryResponse billInquiryWasa(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
+	public BillInquiryResponse billInquiryPU(BillInquiryRequest request, HttpServletRequest httpRequestData);
+
 	
 
 }

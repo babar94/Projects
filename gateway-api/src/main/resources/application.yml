@@ -175,4 +175,7 @@ lesco:
    bank_Branch_Code: 22001
   
 pithm:
-   paymentMode: NBP branch    
+   paymentMode: NBP branch
+   
+pu:
+ channel: cmd_statement

@@ -41,5 +41,8 @@ public interface BillPaymentService {
 	public BillPaymentResponse billPaymentLesco(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
 	public BillPaymentResponse billPaymentWasa(BillPaymentRequest request, HttpServletRequest httpRequestData);
+	
+	public BillPaymentResponse billPaymentPu(BillPaymentRequest request, HttpServletRequest httpRequestData);
 
+	
 }

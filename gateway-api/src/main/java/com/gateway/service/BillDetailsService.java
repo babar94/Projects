@@ -39,6 +39,8 @@ public interface BillDetailsService {
 
 	public PaymentInquiryResponse paymentInquiryWasa(PaymentInquiryRequest request, HttpServletRequest httpRequestData);
 
+	public PaymentInquiryResponse paymentInquiryPU(PaymentInquiryRequest request, HttpServletRequest httpRequestData);
+
 	public BillerListResponse getBillerList(HttpServletRequest httpRequestData);
 
 }
