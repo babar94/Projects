@@ -250,6 +250,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${pu.channel}")
 	private String puChannel;
 
+	@Value("${wasa.consumerCell}")
+	private String consumerCell;
+
+	@Value("${wasa.payMode}")
+	private String payMode;
+
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
 
@@ -7998,17 +8004,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					billingMonth = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getPeriod();
 
-					paymentParams.add(Constants.MPAY_REQUEST_METHODS.WASA_BILL_PAYMENT);
-					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
-					paymentParams.add(request.getTxnInfo().getTranAmount());
-					paymentParams.add("4667676"); /// consumerCell
-					paymentParams.add("1"); /// payMode
-					paymentParams.add(rrn);
-					paymentParams.add(request.getTxnInfo().getTranDate());
-					paymentParams.add("1"); /// tranStatus
-					paymentParams.add(rrn);
-					paymentParams.add(stan);
-
 					txnAmount = new BigDecimal(request.getTxnInfo().getTranAmount());
 
 					if (utilMethods.isValidInput(dueDate)) {
@@ -8051,6 +8046,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					}
 
 					//// M-Pay call to Payment
+
+					paymentParams.add(Constants.MPAY_REQUEST_METHODS.WASA_BILL_PAYMENT);
+					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+					paymentParams.add(request.getTxnInfo().getTranAmount());
+					paymentParams.add(consumerCell); 
+					paymentParams.add(payMode); 
+					paymentParams.add(rrn);
+					paymentParams.add(request.getTxnInfo().getTranDate());
+					paymentParams.add(" "); /// tranStatus
+					paymentParams.add(rrn);
+					paymentParams.add(stan);
 
 					wasaBillPaymentResponse = serviceCaller.get(paymentParams, WasaBillPaymentResponse.class, rrn,
 							Constants.ACTIVITY.BillPayment, BillerConstant.WASA.WASA);

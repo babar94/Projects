@@ -5613,7 +5613,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						TxnInfo txnInfo = new TxnInfo(request.getTxnInfo().getBillerId(),
 								request.getTxnInfo().getBillNumber(), billerName, billstatus, dueDate,
-								String.valueOf(amountInDueDate), "", transAuthId, "");
+								String.valueOf(amountInDueDate), String.valueOf(amountAfterDueDate), transAuthId, "");
 
 						AdditionalInfo additionalInfo = new AdditionalInfo(
 								request.getAdditionalInfo().getReserveField1(),

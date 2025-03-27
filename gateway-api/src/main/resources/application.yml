@@ -179,3 +179,7 @@ pithm:
    
 pu:
  channel: cmd_statement
+
+wasa:
+  consumerCell: 00000000000
+  payMode: 1
