@@ -5528,7 +5528,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
 				billerId = "", billerName = "", billingMonth = "", bankName = "", bankCode = "", branchName = "",
-				branchCode = "", billerNumber = "", dueDate = "";
+				branchCode = "", billerNumber = "", dueDate = "" , period="";
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
@@ -5724,6 +5724,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getDueDate());
 
 					billingMonth = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getPeriod();
+					period = wasaBillnquiryResponse.getWasaResponse().getWasaBillInquiry().getPeriod();
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
@@ -5732,7 +5733,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
 							String.valueOf(amountInDueDate), String.valueOf(amountAfterDueDate), "", "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(period,
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
@@ -6098,7 +6099,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				LOG.error("Payment Log Exception : {}", ex);
 			}
 
-			LOG.info("----- Wasa BillInquiry Method End -----");
+			LOG.info("----- Pu BillInquiry Method End -----");
 
 		}
 

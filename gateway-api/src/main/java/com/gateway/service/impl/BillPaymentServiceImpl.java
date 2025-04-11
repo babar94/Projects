@@ -5604,7 +5604,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
 
-								additionalInfoPay = new AdditionalInfoPay("",
+								additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
 										request.getAdditionalInfo().getReserveField2(),
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
@@ -7832,10 +7832,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				amountAfterDueDateRes = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
 
-		LocalDateTime nowDateTime = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-		String PaymentDate = nowDateTime.format(formatter);
-
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -8050,8 +8046,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.WASA_BILL_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
 					paymentParams.add(request.getTxnInfo().getTranAmount());
-					paymentParams.add(consumerCell); 
-					paymentParams.add(payMode); 
+					paymentParams.add(consumerCell);
+					paymentParams.add(payMode);
 					paymentParams.add(rrn);
 					paymentParams.add(request.getTxnInfo().getTranDate());
 					paymentParams.add(" "); /// tranStatus

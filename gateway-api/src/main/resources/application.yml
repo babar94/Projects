@@ -181,5 +181,5 @@ pu:
  channel: cmd_statement
 
 wasa:
-  consumerCell: 00000000000
+  consumerCell: "00000000000"
   payMode: 1
