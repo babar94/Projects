@@ -92,6 +92,7 @@ import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.FeeTypeMapper;
 import com.gateway.utils.JwtTokenUtil;
+import com.gateway.utils.MemcachedService;
 import com.gateway.utils.RSAEncryption;
 import com.gateway.utils.UtilMethods;
 
@@ -255,6 +256,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Value("${wasa.payMode}")
 	private String payMode;
+
+	@Autowired
+	private MemcachedService memcachedService;
 
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
@@ -5604,7 +5608,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								txnInfoPay = new TxnInfoPay(billerId, billerNumber, paymentRefrence);
 
-								additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
+								additionalInfoPay = new AdditionalInfoPay(
+										request.getAdditionalInfo().getReserveField1(),
 										request.getAdditionalInfo().getReserveField2(),
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
@@ -5854,7 +5859,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 			}
 
 			billerNumber = request.getTxnInfo().getBillNumber();
-			jwt = request.getAdditionalInfo().getReserveField2();
+			jwt = memcachedService.get(request.getAdditionalInfo().getReserveField2());
+			if (jwt == null) {
+				LOG.info("JWT is null — possibly due to an incorrect key");
+
+				infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+						Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
+
+				response = new BillPaymentResponse(infoPay, null, null);
+				transactionStatus = Constants.Status.Fail;
+				return response;
+			}
 			LOG.info("jwt :" + jwt);
 
 			//////// Tender //////
@@ -5884,27 +5899,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					LOG.info("authToken" + authToken);
 
 					publicKey = rsaUtility.getPublicKey();
-
-					//// - Below code is comment out because of not use in bill payment
-
-//					///// TenderTokenInquiry Call
-//					HttpResponse<String> tenderTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
-//							authToken, requestFormAuth, publicKey);
-//
-//					///// TenderTokenInquiry Failure
-//					if (tenderTokenInquiry == null) {
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-//								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-//
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-
-					//// TenderTokenInquiry Success
-					// if (tenderTokenInquiry.getStatus() == 200) {
 
 					decodeJwt = utilMethods.DecodeJwt(jwt);
 					keyAndIv = rsaUtility.RSADecrypt(decodeJwt);
@@ -6200,7 +6194,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 								}
 
-								else if (tenderCompleteInquiry.getStatus() == 400
+								else if (tenderCompleteInquiry == null || tenderCompleteInquiry.getStatus() == 400
 										|| tenderCompleteInquiry.getStatus() == 401
 										|| tenderCompleteInquiry.getStatus() == 404) {
 
@@ -6314,46 +6308,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					}
 
-					////////////
-
-					// }
-
-//					else if (tenderTokenInquiry.getStatus() == 401) {
-//
-//						LOG.info("TenderTokenInquiry : Unauthorized");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-
-//					else if (tenderTokenInquiry.getStatus() == 404) {
-//
-//						LOG.info("TenderTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-//
-//					else if (tenderTokenInquiry.getStatus() == 406) {
-//
-//						LOG.info("TenderTokenInquiry :  Invalid Client - Null reference Client ");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-
 				} else if (tenderAuthResponse.getStatus() == 400) {
 
 					LOG.info("TenderAuthentication : Invalid Secret key");
@@ -6421,28 +6375,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					//// publicKey
 					publicKey = rsaUtility.getPublicKey();
 
-					//// - Below code is comment out because of not use in bill payment
-
-//					///// SupplierTokenInquiry Call
-//					HttpResponse<String> supplierTokenInquiry = utilMethods.tokenInquiryRequest(bppraTokenInquiryCall,
-//							authToken, requestFormAuth, publicKey);
-//
-//					///// SupplierTokenInquiry Failure
-//					if (supplierTokenInquiry == null) {
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
-//								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-//
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-
-					//// SupplierTokenInquiry Success
-					// if (supplierTokenInquiry.getStatus() == 200) {
-
-					// jwt = supplierTokenInquiry.getBody();
 					LOG.info("jwt :" + jwt);
 
 					decodeJwt = utilMethods.DecodeJwt(jwt);
@@ -6507,6 +6439,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							billStatus = Constants.BILL_STATUS.BILL_PAID;
 
 							response = new BillPaymentResponse(infoPay, txnInfoPay, additionalInfoPay);
+
 							return response;
 
 						}
@@ -6853,44 +6786,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						return response;
 
 					}
-
-//					}
-//
-//					else if (supplierTokenInquiry.getStatus() == 401) {
-//
-//						LOG.info("SupplierTokenInquiry : Unauthorized");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-
-//					else if (supplierTokenInquiry.getStatus() == 404) {
-//
-//						LOG.info("SupplierTokenInquiry :  Invalid Client - Client with The Given Identity Not Found ");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
-//
-//					else if (supplierTokenInquiry.getStatus() == 406) {
-//
-//						LOG.info("SupplierTokenInquiry :  Invalid Client - Null reference Client ");
-//
-//						infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
-//								Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
-//						response = new BillPaymentResponse(infoPay, null, null);
-//						transactionStatus = Constants.Status.Fail;
-//						return response;
-//
-//					}
 
 				} else if (supplierAuthResponse.getStatus() == 400) {
 

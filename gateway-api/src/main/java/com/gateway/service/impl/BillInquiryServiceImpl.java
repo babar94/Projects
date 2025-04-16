@@ -42,7 +42,6 @@ import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillInquiryRespons
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
-
 import com.gateway.model.mpay.response.billinquiry.pta.PtaGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pu.PuBillInquiryResponse;
 import com.gateway.model.mpay.response.billinquiry.slic.SlicPolicyInquiryResponse;
@@ -71,6 +70,7 @@ import com.gateway.utils.Constants;
 import com.gateway.utils.Constants.BILL_STATUS_SINGLE_ALPHABET;
 import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
+import com.gateway.utils.MemcachedService;
 import com.gateway.utils.RSAEncryption;
 import com.gateway.utils.UtilMethods;
 
@@ -189,6 +189,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Value("${bise.kohat.password}")
 	private String kpassword;
+
+	@Autowired
+	private MemcachedService memcachedService;
+
+	@Value("${memcached.expireTime}")
+	private int expireTime;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -4203,6 +4209,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 				LOG.info("BillInquiry - keys - IOException:" + e.getMessage());
 			}
 
+			String key = request.getTxnInfo().getBillerId() + rrn;
+
 			billerNumber = request.getTxnInfo().getBillNumber();
 
 			//////// Tender //////
@@ -4327,8 +4335,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											request.getTxnInfo().getBillNumber(), "", billstatus, "",
 											String.valueOf(totalTenderFeeAmount), "", transAuthId, "");
 
+									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
+
 									AdditionalInfo additionalInfo = new AdditionalInfo(
-											request.getAdditionalInfo().getReserveField1(),
+											key,
 											request.getAdditionalInfo().getReserveField2(),
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
@@ -4431,7 +4441,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
-								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, jwt,
+								memcachedService.set(key, jwt, expireTime); // TTL: 3 days
+								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, key,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
@@ -4685,8 +4696,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											request.getTxnInfo().getBillNumber(), "", billstatus, "",
 											String.valueOf(totalTenderFeeAmount), "", transAuthId, "");
 
+									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
+
 									AdditionalInfo additionalInfo = new AdditionalInfo(
-											request.getAdditionalInfo().getReserveField1(),
+											key,
 											request.getAdditionalInfo().getReserveField2(),
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
@@ -4789,7 +4802,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										request.getTxnInfo().getBillNumber(), billerName, billstatus, "",
 										String.valueOf(totalTenderFeeAmount), "", "", "");
 
-								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, jwt,
+								memcachedService.set(key, jwt, expireTime); // TTL: 3 days
+								AdditionalInfo additionalInfo = new AdditionalInfo(categoryName, key,
 										request.getAdditionalInfo().getReserveField3(),
 										request.getAdditionalInfo().getReserveField4(),
 										request.getAdditionalInfo().getReserveField5(),
@@ -5528,7 +5542,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
 				billerId = "", billerName = "", billingMonth = "", bankName = "", bankCode = "", branchName = "",
-				branchCode = "", billerNumber = "", dueDate = "" , period="";
+				branchCode = "", billerNumber = "", dueDate = "", period = "";
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();

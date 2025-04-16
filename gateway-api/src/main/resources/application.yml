@@ -183,3 +183,8 @@ pu:
 wasa:
   consumerCell: "00000000000"
   payMode: 1
+ 
+memcached:
+  host: 127.0.0.1
+  port: 11211
+  expireTime: 259200  
