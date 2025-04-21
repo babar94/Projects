@@ -257,6 +257,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 	@Value("${wasa.payMode}")
 	private String payMode;
 
+	@Value("${wasa.tranStatus}")
+	private String tranStatus;
+
 	@Autowired
 	private MemcachedService memcachedService;
 
@@ -7729,6 +7732,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		try {
 
+			String combinedTranDateTime = request.getTxnInfo().getTranDate() + request.getTxnInfo().getTranTime();
+
+			String dateTime = utilMethods.gettransDateTime(combinedTranDateTime);
+
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
@@ -7944,8 +7951,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(consumerCell);
 					paymentParams.add(payMode);
 					paymentParams.add(rrn);
-					paymentParams.add(request.getTxnInfo().getTranDate());
-					paymentParams.add(" "); /// tranStatus
+					paymentParams.add(dateTime);
+					paymentParams.add(tranStatus);
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 

@@ -205,73 +205,78 @@ public class UtilMethods {
 
 		return formattedDate;
 	}
-	
-	
-	public String DueDate(String inputDate) {
-		
-        LocalDate date = Instant.parse(inputDate).atZone(ZoneId.of("UTC")).toLocalDate();
-        
-        // Format to yyyyMMdd
-        String formattedDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-        System.out.println(formattedDate);
+	public String DueDate(String inputDate) {
+
+		LocalDate date = Instant.parse(inputDate).atZone(ZoneId.of("UTC")).toLocalDate();
+
+		// Format to yyyyMMdd
+		String formattedDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		System.out.println(formattedDate);
+
+		return formattedDate;
+	}
+
+	public String getFormattedBillingMonth(String billingmonth) {
+
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM-yy", Locale.ENGLISH);
+			YearMonth yearMonth = YearMonth.parse(billingmonth, formatter);
+
+			return yearMonth.format(DateTimeFormatter.ofPattern("yyMM"));
+
+		} catch (DateTimeParseException e) {
+			return "Invalid date format";
+		}
+
+	}
+
+	public String getFormattedDueDate(String dueDate) {
+
+		try {
+			// Define the input format (DDMMYYYY)
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
+			LocalDate date = LocalDate.parse(dueDate, inputFormatter);
+
+			// Define the output format (YYYYMMDD)
+			DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+			return date.format(outputFormatter);
+		} catch (DateTimeParseException e) {
+			return "Invalid date format";
+		}
+
+	}
+
+	public String getDueDateFormatted(String dueDate) {
+
+		try {
+			// Define the input format (DDMMYYYY)
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			LocalDate date = LocalDate.parse(dueDate, inputFormatter);
+
+			// Define the output format (YYYYMMDD)
+			DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+			return date.format(outputFormatter);
+		} catch (DateTimeParseException e) {
+			return "Invalid date format";
+		}
+
+	}
+
+	
+	public static String gettransDateTime(String combinedTranDateTime) {
 		
-        return formattedDate;
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        LocalDateTime dateTime = LocalDateTime.parse(combinedTranDateTime, inputFormatter);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String tranDateTime = dateTime.format(dateTimeFormatter);
+        return tranDateTime;
+		
 	}
 	
-     public String getFormattedBillingMonth(String billingmonth) {
-    	 
-    	 try {
-             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM-yy", Locale.ENGLISH);
-             YearMonth yearMonth = YearMonth.parse(billingmonth, formatter);
-
-             return yearMonth.format(DateTimeFormatter.ofPattern("yyMM"));
-
-         } catch (DateTimeParseException e) {
-             return "Invalid date format";
-         }
-    
-     }
-    	 
-        	 	 
-     public String getFormattedDueDate(String dueDate) {
-    	 
-    	 try {
-             // Define the input format (DDMMYYYY)
-             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
-             LocalDate date = LocalDate.parse(dueDate, inputFormatter);
-
-             // Define the output format (YYYYMMDD)
-             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-             return date.format(outputFormatter);
-         } catch (DateTimeParseException e) {
-             return "Invalid date format";
-         }
-    	 
-    	 
-     }
-	
-      public String getDueDateFormatted(String dueDate) {
-    	 
-    	 try {
-             // Define the input format (DDMMYYYY)
-             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-             LocalDate date = LocalDate.parse(dueDate, inputFormatter);
-
-             // Define the output format (YYYYMMDD)
-             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-             return date.format(outputFormatter);
-         } catch (DateTimeParseException e) {
-             return "Invalid date format";
-         }
-    	 
-    	 
-     }
-
-     
-     
-     
-     
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
@@ -597,7 +602,7 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
-			
+
 			LOG.info("---- Tender mark challan paid initiated -----");
 
 			return Unirest.post(bppraTenderChallanPaid).queryString("challanCode", billNumber).queryString("paid", true)
@@ -613,7 +618,7 @@ public class UtilMethods {
 			String requestFormChallanEnquire, String jwt) {
 
 		try {
-			
+
 			LOG.info("---- Supplier mark challan paid initiated -----");
 
 			return Unirest.post(bppraSupplierChallanPaid).queryString("challanCode", billNumber)
@@ -629,7 +634,7 @@ public class UtilMethods {
 			String requestFormAuth, String jwt, String branchcode, String personName) {
 
 		try {
-			
+
 			LOG.info("---- Completed inquiry initiated ----");
 
 			return Unirest.post(bppraCompleteInquiryCall).header("Authorization", authToken)

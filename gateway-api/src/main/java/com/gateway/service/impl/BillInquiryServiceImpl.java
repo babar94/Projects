@@ -4338,8 +4338,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
+											request.getAdditionalInfo().getReserveField1(),
 											key,
-											request.getAdditionalInfo().getReserveField2(),
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
 											request.getAdditionalInfo().getReserveField5(),
@@ -4699,8 +4699,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
+											request.getAdditionalInfo().getReserveField1(),
 											key,
-											request.getAdditionalInfo().getReserveField2(),
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
 											request.getAdditionalInfo().getReserveField5(),
@@ -5843,7 +5843,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
 				billerId = "", billerName = "", billingMonth = "", bankName = "", bankCode = "", branchName = "",
-				branchCode = "", billerNumber = "", dueDate = "";
+				branchCode = "", billerNumber = "", dueDate = "" , cnic="";
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
@@ -6029,6 +6029,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							puBillInquiryResponse.getPuBillInquiry().getPuBillInquiryData().getVoucherAmount());
 					amountInDueDate = amountInDueDate.setScale(2, RoundingMode.UP);
 
+					cnic = puBillInquiryResponse.getPuBillInquiry().getPuBillInquiryData().getCandidateCnic();
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
@@ -6037,7 +6038,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
 							String.valueOf(amountInDueDate), "", "", "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
+					AdditionalInfo additionalInfo = new AdditionalInfo(cnic,
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),

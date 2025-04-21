@@ -183,6 +183,7 @@ pu:
 wasa:
   consumerCell: "00000000000"
   payMode: 1
+  tranStatus: 1
  
 memcached:
   host: 127.0.0.1
