@@ -7789,7 +7789,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				//// Already Paid
 
 				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+						.equalsIgnoreCase("2")) {
 
 					billerId = request.getTxnInfo().getBillerId();
 					billerNumber = request.getTxnInfo().getBillNumber();
@@ -7822,7 +7822,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				/////// Inquiry success response
 
 				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase(Constants.ResponseCodes.OK)) {
+						.equalsIgnoreCase("4")) {
 
 					PendingPayment pendingPayment = pendingPaymentRepository
 							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
@@ -8003,7 +8003,30 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							return response;
 
 						}
+						
+						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode()
+								.equalsIgnoreCase("2")) {
 
+							
+							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
+									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Fail;
+							
+						}
+
+						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode()
+								.equalsIgnoreCase("4")) {
+
+							
+							infoPay = new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
+									Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
+							response = new BillPaymentResponse(infoPay, null, null);
+							transactionStatus = Constants.Status.Fail;
+							
+						}
+						
+						
 						else {
 
 							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,

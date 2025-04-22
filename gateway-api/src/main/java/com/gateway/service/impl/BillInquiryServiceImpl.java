@@ -5599,8 +5599,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				////// Already paid
 
+				
 				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equals(Constants.ResponseCodes.BILL_ALREADY_PAID)) {
+						.equals("2")) {
 
 					Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 							.ofNullable(combinedPaymentLogViewRepository
@@ -5661,10 +5662,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				}
 
-				///// Inquiry Success Response
+				///// Inquiry Success Response //////
 
 				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase(ResponseCodes.OK)) {
+						.equalsIgnoreCase("4")) {  //// 
 
 					///////////////////////////////////////
 
