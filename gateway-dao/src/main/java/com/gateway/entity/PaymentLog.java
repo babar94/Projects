@@ -144,7 +144,7 @@ public class PaymentLog implements Serializable {
 
 	// new added on 05-06-2024
 
-	@Column(name = "fee_detail")
+	@Column(name = "fee_detail",length = 500)
 	private String fee_Detail;
 
 }

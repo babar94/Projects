@@ -9,13 +9,13 @@ jwt:
 server:
   port: 8082
   ssl:
-   enabled: false
-   key-store-type: JKS
-   key-store-provider: SUN
-   key-store: bppra_certificate.jks
-   key-alias: bppra_certificate
-   key-password: paysys@123
-   key-store-password: paysys@123
+    enabled: false
+    key-store-type: PKCS12
+    key-store: server.p12
+    key-alias: nbpuat
+    key-password: Silv3r@321
+    key-store-password: Silv3r@321
+  
   
 logging:
   level:
