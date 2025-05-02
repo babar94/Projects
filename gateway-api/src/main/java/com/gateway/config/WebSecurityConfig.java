@@ -35,12 +35,12 @@ public class WebSecurityConfig {
 			"/swagger-resources/**", "/swagger-ui/**", "/webjars/**" };
 
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
 	private final CustomCredentialsServiceImpl customCredentialsServiceImpl;
 
 	private final JwtRequestFilter jwtRequestFilter;
-	//private final DuplicateTransactionCheckFilter duplicateTransactionCheckFilter;
-	
+	// private final DuplicateTransactionCheckFilter
+	// duplicateTransactionCheckFilter;
+
 //	@Override
 //	protected void configure(HttpSecurity httpSecurity) throws Exception {
 //		// We don't need CSRF for this example

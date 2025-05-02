@@ -56,12 +56,14 @@ import com.gateway.repository.PgPaymentLogRepository;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.response.BillInquiryValidationResponse;
+import com.gateway.response.BillerCredentialResponse;
 import com.gateway.response.billinquiryresponse.AdditionalInfo;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billinquiryresponse.TxnInfo;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.BillInquiryService;
+import com.gateway.service.BillerCredentialService;
 import com.gateway.service.ParamsValidatorService;
 import com.gateway.service.PaymentLoggingService;
 import com.gateway.servicecaller.ServiceCaller;
@@ -195,6 +197,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Value("${memcached.expireTime}")
 	private int expireTime;
+
+	@Autowired
+	private BillerCredentialService billerCredentialService;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -4338,8 +4343,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
-											request.getAdditionalInfo().getReserveField1(),
-											key,
+											request.getAdditionalInfo().getReserveField1(), key,
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
 											request.getAdditionalInfo().getReserveField5(),
@@ -4699,8 +4703,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 									memcachedService.set(key, jwt, expireTime); // TTL: 3 days
 
 									AdditionalInfo additionalInfo = new AdditionalInfo(
-											request.getAdditionalInfo().getReserveField1(),
-											key,
+											request.getAdditionalInfo().getReserveField1(), key,
 											request.getAdditionalInfo().getReserveField3(),
 											request.getAdditionalInfo().getReserveField4(),
 											request.getAdditionalInfo().getReserveField5(),
@@ -5599,9 +5602,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				////// Already paid
 
-				
-				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equals("2")) {
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode().equals("2")) {
 
 					Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 							.ofNullable(combinedPaymentLogViewRepository
@@ -5664,8 +5665,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 				///// Inquiry Success Response //////
 
-				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase("4")) {  //// 
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode().equalsIgnoreCase("4")) { ////
 
 					///////////////////////////////////////
 
@@ -5844,8 +5844,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		String transactionStatus = "", billStatus = "", username = "", channel = "", billstatus = "", transAuthId = "",
 				billerId = "", billerName = "", billingMonth = "", bankName = "", bankCode = "", branchName = "",
-				branchCode = "", billerNumber = "", dueDate = "" , cnic="";
+				branchCode = "", billerNumber = "", dueDate = "", cnic = "";
 
+		billerId = request.getTxnInfo().getBillerId();
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
 		try {
@@ -5861,9 +5862,23 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			username = result[0];
 			channel = result[1];
 
+			Optional<BillerCredentialResponse> decryptedCredentials = billerCredentialService
+					.getDecryptedCredentials(billerId);
+
+			if (decryptedCredentials.isEmpty()) {
+				LOG.error("No credentials found or credentials are invalid for billerId: {}", billerId);
+
+				 info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+						rrn, stan);
+
+				return new BillInquiryResponse(info, null, null);
+			}
+			BillerCredentialResponse billerCredentialResponse = decryptedCredentials.get();
 			ArrayList<String> inquiryParams = new ArrayList<String>();
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PU_BILL_INQUIRY);
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
+			inquiryParams.add(billerCredentialResponse.getUsername());
+			inquiryParams.add(billerCredentialResponse.getPassword());
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 

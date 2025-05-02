@@ -75,6 +75,7 @@ import com.gateway.repository.PgPaymentLogRepository;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
+import com.gateway.response.BillerCredentialResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -82,6 +83,7 @@ import com.gateway.response.billpaymentresponse.InfoPay;
 import com.gateway.response.billpaymentresponse.TxnInfoPay;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.BillPaymentService;
+import com.gateway.service.BillerCredentialService;
 import com.gateway.service.ParamsValidatorService;
 import com.gateway.service.PaymentLoggingService;
 import com.gateway.service.ReservedFieldsValidationService;
@@ -262,6 +264,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 	@Autowired
 	private MemcachedService memcachedService;
+
+	@Autowired
+	private BillerCredentialService billerCredentialService;
 
 	@Override
 	public BillPaymentResponse billPayment(HttpServletRequest httpRequestData, BillPaymentRequest request) {
@@ -7788,8 +7793,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				//// Already Paid
 
-				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase("2")) {
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode().equalsIgnoreCase("2")) {
 
 					billerId = request.getTxnInfo().getBillerId();
 					billerNumber = request.getTxnInfo().getBillNumber();
@@ -7821,8 +7825,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 				/////// Inquiry success response
 
-				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode()
-						.equalsIgnoreCase("4")) {
+				else if (wasaBillnquiryResponse.getWasaResponse().getResponseCode().equalsIgnoreCase("4")) {
 
 					PendingPayment pendingPayment = pendingPaymentRepository
 							.findFirstByVoucherIdAndBillerIdOrderByPaymentIdDesc(
@@ -8003,30 +8006,25 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							return response;
 
 						}
-						
-						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode()
-								.equalsIgnoreCase("2")) {
 
-							
+						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode().equalsIgnoreCase("2")) {
+
 							infoPay = new InfoPay(Constants.ResponseCodes.AMMOUNT_MISMATCH,
 									Constants.ResponseDescription.AMMOUNT_MISMATCH, rrn, stan);
 							response = new BillPaymentResponse(infoPay, null, null);
 							transactionStatus = Constants.Status.Fail;
-							
+
 						}
 
-						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode()
-								.equalsIgnoreCase("4")) {
+						else if (wasaBillPaymentResponse.getWasaBillPayment().getResponseCode().equalsIgnoreCase("4")) {
 
-							
 							infoPay = new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
 									Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
 							response = new BillPaymentResponse(infoPay, null, null);
 							transactionStatus = Constants.Status.Fail;
-							
+
 						}
-						
-						
+
 						else {
 
 							infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
@@ -8150,7 +8148,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				billingMonth = "", dueDate = "", cardType = "", ru_Code = "", customer_Id = "", amountInDueDateRes = "",
 				amountAfterDueDateRes = "";
 		String bankName = "", bankCode = "", branchName = "", branchCode = "";
-
+		billerId = request.getTxnInfo().getBillerId();
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -8164,9 +8162,24 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			username = result[0];
 			channel = result[1];
+			Optional<BillerCredentialResponse> decryptedCredentials = billerCredentialService
+					.getDecryptedCredentials(billerId);
+
+			if (decryptedCredentials.isEmpty()) {
+				LOG.error("No credentials found or credentials are invalid for billerId: {}", billerId);
+
+				infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+						rrn, stan);
+				transactionStatus = Constants.Status.Fail;
+				return new BillPaymentResponse(infoPay, null, null);
+
+			}
+			BillerCredentialResponse billerCredentialResponse = decryptedCredentials.get();
 
 			inquiryParams.add(Constants.MPAY_REQUEST_METHODS.PU_BILL_INQUIRY);
 			inquiryParams.add(request.getTxnInfo().getBillNumber().trim());
+			inquiryParams.add(billerCredentialResponse.getUsername());
+			inquiryParams.add(billerCredentialResponse.getPassword());
 			inquiryParams.add(rrn);
 			inquiryParams.add(stan);
 
@@ -8325,6 +8338,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.PU_BILL_PAYMENT);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
+					paymentParams.add(billerCredentialResponse.getUsername());
+					paymentParams.add(billerCredentialResponse.getPassword());
 					paymentParams.add(rrn);
 					paymentParams.add(request.getTxnInfo().getTranAmount());
 					paymentParams.add(puChannel);
