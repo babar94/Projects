@@ -28,6 +28,7 @@ import com.gateway.entity.PaymentLog;
 import com.gateway.entity.PendingPayment;
 import com.gateway.entity.PgPaymentLog;
 import com.gateway.entity.ProvinceTransaction;
+import com.gateway.entity.ReservedFieldAttributes;
 import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
@@ -56,6 +57,7 @@ import com.gateway.repository.CombinedPaymentLogViewRepository;
 import com.gateway.repository.PaymentLogRepository;
 import com.gateway.repository.PendingPaymentRepository;
 import com.gateway.repository.PgPaymentLogRepository;
+import com.gateway.repository.ReservedAttributesRepository;
 import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billinquiry.BillInquiryRequest;
 import com.gateway.response.BillInquiryValidationResponse;
@@ -77,6 +79,7 @@ import com.gateway.utils.Constants.ResponseCodes;
 import com.gateway.utils.JwtTokenUtil;
 import com.gateway.utils.MemcachedService;
 import com.gateway.utils.RSAEncryption;
+import com.gateway.utils.ReservedAttributeMapper;
 import com.gateway.utils.UtilMethods;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -203,9 +206,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Autowired
 	private BillerCredentialService billerCredentialService;
-
-//	@Autowired
-//	private ReservedAttributesRepository reservedAttributesRepository;
+   
+	
+	@Autowired
+	private ReservedAttributesRepository reservedAttributesRepository;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -5319,7 +5323,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
-		//ReservedFieldAttributes reservedAttributes = null;
+		ReservedFieldAttributes reservedAttributes = null;
 		LinkedHashMap<String, String> reservedFiledhashmap = null;
 		List<LescoBillData> lescoBillData;
 
@@ -5455,15 +5459,15 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
-//					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
-//
-//					if (reservedAttributes != null) {
-//						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper();
-//
-//						reservedFiledhashmap = ReservedAttributeMapper
-//								.populateReservedFieldsFromResponse(reservedAttributes, lescoBillData);
-//
-//					}
+					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
+
+					if (reservedAttributes != null) {
+						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper();
+
+						reservedFiledhashmap = ReservedAttributeMapper
+								.populateReservedFieldsFromResponse(reservedAttributes, lescoBillData);
+
+					}
 					
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);

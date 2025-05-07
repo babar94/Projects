@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import com.gateway.controller.BillController;
 import com.gateway.entity.BillerCredential;
 import com.gateway.exception.BillerAlreadyExistsException;
-import com.gateway.exception.BillerNotFoundException;
-import com.gateway.exception.InvalidCredentialException;
 import com.gateway.repository.BillerCredentialRepository;
 import com.gateway.request.BillerCredentialRequest;
 import com.gateway.response.BillerCredentialResponse;
