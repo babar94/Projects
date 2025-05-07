@@ -6039,7 +6039,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							///// Amount work --- Start ////
 
 							totalTenderFeeAmount = utilMethods
-									.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
+									.getTotalAmount(bppraTenderVoucherResponse.getChallanFee());
 							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
 							LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
@@ -6518,7 +6518,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							///// Amount work --- Start ////
 
 							totalTenderFeeAmount = utilMethods
-									.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
+									.getTotalAmount(bppraSupplierVoucherResponse.getChallanFee());
 							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
 							LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
@@ -7334,6 +7334,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		try {
 
+			billerId= request.getTxnInfo().getBillerId();
+			
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
@@ -7461,6 +7463,23 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
 							.getDataWrapper().get(0).getCustId();
 
+					
+					////// Credential work
+					
+					Optional<BillerCredentialResponse> decryptedCredentials = billerCredentialService
+							.getDecryptedCredentials(billerId);
+
+					if (decryptedCredentials.isEmpty()) {
+						LOG.error("No credentials found or credentials are invalid for billerId: {}", billerId);
+
+						 infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+								rrn, stan);
+
+						return new BillPaymentResponse(infoPay, null, null);
+					}
+					BillerCredentialResponse billerCredentialResponse = decryptedCredentials.get();
+
+					
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.LESCO_BILL_PAYMENT);
 					paymentParams.add(cardType);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -7469,7 +7488,9 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(request.getTxnInfo().getTranAmount());
 					paymentParams.add(collMechanismCode);
 					paymentParams.add(customer_Id);
-					paymentParams.add(bankBranchCode);
+					paymentParams.add(request.getAdditionalInfo().getReserveField10());
+					paymentParams.add(billerCredentialResponse.getUsername());
+	                paymentParams.add(billerCredentialResponse.getPassword());			
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 

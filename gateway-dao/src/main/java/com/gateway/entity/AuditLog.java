@@ -9,13 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "api_gw_audit_log")
@@ -24,9 +19,6 @@ import lombok.ToString;
 @NoArgsConstructor
 
 public class AuditLog implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2516248315446279127L;
 
 	@Id

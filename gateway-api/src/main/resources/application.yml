@@ -7,7 +7,7 @@ jwt:
 #hours*mins*secs
   
 server:
-  port: 8084
+  port: 8082
   ssl:
     enabled: false
     key-store-type: PKCS12

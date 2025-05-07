@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,9 @@ import com.gateway.model.mpay.response.billinquiry.bppra.ChallanFee;
 import com.gateway.model.mpay.response.billinquiry.bzu.BzuGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillData;
 import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillInquiryResponse;
+import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillinquiryData;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
@@ -200,6 +203,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Autowired
 	private BillerCredentialService billerCredentialService;
+
+//	@Autowired
+//	private ReservedAttributesRepository reservedAttributesRepository;
 
 	@Override
 	public BillInquiryResponse billInquiry(HttpServletRequest httpRequestData, BillInquiryRequest request) {
@@ -4306,7 +4312,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 							categoryName = bppraTenderVoucherResponse.getTenderChallanData().getCategoryName();
 							totalTenderFeeAmount = utilMethods
-									.getTotalTenderFeeAmount(bppraTenderVoucherResponse.getChallanFee());
+									.getTotalAmount(bppraTenderVoucherResponse.getChallanFee());
 							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
 							LOG.info("Total Tender Fee Amount: " + totalTenderFeeAmount);
@@ -4666,7 +4672,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							billerName = bppraSupplierVoucherResponse.getSupplierChallanData().getSupplierName();
 							categoryName = bppraSupplierVoucherResponse.getSupplierChallanData().getCategoryName();
 							totalTenderFeeAmount = utilMethods
-									.getTotalTenderFeeAmount(bppraSupplierVoucherResponse.getChallanFee());
+									.getTotalAmount(bppraSupplierVoucherResponse.getChallanFee());
 							totalTenderFeeAmount = totalTenderFeeAmount.setScale(2, RoundingMode.UP);
 
 							LOG.info("Total Tender Fee Amount : " + totalTenderFeeAmount);
@@ -5079,7 +5085,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
+						billerId  = paymentLog.getBillerId();
 						billerName = paymentLog.getName();
+						billerNumber = paymentLog.getBillerNumber();
 						transAuthId = paymentLog.getTranAuthId();
 						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();
@@ -5311,6 +5319,10 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
+		//ReservedFieldAttributes reservedAttributes = null;
+		LinkedHashMap<String, String> reservedFiledhashmap = null;
+		List<LescoBillData> lescoBillData;
+
 		try {
 
 			if (request.getBranchInfo() != null) {
@@ -5443,22 +5455,55 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_UNPAID;
 
+//					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
+//
+//					if (reservedAttributes != null) {
+//						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper();
+//
+//						reservedFiledhashmap = ReservedAttributeMapper
+//								.populateReservedFieldsFromResponse(reservedAttributes, lescoBillData);
+//
+//					}
+					
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
 							String.valueOf(amountInDueDate), String.valueOf(amountAfterDueDate), "", "");
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
+
+					
+					AdditionalInfo additionalInfo = new AdditionalInfo(
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField1") == null)
+									? reservedFiledhashmap.get("reservedField1")
+									: request.getAdditionalInfo().getReserveField1(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField2") == null)
+									? reservedFiledhashmap.get("reservedField2")
+									: request.getAdditionalInfo().getReserveField2(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField3") == null)
+									? reservedFiledhashmap.get("reservedField3")
+									: request.getAdditionalInfo().getReserveField3(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField4") == null)
+									? reservedFiledhashmap.get("reservedField4")
+									: request.getAdditionalInfo().getReserveField4(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField5") == null)
+									? reservedFiledhashmap.get("reservedField5")
+									: request.getAdditionalInfo().getReserveField5(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField6") == null)
+									? reservedFiledhashmap.get("reservedField6")
+									: request.getAdditionalInfo().getReserveField6(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField7") == null)
+									? reservedFiledhashmap.get("reservedField7")
+									: request.getAdditionalInfo().getReserveField7(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField8") == null)
+									? reservedFiledhashmap.get("reservedField8")
+									: request.getAdditionalInfo().getReserveField8(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField9") == null)
+									? reservedFiledhashmap.get("reservedField9")
+									: request.getAdditionalInfo().getReserveField9(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField10") == null)
+									? reservedFiledhashmap.get("reservedField10")
+									: request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -5615,7 +5660,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
+						billerId = paymentLog.getBillerId();
 						billerName = paymentLog.getName();
+						billerNumber = paymentLog.getBillerNumber();
 						transAuthId = paymentLog.getTranAuthId();
 						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();
@@ -5868,8 +5915,8 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			if (decryptedCredentials.isEmpty()) {
 				LOG.error("No credentials found or credentials are invalid for billerId: {}", billerId);
 
-				 info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
-						rrn, stan);
+				info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL, rrn,
+						stan);
 
 				return new BillInquiryResponse(info, null, null);
 			}
@@ -5931,6 +5978,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
 						billerName = paymentLog.getName();
+						billerNumber = paymentLog.getBillerNumber();
 						transAuthId = paymentLog.getTranAuthId();
 						billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 						amountPaid = paymentLog.getTotalAmount();

@@ -221,7 +221,7 @@ public class UtilMethods {
 	public String getFormattedBillingMonth(String billingmonth) {
 
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM-yy", Locale.ENGLISH);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM-yy", Locale.ENGLISH);
 			YearMonth yearMonth = YearMonth.parse(billingmonth, formatter);
 
 			return yearMonth.format(DateTimeFormatter.ofPattern("yyMM"));
@@ -264,19 +264,18 @@ public class UtilMethods {
 
 	}
 
-	
 	public static String gettransDateTime(String combinedTranDateTime) {
-		
+
 		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-        LocalDateTime dateTime = LocalDateTime.parse(combinedTranDateTime, inputFormatter);
+		LocalDateTime dateTime = LocalDateTime.parse(combinedTranDateTime, inputFormatter);
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        String tranDateTime = dateTime.format(dateTimeFormatter);
-        return tranDateTime;
-		
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		String tranDateTime = dateTime.format(dateTimeFormatter);
+		return tranDateTime;
+
 	}
-	
+
 	// Muhammad Said
 	// Utility method to check if the payment is within the due date
 	public boolean isPaymentWithinDueDate(LocalDate currentDate, LocalDate dueDate) {
@@ -702,10 +701,20 @@ public class UtilMethods {
 
 	}
 
-	public BigDecimal getTotalTenderFeeAmount(List<ChallanFee> challanFee) {
-		return challanFee.stream().filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
-				.map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
-				.findFirst().orElse(BigDecimal.ZERO); // Returns 0 if not found
+	//// old logic
+
+//	public BigDecimal getTotalTenderFeeAmount(List<ChallanFee> challanFee) {
+//		return challanFee.stream().filter(fee -> "Total Tender Fee".equalsIgnoreCase(fee.getTariffTitle()))
+//				.map(fee -> BigDecimal.valueOf(fee.getAmount())) // Convert int to BigDecimal
+//				.findFirst().orElse(BigDecimal.ZERO); // Returns 0 if not found
+//	}
+
+	
+	///// picking latest one
+	
+	public BigDecimal getTotalAmount(List<ChallanFee> challanFee) {
+
+		return BigDecimal.valueOf(challanFee.get(challanFee.size() - 1).getAmount());
 	}
 
 	public String ReadPublicPemFile(String publicKeyPemFilePath) {
