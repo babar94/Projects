@@ -6,6 +6,7 @@ import com.gateway.entity.ReservedFieldAttributes;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +16,14 @@ public class ReservedAttributeMapper {
 	private static final Logger LOG = LoggerFactory.getLogger(ReservedAttributeMapper.class);
 
 	public static LinkedHashMap<String, String> populateReservedFieldsFromResponse(
-			ReservedFieldAttributes reservedAttributes, Object inquiry) {
+			Optional<ReservedFieldAttributes> reservedAttributes, Object inquiry) {
 
 		LinkedHashMap<String, String> reservedMap = new LinkedHashMap<>();
 		for (int i = 1; i <= 10; i++) {
 			try {
 				Field field = ReservedFieldAttributes.class.getDeclaredField("reservedField" + i);
 				field.setAccessible(true);
-				Object fieldNameObj = field.get(reservedAttributes);
+				Object fieldNameObj = field.get(reservedAttributes.get());
 
 				String fieldName = fieldNameObj != null ? fieldNameObj.toString() : "";
 

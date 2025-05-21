@@ -1338,13 +1338,12 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							request.getAdditionalInfo().getReserveField2(),
 							request.getAdditionalInfo().getReserveField3(),
 							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
-
-//							request.getAdditionalInfo().getReserveField6(),
-//							request.getAdditionalInfo().getReserveField7(),
-//							request.getAdditionalInfo().getReserveField8(),
-//							request.getAdditionalInfo().getReserveField9(),
-//							request.getAdditionalInfo().getReserveField10());
+							request.getAdditionalInfo().getReserveField5(),
+							request.getAdditionalInfo().getReserveField6(),
+							request.getAdditionalInfo().getReserveField7(),
+							request.getAdditionalInfo().getReserveField8(),
+							request.getAdditionalInfo().getReserveField9(),
+							request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
@@ -5323,7 +5322,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		BigDecimal amountPaid = null, amountInDueDate = null, amountAfterDueDate = null;
 		Date requestedDate = new Date();
-		ReservedFieldAttributes reservedAttributes = null;
+		Optional<ReservedFieldAttributes> reservedAttributes = null;
 		LinkedHashMap<String, String> reservedFiledhashmap = null;
 		List<LescoBillData> lescoBillData;
 
@@ -5461,7 +5460,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
 
-					if (reservedAttributes != null) {
+					if (reservedAttributes.isPresent()) {
 						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper();
 
 						reservedFiledhashmap = ReservedAttributeMapper
