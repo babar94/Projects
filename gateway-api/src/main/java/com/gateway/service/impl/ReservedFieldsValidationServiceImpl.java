@@ -24,10 +24,10 @@ public class ReservedFieldsValidationServiceImpl implements ReservedFieldsValida
 	    private ReservedFieldMappingRepository reservedFieldMappingRepository;
 
 	    @Override
-	    public boolean validateReservedFields(BillPaymentRequest billPaymentRequest, String parentId) {
+	    public boolean validateReservedFields(BillPaymentRequest billPaymentRequest, String billerid) {
 
 	        List<ReservedFieldsMapping> reservedFieldsMappings = reservedFieldMappingRepository
-	                .findByBillerConfigurationBillerId(parentId);
+	                .findByBillerId(billerid);
 
 	        Map<String, String> reservedFieldsMap = reservedFieldsMappings.stream()
 	                .collect(Collectors.toMap(ReservedFieldsMapping::getReservedField, ReservedFieldsMapping::getRegex));

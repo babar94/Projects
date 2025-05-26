@@ -639,7 +639,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 											// Validate the additional fields of AIOU from the request
 											if (reservedFieldsValidationService.validateReservedFields(request,
-													parentBillerId)) {
+													billerId)) {
 												// Proceed with AIOU bill payment
 												billPaymentResponse = billPaymentAiou(request, httpRequestData);
 											}

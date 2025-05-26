@@ -42,7 +42,6 @@ import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.fbr.FbrGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillData;
 import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillInquiryResponse;
-import com.gateway.model.mpay.response.billinquiry.lesco.LescoBillinquiryData;
 import com.gateway.model.mpay.response.billinquiry.offline.OfflineGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pitham.PithamGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.pta.DataWrapper;
@@ -206,8 +205,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Autowired
 	private BillerCredentialService billerCredentialService;
-   
-	
+
 	@Autowired
 	private ReservedAttributesRepository reservedAttributesRepository;
 
@@ -5088,7 +5086,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
 
-						billerId  = paymentLog.getBillerId();
+						billerId = paymentLog.getBillerId();
 						billerName = paymentLog.getName();
 						billerNumber = paymentLog.getBillerNumber();
 						transAuthId = paymentLog.getTranAuthId();
@@ -5461,21 +5459,20 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
 
 					if (reservedAttributes.isPresent()) {
-						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata().getDataWrapper();
+						lescoBillData = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
+								.getDataWrapper();
 
 						reservedFiledhashmap = ReservedAttributeMapper
 								.populateReservedFieldsFromResponse(reservedAttributes, lescoBillData);
 
 					}
-					
+
 					info = new Info(Constants.ResponseCodes.OK, Constants.ResponseDescription.OPERATION_SUCCESSFULL,
 							rrn, stan);
 
 					TxnInfo txnInfo = new TxnInfo(billerId, billerNumber, billerName, billstatus, dueDate,
 							String.valueOf(amountInDueDate), String.valueOf(amountAfterDueDate), "", "");
 
-
-					
 					AdditionalInfo additionalInfo = new AdditionalInfo(
 							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField1") == null)
 									? reservedFiledhashmap.get("reservedField1")
