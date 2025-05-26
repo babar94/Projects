@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -19,9 +17,8 @@ public class ReservedFieldsMapping {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "biller_id", referencedColumnName = "id")
-	private BillerConfiguration billerConfiguration;
+	@Column(name = "biller_id")
+	private String billerId;
 
 	@Column(name = "reserved_field")
 	private String reservedField;

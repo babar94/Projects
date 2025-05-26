@@ -8,8 +8,7 @@ import com.gateway.entity.ReservedFieldsMapping;
 
 public interface ReservedFieldMappingRepository extends JpaRepository<ReservedFieldsMapping, Long> {
 
-	// ReservedFieldsMapping findByBillerConfigurationBillerId(String billerId);
 
-	List<ReservedFieldsMapping> findByBillerConfigurationBillerId(String billerId);
+	List<ReservedFieldsMapping> findByBillerId(String billerId);
 
 }

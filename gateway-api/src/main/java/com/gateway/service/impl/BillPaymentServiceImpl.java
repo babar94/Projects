@@ -1228,7 +1228,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "");
+						bankName, bankCode, branchName, branchCode, username, "","","");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1500,7 +1500,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "");
+						bankName, bankCode, branchName, branchCode, username, "","","");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1616,15 +1616,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						billingDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getBillingDate();
-						billingMonth = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillingMonth();
-						dueDateStr = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getDueDate();
+						billingMonth = utilMethods.removeHyphen(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
+								.getBillingMonth());
+						dueDateStr = utilMethods.removeHyphen(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
+								.getDueDate());
 						expiryDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getExpiryDate();
 						billStatus = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getBillStatus();
-						// dbAmount = requestAmount.doubleValue();
 
 						if (utilMethods.isValidInput(dueDateStr)) {
 							LocalDate currentDate = LocalDate.now();
@@ -2007,7 +2006,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillPayment,
 						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
 						channel, billStatus, request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(),
-						province, transAuthId, bankName, bankCode, branchName, branchCode, username, "");
+						province, transAuthId, bankName, bankCode, branchName, branchCode, username, "",dueDateStr,billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2096,13 +2095,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						requestTotalAmountbdUp = BigDecimal.valueOf(Double.parseDouble(dataWrapper.getTotalAmount()))
 								.setScale(2, RoundingMode.UP);
 						amountInDueToDate = utilMethods.bigDecimalToDouble(requestTotalAmountbdUp);
-						// amountPaidInDueDate = utilMethods.formatAmount(requestTotalAmountbdUp, 12);
 						amountAfterDueDate = String.valueOf(amountInDueToDate);
-						// amountPaid = amountPaidInDueDate;
 
 						depostiroName = dataWrapper.getDepositorName();
 						mobile = dataWrapper.getDepositorContactNo();
-//						billStatus = dataWrapper.getStatus();
 						billStatus = dataWrapper.getStatus().trim().equals("0") ? Constants.BILL_STATUS.BILL_UNPAID
 								: Constants.BILL_STATUS.BILL_PAID;
 						dbTotal = requestTotalAmountbdUp.doubleValue();
@@ -2114,8 +2110,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							response = new BillPaymentResponse(infoPay, null, null);
 							return response;
 						}
-//						billStatus = dataWrapper.getStatus().trim().equals("0") ? Constants.BILL_STATUS.BILL_UNPAID
-//								: Constants.BILL_STATUS.BILL_PAID;
 
 						if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_UNPAID)) {
 
@@ -2433,7 +2427,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "");
+						bankName, bankCode, branchName, branchCode, username, "","","");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2976,7 +2970,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "");
+						bankName, bankCode, branchName, branchCode, username, "",dueDateStr,"");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3027,7 +3021,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 		String dbBillStatus = "";
 		BigDecimal requestAmount = null;
 		String dueDateStr = "";
-//		String dueDate = "";
 
 		String channel = "";
 		String username = "";
@@ -3557,7 +3550,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "");
+						bankName, bankCode, branchName, branchCode, username, "",dueDateStr,"");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -5028,7 +5021,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, feeDetail);
+						bankName, bankCode, branchName, branchCode, username, feeDetail,"","");
 
 				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null

@@ -13,7 +13,7 @@ public interface PaymentLoggingService {
 			String activity, String paymentRefNo, String billerNumber, String transactionStatus, String address,
 			double total, String channel, String billStatus, String tranDate, String tranTime, String province,
 			String tranAuthId, String bankName, String bankCode, String branchName, String branchCode, String username,
-			String feeDetail) throws Exception;
+			String feeDetail,String dueDate,String billingMonth) throws Exception;
 
 
 	

@@ -582,7 +582,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
 		GetVoucherResponse getVoucherResponse = null;
-		// List<PaymentLog> paymentHistory = null;
 		InfoPayInq info = null;
 		TxnInfoPayInq txnInfo = null;
 		AdditionalInfoPayInq additionalInfo = null;
@@ -648,15 +647,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 											request.getTxnInfo().getBillNumber().trim(),
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 											Constants.ResponseCodes.OK);
-//							paymentHistory = paymentLogRepository
-//									.findByBillerIdAndBillerNumberAndBillStatusAndActivityAndResponseCode(
-//											request.getTxnInfo().getBillerId(), request.getTxnInfo().getBillNumber(),
-//											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
-//											Constants.ResponseCodes.OK);
 
 							if (paymentLog != null && paymentLog.getID() != null) {
 
-								// PaymentLog paymentLogRecord = paymentLog.get(0);
 								info = new InfoPayInq(Constants.ResponseCodes.OK, Constants.ResponseDescription.OK, rrn,
 										stan); // success
 
@@ -685,12 +678,9 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 								address = paymentLog.getAddress();
 								billStatus = paymentLog.getBillStatus();
 								dbAmount = paymentLog.getAmountPaid();
-								// dbTax = paymentLog.getTaxAmount();
-								// dbTransactionFees = paymentLog.getTransactionFees();
 								dbTotal = paymentLog.getTotal();
 								tranDate = paymentLog.getTranDate();
 								tranTime = paymentLog.getTranTime();
-								// transactionFees = paymentLog.getTransactionFees();
 								province = paymentLog.getProvince();
 								paymentReferenceDb = paymentLog.getPaymentRefNo();
 
@@ -706,8 +696,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 							}
 
 						} catch (Exception ex) {
-//							exception = ex;
-
 							LOG.error("Exception{}", ex);
 
 						}
@@ -773,7 +761,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
 						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
 						channel, billStatus, tranDate, tranTime, province, "", bankName, bankCode, branchName,
-						branchCode, username, "");
+						branchCode, username, "","","");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -982,7 +970,7 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 						amountInDueDate, amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.PaymentInquiry,
 						paymentReferenceDb, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
 						channel, billStatus, tranDate, tranTime, province, "", bankName, bankCode, branchName,
-						branchCode, username, "");
+						branchCode, username, "","","");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2548,8 +2536,6 @@ public class BillDetailsServiceImpl implements BillDetailsService {
 
 	}
 
-	
-	
 	@Override
 	public PaymentInquiryResponse paymentInquiryPU(PaymentInquiryRequest request,
 			HttpServletRequest httpRequestData) {
