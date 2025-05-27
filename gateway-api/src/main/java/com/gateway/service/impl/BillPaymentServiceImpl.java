@@ -1601,15 +1601,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							requestAmount = BigDecimal.valueOf(Double.parseDouble(amountStr)).setScale(2,
 									RoundingMode.UP);
 							amountInDueToDate = utilMethods.bigDecimalToDouble(requestAmount);
-							// amountPaidInDueDate = utilMethods.formatAmount(requestAmount, 12);
 						}
 
 						if (!amountAfterDueDateStr.isEmpty()) {
 							requestAmountafterduedate = BigDecimal.valueOf(Double.parseDouble(amountAfterDueDateStr))
 									.setScale(2, RoundingMode.UP);
 							amountAfterDueDate = utilMethods.bigDecimalToDouble(requestAmountafterduedate);
-							// amountPaidAfterDueDate = utilMethods.formatAmount(requestAmountafterduedate,
-							// 12);
 						}
 
 						name = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getName();
@@ -1629,7 +1626,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 							LocalDate currentDate = LocalDate.now();
 
 							try {
-								LocalDate dueDate = utilMethods.parseDueDate(dueDateStr);
+								LocalDate dueDate = utilMethods.parseDueDateWithoutDashes(dueDateStr);
 
 								// Check due date conditions
 								if (utilMethods.isPaymentWithinDueDate(currentDate, dueDate)) {
@@ -2002,7 +1999,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), requestAmount, new BigDecimal(amountInDueToDate),
+						request.getTxnInfo().getBillerId(), new BigDecimal(request.getTxnInfo().getTranAmount()), new BigDecimal(amountInDueToDate),
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillPayment,
 						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
 						channel, billStatus, request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(),

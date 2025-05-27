@@ -807,7 +807,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTotal = requestTotalAmountbdUp.doubleValue();
 						if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
 								.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
-							
+
 							Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
 									.ofNullable(combinedPaymentLogViewRepository
 											.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
@@ -831,8 +831,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								return response;
 
 							}
-
-
 
 							transactionStatus = Constants.Status.Success;
 						} else if (getVoucherResponse.getResponse().getGetvoucher().getStatus()
@@ -905,7 +903,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							transactionStatus = Constants.Status.Fail;
 							billstatus = "B";
 						}
-
 
 					}
 
@@ -980,7 +977,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "",dueDate,billingMonth);
+						bankName, bankCode, branchName, branchCode, username, "", dueDate, billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1079,7 +1076,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 	@Override
 	public BillInquiryResponse billInquiryOffline(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller) {
-		// TODO Auto-generated method stub
 
 		LOG.info("Offline Bill Inquiry Request {} {} ", request.toString());
 
@@ -1089,7 +1085,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		Date strDate = new Date();
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
 		String stan = request.getInfo().getStan(); // utilMethods.getStan();
-		// String transAuthId = request.getInfo().getStan(); // utilMethods.getStan();
 		String transAuthId = "";
 		String transactionStatus = "";
 
@@ -1117,7 +1112,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String oneBillNumber = "";
 		BigDecimal requestAmount = null, amountPaid = null;
 		double amountAfterDueDate = 0;
-		String bankName = "", bankCode = "", branchName = "", branchCode = "";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "", billerName = "",billerNumber="";
 
 		try {
 
@@ -1192,23 +1187,29 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							oneBillNumber = "";
 						}
 
-
 						if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
-							PaymentLog paymentLog = paymentLogRepository
-									.findFirstByBillerIdAndBillerNumberAndBillStatusIgnoreCaseAndActivityAndResponseCodeOrderByIDDesc(
-											request.getTxnInfo().getBillerId().trim(),
-											request.getTxnInfo().getBillNumber().trim(),
-											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
-											Constants.ResponseCodes.OK);
-							if (paymentLog != null) {
-								datePaid = paymentLog.getTranDate();
-								billstatus = "P";
+							Optional<CombinedPaymentLogView> combinedPaymentLogView = Optional
+									.ofNullable(combinedPaymentLogViewRepository
+											.findFirstByBillerNumberAndBillStatusAndActivitiesBillerIdOrderByRequestDateTimeDesc(
+													request.getTxnInfo().getBillNumber().trim(),
+													Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
+													Constants.ACTIVITY.RBTS_FUND_TRANSFER,
+													Constants.ACTIVITY.CREDIT_DEBIT_CARD,
+													request.getTxnInfo().getBillerId()));
+
+							if (combinedPaymentLogView != null) {
+
+								CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
+
+								billerName = paymentLog.getName();
+								billerNumber = paymentLog.getBillerNumber();
 								transAuthId = paymentLog.getTranAuthId();
-								amountPaid = paymentLog.getAmountPaid();
-
-
+								billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
+								amountPaid = paymentLog.getTotalAmount();
+								amountInDueToDate =  paymentLog.getAmount_within_duedate().doubleValue();
+								amountAfterDueDate = paymentLog.getAmount_after_duedate().doubleValue();
 
 							} else {
 								info = new Info(Constants.ResponseCodes.PAYMENT_NOT_FOUND,
@@ -1310,7 +1311,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillInquiry, "",
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "",dueDate,billingMonth);
+						bankName, bankCode, branchName, branchCode, username, "", dueDate, billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1527,7 +1528,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode, username, "","","");
+						branchCode, username, "", "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1659,7 +1660,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								oneBillNumber = "";
 							}
 
-
 							if (billStatus.equalsIgnoreCase(Constants.BILL_STATUS.BILL_PAID)) {
 
 								PaymentLog paymentLog = paymentLogRepository
@@ -1789,7 +1789,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, dbTotal, channel, dbBillStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode, username, "","","");
+						branchCode, username, "", "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1889,8 +1889,6 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 					BigDecimal requestAmountafterduedate = null;
 					if (aiouGetVoucherResponse.getResponse().getAiouGetVoucher() != null) {
-
-
 
 						billStatus = aiouGetVoucherResponse.getResponse().getAiouGetVoucher().getResponseBillInquiry()
 								.getBillStatus().trim().equalsIgnoreCase("U") ? Constants.BILL_STATUS.BILL_UNPAID
@@ -2048,7 +2046,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, dbTotal, channel, dbBillStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode, username, "",dueDate,billingMonth);
+						branchCode, username, "", dueDate, billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3368,7 +3366,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						dbTransactionFees, Constants.ACTIVITY.BillInquiry, "", request.getTxnInfo().getBillNumber(),
 						transactionStatus, address, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
 						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
-						branchCode, username, feeDetail,dueDate,billingMonth);
+						branchCode, username, feeDetail, dueDate, billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -5831,6 +5829,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 											Constants.BILL_STATUS.BILL_PAID, Constants.ACTIVITY.BillPayment,
 											Constants.ACTIVITY.RBTS_FUND_TRANSFER, Constants.ACTIVITY.CREDIT_DEBIT_CARD,
 											request.getTxnInfo().getBillerId()));
+
 					if (combinedPaymentLogView.isPresent()) {
 
 						CombinedPaymentLogView paymentLog = combinedPaymentLogView.get();
