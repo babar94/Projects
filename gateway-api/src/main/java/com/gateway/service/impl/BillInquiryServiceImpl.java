@@ -31,6 +31,7 @@ import com.gateway.entity.ProvinceTransaction;
 import com.gateway.entity.ReservedFieldAttributes;
 import com.gateway.entity.SubBillersList;
 import com.gateway.model.mpay.response.billinquiry.GetVoucherResponse;
+import com.gateway.model.mpay.response.billinquiry.offline.Getvoucher;
 import com.gateway.model.mpay.response.billinquiry.aiou.AiouGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.aiou.ResponseBillInquiry;
 import com.gateway.model.mpay.response.billinquiry.bisekohat.BiseKohatBillInquiryResponse;
@@ -1081,6 +1082,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 		BillInquiryResponse response = null;
 		OfflineGetVoucherResponse getVoucherResponse = null;
+		Getvoucher getvoucher = null;
 		Info info = null;
 		Date strDate = new Date();
 		String rrn = request.getInfo().getRrn(); // utilMethods.getRRN();
@@ -1112,10 +1114,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String oneBillNumber = "";
 		BigDecimal requestAmount = null, amountPaid = null;
 		double amountAfterDueDate = 0;
-		String bankName = "", bankCode = "", branchName = "", branchCode = "", billerName = "",billerNumber="";
+		String bankName = "", bankCode = "", branchName = "", branchCode = "", billerId = "", billerName = "",
+				billerNumber = "";
+		Optional<ReservedFieldAttributes> reservedAttributes = null;
+		LinkedHashMap<String, String> reservedFiledhashmap = null;
 
 		try {
 
+			billerId = request.getTxnInfo().getBillerId();
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
@@ -1208,7 +1214,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 								transAuthId = paymentLog.getTranAuthId();
 								billstatus = BILL_STATUS_SINGLE_ALPHABET.BILL_PAID;
 								amountPaid = paymentLog.getTotalAmount();
-								amountInDueToDate =  paymentLog.getAmount_within_duedate().doubleValue();
+								amountInDueToDate = paymentLog.getAmount_within_duedate().doubleValue();
 								amountAfterDueDate = paymentLog.getAmount_after_duedate().doubleValue();
 
 							} else {
@@ -1239,16 +1245,46 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							String.valueOf(requestAmount), String.valueOf(requestAmountafterduedate), transAuthId,
 							oneBillNumber);
 
-					AdditionalInfo additionalInfo = new AdditionalInfo(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5(),
-							request.getAdditionalInfo().getReserveField6(),
-							request.getAdditionalInfo().getReserveField7(),
-							request.getAdditionalInfo().getReserveField8(),
-							request.getAdditionalInfo().getReserveField9(),
-							request.getAdditionalInfo().getReserveField10());
+					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
+
+					if (reservedAttributes.isPresent()) {
+						getvoucher = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher();
+
+						reservedFiledhashmap = ReservedAttributeMapper
+								.populateReservedFieldsFromResponse(reservedAttributes, getvoucher);
+					}
+
+					AdditionalInfo additionalInfo = new AdditionalInfo(
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField1") == null)
+									? reservedFiledhashmap.get("reservedField1")
+									: request.getAdditionalInfo().getReserveField1(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField2") == null)
+									? reservedFiledhashmap.get("reservedField2")
+									: request.getAdditionalInfo().getReserveField2(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField3") == null)
+									? reservedFiledhashmap.get("reservedField3")
+									: request.getAdditionalInfo().getReserveField3(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField4") == null)
+									? reservedFiledhashmap.get("reservedField4")
+									: request.getAdditionalInfo().getReserveField4(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField5") == null)
+									? reservedFiledhashmap.get("reservedField5")
+									: request.getAdditionalInfo().getReserveField5(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField6") == null)
+									? reservedFiledhashmap.get("reservedField6")
+									: request.getAdditionalInfo().getReserveField6(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField7") == null)
+									? reservedFiledhashmap.get("reservedField7")
+									: request.getAdditionalInfo().getReserveField7(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField8") == null)
+									? reservedFiledhashmap.get("reservedField8")
+									: request.getAdditionalInfo().getReserveField8(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField9") == null)
+									? reservedFiledhashmap.get("reservedField9")
+									: request.getAdditionalInfo().getReserveField9(),
+							(reservedFiledhashmap != null) && !(reservedFiledhashmap.get("reservedField10") == null)
+									? reservedFiledhashmap.get("reservedField10")
+									: request.getAdditionalInfo().getReserveField10());
 
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
