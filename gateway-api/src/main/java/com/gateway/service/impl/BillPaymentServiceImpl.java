@@ -76,6 +76,7 @@ import com.gateway.repository.SubBillerListRepository;
 import com.gateway.request.billpayment.BillPaymentRequest;
 import com.gateway.response.BillPaymentValidationResponse;
 import com.gateway.response.BillerCredentialResponse;
+import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billpaymentresponse.AdditionalInfoPay;
 import com.gateway.response.billpaymentresponse.BillPaymentResponse;
@@ -1585,7 +1586,17 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			if (getVoucherResponse != null) {
 
-				if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
+				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
+						.equalsIgnoreCase("EXPIRED")) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED, rrn,
+							stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Expired;
+
+				}
+
+				else if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
 					String billstatus = "";
 

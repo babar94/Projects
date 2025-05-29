@@ -66,8 +66,6 @@ import com.gateway.response.billinquiryresponse.AdditionalInfo;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billinquiryresponse.TxnInfo;
-import com.gateway.response.billpaymentresponse.BillPaymentResponse;
-import com.gateway.response.billpaymentresponse.InfoPay;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.BillInquiryService;
 import com.gateway.service.BillerCredentialService;
@@ -1153,7 +1151,19 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
 						getVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-				if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
+				
+				
+				if(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus().equalsIgnoreCase("EXPIRED")) {
+					
+					info = new Info(Constants.ResponseCodes.BILL_EXPIRED,
+							Constants.ResponseDescription.EXPIRED, rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Expired;
+
+					
+				}
+			
+				else if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
 					String billstatus = "";
 
