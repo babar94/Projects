@@ -188,4 +188,7 @@ wasa:
 memcached:
   host: 127.0.0.1
   port: 11211
-  expireTime: 259200  
+  expireTime: 259200
+
+billerCategory: Offline Biller
+           

@@ -1228,7 +1228,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "","","");
+						bankName, bankCode, branchName, branchCode, username, "", "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1500,7 +1500,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						amountAfterDueDate, dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "","","");
+						bankName, bankCode, branchName, branchCode, username, "", "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -1613,10 +1613,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 						billingDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getBillingDate();
-						billingMonth = utilMethods.removeHyphen(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getBillingMonth());
-						dueDateStr = utilMethods.removeHyphen(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
-								.getDueDate());
+						billingMonth = utilMethods.removeHyphen(getVoucherResponse.getResponse()
+								.getOfflineBillerGetvoucher().getGetvoucher().getBillingMonth());
+						dueDateStr = utilMethods.removeHyphen(getVoucherResponse.getResponse()
+								.getOfflineBillerGetvoucher().getGetvoucher().getDueDate());
 						expiryDate = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
 								.getExpiryDate();
 						billStatus = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()
@@ -1716,42 +1716,10 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 										transactionStatus = Constants.Status.Success;
 										billStatus = Constants.BILL_STATUS.BILL_PAID;
 
-									} else if (OfflineUpdateVoucherResponse.getResponse().getResponse_code()
-											.equals("402")) {
-										infoPay = new InfoPay(Constants.ResponseCodes.DUPLICATE_TRANSACTION,
-												Constants.ResponseDescription.DUPLICATE_TRANSACTION, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-										response = new BillPaymentResponse(infoPay, null,null);
-										transactionStatus = Constants.Status.Fail;
 									} else {
 										infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 												Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
-										response = new BillPaymentResponse(infoPay, null,null);
+										response = new BillPaymentResponse(infoPay, null, null);
 									}
 
 								} else { // Second time bill inquiry to pe call from here and if bill is paid then
@@ -1792,56 +1760,19 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											} else {
 												infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 														Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-												txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-														request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-												additionalInfoPay = new AdditionalInfoPay(
-														request.getAdditionalInfo().getReserveField1(),
-														request.getAdditionalInfo().getReserveField2(),
-														request.getAdditionalInfo().getReserveField3(),
-														request.getAdditionalInfo().getReserveField4(),
-														request.getAdditionalInfo().getReserveField5(),
-														request.getAdditionalInfo().getReserveField6(),
-														request.getAdditionalInfo().getReserveField7(),
-														request.getAdditionalInfo().getReserveField8(),
-														request.getAdditionalInfo().getReserveField9(),
-														request.getAdditionalInfo().getReserveField10());
-												response = new BillPaymentResponse(infoPay, null,
-														null);
+
+												response = new BillPaymentResponse(infoPay, null, null);
 											}
 										} else {
 											infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 													Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-											txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-													request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-											additionalInfoPay = new AdditionalInfoPay(
-													request.getAdditionalInfo().getReserveField1(),
-													request.getAdditionalInfo().getReserveField2(),
-													request.getAdditionalInfo().getReserveField3(),
-													request.getAdditionalInfo().getReserveField4(),
-													request.getAdditionalInfo().getReserveField5(),
-													request.getAdditionalInfo().getReserveField6(),
-													request.getAdditionalInfo().getReserveField7(),
-													request.getAdditionalInfo().getReserveField8(),
-													request.getAdditionalInfo().getReserveField9(),
-													request.getAdditionalInfo().getReserveField10());
+
 											response = new BillPaymentResponse(infoPay, null, null);
 										}
 									} else {
 										infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
 												Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
-										txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-												request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-										additionalInfoPay = new AdditionalInfoPay(
-												request.getAdditionalInfo().getReserveField1(),
-												request.getAdditionalInfo().getReserveField2(),
-												request.getAdditionalInfo().getReserveField3(),
-												request.getAdditionalInfo().getReserveField4(),
-												request.getAdditionalInfo().getReserveField5(),
-												request.getAdditionalInfo().getReserveField6(),
-												request.getAdditionalInfo().getReserveField7(),
-												request.getAdditionalInfo().getReserveField8(),
-												request.getAdditionalInfo().getReserveField9(),
-												request.getAdditionalInfo().getReserveField10());
+
 										response = new BillPaymentResponse(infoPay, null, null);
 										transactionStatus = Constants.Status.Fail;
 									}
@@ -1875,37 +1806,13 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								.getBillStatus().equalsIgnoreCase(Constants.BILL_STATUS.BILL_EXPIRED)) {
 							infoPay = new InfoPay(Constants.BILL_STATUS.BILL_EXPIRED,
 									Constants.ResponseDescription.CONSUMER_NUMBER_Expired, rrn, stan);
-							txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-									request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-							additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-									request.getAdditionalInfo().getReserveField2(),
-									request.getAdditionalInfo().getReserveField3(),
-									request.getAdditionalInfo().getReserveField4(),
-									request.getAdditionalInfo().getReserveField5());
-//									request.getAdditionalInfo().getReserveField6(),
-//									request.getAdditionalInfo().getReserveField7(),
-//									request.getAdditionalInfo().getReserveField8(),
-//									request.getAdditionalInfo().getReserveField9(),
-//									request.getAdditionalInfo().getReserveField10());
 							response = new BillPaymentResponse(infoPay, null, null);
 							transactionStatus = Constants.Status.Fail;
 						}
 					} else if (getVoucherResponse.getResponse().getResponseCode()
-							.equals(Constants.ResponseCodes.NOT_FOUND)) {
+							.equals(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 						infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 								Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-						txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-								request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-						additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-								request.getAdditionalInfo().getReserveField2(),
-								request.getAdditionalInfo().getReserveField3(),
-								request.getAdditionalInfo().getReserveField4(),
-								request.getAdditionalInfo().getReserveField5());
-//								request.getAdditionalInfo().getReserveField6(),
-//								request.getAdditionalInfo().getReserveField7(),
-//								request.getAdditionalInfo().getReserveField8(),
-//								request.getAdditionalInfo().getReserveField9(),
-//								request.getAdditionalInfo().getReserveField10());
 						response = new BillPaymentResponse(infoPay, null, null);
 						transactionStatus = Constants.Status.Fail;
 
@@ -1914,16 +1821,6 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 						txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
 								request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-						additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-								request.getAdditionalInfo().getReserveField2(),
-								request.getAdditionalInfo().getReserveField3(),
-								request.getAdditionalInfo().getReserveField4(),
-								request.getAdditionalInfo().getReserveField5());
-//								request.getAdditionalInfo().getReserveField6(),
-//								request.getAdditionalInfo().getReserveField7(),
-//								request.getAdditionalInfo().getReserveField8(),
-//								request.getAdditionalInfo().getReserveField9(),
-//								request.getAdditionalInfo().getReserveField10());
 						response = new BillPaymentResponse(infoPay, null, null);
 						transactionStatus = Constants.Status.Fail;
 					}
@@ -1932,38 +1829,14 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						.equals(Constants.ResponseCodes.NOT_FOUND)) {
 					infoPay = new InfoPay(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
-//							request.getAdditionalInfo().getReserveField6(),
-//							request.getAdditionalInfo().getReserveField7(),
-//							request.getAdditionalInfo().getReserveField8(),
-//							request.getAdditionalInfo().getReserveField9(),
-//							request.getAdditionalInfo().getReserveField10());
 					response = new BillPaymentResponse(infoPay, null, null);
 					transactionStatus = Constants.Status.Fail;
 
 				}
 
 				else {
-					infoPay = new InfoPay(Constants.ResponseCodes.BAD_TRANSACTION,
-							Constants.ResponseDescription.BAD_TRANSACTION, rrn, stan);
-					txnInfoPay = new TxnInfoPay(request.getTxnInfo().getBillerId(),
-							request.getTxnInfo().getBillNumber(), paymentRefrence);// paymentRefrence
-					additionalInfoPay = new AdditionalInfoPay(request.getAdditionalInfo().getReserveField1(),
-							request.getAdditionalInfo().getReserveField2(),
-							request.getAdditionalInfo().getReserveField3(),
-							request.getAdditionalInfo().getReserveField4(),
-							request.getAdditionalInfo().getReserveField5());
-//							request.getAdditionalInfo().getReserveField6(),
-//							request.getAdditionalInfo().getReserveField7(),
-//							request.getAdditionalInfo().getReserveField8(),
-//							request.getAdditionalInfo().getReserveField9(),
-//							request.getAdditionalInfo().getReserveField10());
+					infoPay = new InfoPay(Constants.ResponseCodes.UNKNOWN_ERROR,
+							Constants.ResponseDescription.UNKNOWN_ERROR, rrn, stan);
 					response = new BillPaymentResponse(infoPay, null, null);
 
 					transactionStatus = Constants.Status.Fail;
@@ -1999,11 +1872,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 				paymentLoggingService.paymentLog(responseDate, responseDate, rrn, stan,
 						response.getInfo().getResponseCode(), response.getInfo().getResponseDesc(), cnic,
 						request.getTerminalInfo().getMobile(), name, request.getTxnInfo().getBillNumber(),
-						request.getTxnInfo().getBillerId(), new BigDecimal(request.getTxnInfo().getTranAmount()), new BigDecimal(amountInDueToDate),
-						new BigDecimal(amountAfterDueDate), dbTransactionFees, Constants.ACTIVITY.BillPayment,
-						paymentRefrence, request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal,
-						channel, billStatus, request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(),
-						province, transAuthId, bankName, bankCode, branchName, branchCode, username, "",dueDateStr,billingMonth);
+						request.getTxnInfo().getBillerId(), new BigDecimal(request.getTxnInfo().getTranAmount()),
+						new BigDecimal(amountInDueToDate), new BigDecimal(amountAfterDueDate), dbTransactionFees,
+						Constants.ACTIVITY.BillPayment, paymentRefrence, request.getTxnInfo().getBillNumber(),
+						transactionStatus, address, dbTotal, channel, billStatus, request.getTxnInfo().getTranDate(),
+						request.getTxnInfo().getTranTime(), province, transAuthId, bankName, bankCode, branchName,
+						branchCode, username, "", dueDateStr, billingMonth);
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2424,7 +2298,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "","","");
+						bankName, bankCode, branchName, branchCode, username, "", "", "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -2967,7 +2841,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "",dueDateStr,"");
+						bankName, bankCode, branchName, branchCode, username, "", dueDateStr, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -3547,7 +3421,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, "",dueDateStr,"");
+						bankName, bankCode, branchName, branchCode, username, "", dueDateStr, "");
 
 			} catch (Exception ex) {
 				LOG.error("{}", ex);
@@ -5018,7 +4892,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 						dbTransactionFees, Constants.ACTIVITY.BillPayment, paymentRefrence,
 						request.getTxnInfo().getBillNumber(), transactionStatus, address, dbTotal, channel, billStatus,
 						request.getTxnInfo().getTranDate(), request.getTxnInfo().getTranTime(), province, transAuthId,
-						bankName, bankCode, branchName, branchCode, username, feeDetail,"","");
+						bankName, bankCode, branchName, branchCode, username, feeDetail, "", "");
 
 				if (dlsgetVoucherResponse != null && dlsgetVoucherResponse.getResponse() != null
 						&& dlsgetVoucherResponse.getResponse().getDlsgetvoucher() != null
@@ -7323,8 +7197,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 		try {
 
-			billerId= request.getTxnInfo().getBillerId();
-			
+			billerId = request.getTxnInfo().getBillerId();
+
 			if (request.getBranchInfo() != null) {
 				bankName = request.getBranchInfo().getBankName();
 				bankCode = request.getBranchInfo().getBankCode();
@@ -7452,23 +7326,21 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					customer_Id = lescoBillInquiryResponse.getLescoBillInquiry().getLescobillinquirydata()
 							.getDataWrapper().get(0).getCustId();
 
-					
 					////// Credential work
-					
+
 					Optional<BillerCredentialResponse> decryptedCredentials = billerCredentialService
 							.getDecryptedCredentials(billerId);
 
 					if (decryptedCredentials.isEmpty()) {
 						LOG.error("No credentials found or credentials are invalid for billerId: {}", billerId);
 
-						 infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
-								rrn, stan);
+						infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+								Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
 
 						return new BillPaymentResponse(infoPay, null, null);
 					}
 					BillerCredentialResponse billerCredentialResponse = decryptedCredentials.get();
 
-					
 					paymentParams.add(Constants.MPAY_REQUEST_METHODS.LESCO_BILL_PAYMENT);
 					paymentParams.add(cardType);
 					paymentParams.add(request.getTxnInfo().getBillNumber().trim());
@@ -7479,7 +7351,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 					paymentParams.add(customer_Id);
 					paymentParams.add(request.getAdditionalInfo().getReserveField10());
 					paymentParams.add(billerCredentialResponse.getUsername());
-	                paymentParams.add(billerCredentialResponse.getPassword());			
+					paymentParams.add(billerCredentialResponse.getPassword());
 					paymentParams.add(rrn);
 					paymentParams.add(stan);
 

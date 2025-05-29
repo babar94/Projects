@@ -10,4 +10,6 @@ import com.gateway.entity.ReservedFieldAttributes;
 public interface ReservedAttributesRepository extends JpaRepository<ReservedFieldAttributes,Long> {
 
 	Optional<ReservedFieldAttributes> findByBillerId(String billerId);
+	Optional<ReservedFieldAttributes> findByBillerName(String billerName);
+
 }

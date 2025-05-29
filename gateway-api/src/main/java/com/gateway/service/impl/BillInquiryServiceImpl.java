@@ -66,6 +66,8 @@ import com.gateway.response.billinquiryresponse.AdditionalInfo;
 import com.gateway.response.billinquiryresponse.BillInquiryResponse;
 import com.gateway.response.billinquiryresponse.Info;
 import com.gateway.response.billinquiryresponse.TxnInfo;
+import com.gateway.response.billpaymentresponse.BillPaymentResponse;
+import com.gateway.response.billpaymentresponse.InfoPay;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.BillInquiryService;
 import com.gateway.service.BillerCredentialService;
@@ -203,6 +205,9 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 
 	@Value("${memcached.expireTime}")
 	private int expireTime;
+
+	@Value("${billerCategory}")
+	private String biller_category;
 
 	@Autowired
 	private BillerCredentialService billerCredentialService;
@@ -1245,7 +1250,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 							String.valueOf(requestAmount), String.valueOf(requestAmountafterduedate), transAuthId,
 							oneBillNumber);
 
-					reservedAttributes = reservedAttributesRepository.findByBillerId(billerId);
+					reservedAttributes = reservedAttributesRepository.findByBillerName(biller_category);
 
 					if (reservedAttributes.isPresent()) {
 						getvoucher = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher();
@@ -1289,7 +1294,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 					response = new BillInquiryResponse(info, txnInfo, additionalInfo);
 
 				} else if (getVoucherResponse.getResponse().getResponseCode()
-						.equals(Constants.ResponseCodes.NOT_FOUND)) {
+						.equals(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS)) {
 					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
 							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 					response = new BillInquiryResponse(info, null, null);
@@ -1299,6 +1304,14 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 						.equals(Constants.ResponseCodes.OFFLINE_SERVICE_FAIL)) {
 					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
 							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+
+				else if (getVoucherResponse.getResponse().getResponseCode().equals(Constants.ResponseCodes.NOT_FOUND)) {
+					info = new Info(Constants.ResponseCodes.CONSUMER_NUMBER_NOT_EXISTS,
+							Constants.ResponseDescription.CONSUMER_NUMBER_NOT_EXISTS, rrn, stan);
 					response = new BillInquiryResponse(info, null, null);
 					transactionStatus = Constants.Status.Fail;
 
