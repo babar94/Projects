@@ -61,8 +61,10 @@ public class ServiceCaller {
 			LOG.info("\ncall started at: " + new Date());
 			long startTime = System.currentTimeMillis();
 			result = Unirest.get(endPoint + query).asString().getBody();
-			result = result.replace("fees_wrapper", "fees");
+			//result = result.replace("fees_wrapper", "fees");
 
+			//result ="{\"response\":{\"response_code\":\"00\",\"response_desc\":\"Successfull\",\"lesco-billinquiry\":{\"data_wrapper\":[{\"AmountWithInDue\":\"32899\",\"BillMonth\":\"APR-25\",\"Address\":\"SANDA CHUNGI MAIN B RD SANDAKALAN LHR\",\"AmountAfterDue\":\"53399\",\"CustID\":\"2017669\",\"CardType\":\"6\",\"RU_Code\":\"U\",\"DueDate\":\"03032025\",\"ReferenceNo\":\"01111110000502\",\"Name\":\"AZEEM MEHMOOD MALIKMUHAMMAD AMIN MALIK\"}]}}}";
+			
 			long endTime = System.currentTimeMillis();
 			LOG.info("\ncall finish at: " + new Date());
 			long totalTime = endTime - startTime;

@@ -221,8 +221,11 @@ public class UtilMethods {
 	public String getFormattedBillingMonth(String billingmonth) {
 
 		try {
+			
+			String formattedInput = billingmonth.substring(0, 1).toUpperCase() + billingmonth.substring(1).toLowerCase();
+			
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM-yy", Locale.ENGLISH);
-			YearMonth yearMonth = YearMonth.parse(billingmonth, formatter);
+			YearMonth yearMonth = YearMonth.parse(formattedInput, formatter);
 
 			return yearMonth.format(DateTimeFormatter.ofPattern("yyMM"));
 
