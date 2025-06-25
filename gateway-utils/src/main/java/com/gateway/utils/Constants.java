@@ -136,6 +136,8 @@ public class Constants {
 		public static final String WASA_BILL_PAYMENT = "wasa-billpayment";
 		public static final String PU_BILL_INQUIRY = "pu-billinquiry";
 		public static final String PU_BILL_PAYMENT = "pu-billpayment";
+		public static final String VMS_OFFLINE_BILLER_INQUIRY = "vms-offline-biller-getvoucher";
+		public static final String VMS_OFFLINE_BILLER_PAYMENT = "vms-offline-biller-updatevoucher";
 
 		
 		
@@ -164,6 +166,7 @@ public class Constants {
 
 		public static final String OFFLINE_BILLER = "offline";
 		public static final String ONLINE_BILLER = "online";
+		public static final String VMS = "vms";
 
 	}
 

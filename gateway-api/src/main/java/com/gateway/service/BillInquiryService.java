@@ -13,6 +13,9 @@ public interface BillInquiryService {
 	public BillInquiryResponse billInquiryOffline(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller);
 
+	public BillInquiryResponse billInquiryVms(HttpServletRequest httpRequestData, BillInquiryRequest request,
+			String parentBiller, String subBiller);
+	
 	public BillInquiryResponse billInquiryBEOE(BillInquiryRequest request, HttpServletRequest httpRequestData);
 
 	public BillInquiryResponse billInquiryKppsc(BillInquiryRequest request,
