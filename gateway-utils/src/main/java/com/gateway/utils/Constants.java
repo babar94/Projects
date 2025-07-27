@@ -166,7 +166,7 @@ public class Constants {
 
 		public static final String OFFLINE_BILLER = "offline";
 		public static final String ONLINE_BILLER = "online";
-		public static final String VMS = "vms";
+		public static final String VMS_OFFLINE_BILLER = "vms";
 
 	}
 

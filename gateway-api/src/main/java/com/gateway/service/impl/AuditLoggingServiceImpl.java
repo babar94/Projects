@@ -26,7 +26,7 @@ public class AuditLoggingServiceImpl implements AuditLoggingService {
 			String billerNumber, String channel, String username) throws Exception {
 
 		AuditLog auditLog = new AuditLog();
-		LOG.info("Inserting in table (audit)");
+		LOG.info("Insertin in table (audit)");
 
 		
 		

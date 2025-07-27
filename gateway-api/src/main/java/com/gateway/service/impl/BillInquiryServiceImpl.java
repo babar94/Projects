@@ -590,25 +590,30 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 										}
 									}
 
+								
 									////////// PU ///////
+									
+									///////////// OFFLINE ////////
 
 									else if (type.equalsIgnoreCase(Constants.BillerType.OFFLINE_BILLER)) {
 										// offline apis
 										billInquiryResponse = billInquiryOffline(httpRequestData, request,
 												parentBillerId, subBillerId);
 
-									} 
+									}
 									
-		                            //////// VMS ////////
-									
-									else if (type.equalsIgnoreCase(Constants.BillerType.VMS)) {
-										
+									///////////// OFFLINE ////////
+
+									//////// VMS ////////
+
+									else if (type.equalsIgnoreCase(Constants.BillerType.VMS_OFFLINE_BILLER)) {
+
 										// offline apis
-										
-										billInquiryResponse = billInquiryVms(httpRequestData, request,
-												parentBillerId, subBillerId);
-									} 
-									
+
+										billInquiryResponse = billInquiryVms(httpRequestData, request, parentBillerId,
+												subBillerId);
+									}
+
 									else {
 										info = new Info(Constants.ResponseCodes.BILLER_NOT_FOUND_DISABLED,
 												Constants.ResponseDescription.BILLER_NOT_FOUND_DISABLED, rrn, stan);
@@ -1165,18 +1170,26 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
 						getVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-				
-				
-				if(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus().equalsIgnoreCase("EXPIRED")) {
-					
-					info = new Info(Constants.ResponseCodes.BILL_EXPIRED,
-							Constants.ResponseDescription.EXPIRED, rrn, stan);
+
+				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() == null) {
+
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+
+				else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
+						.equalsIgnoreCase("EXPIRED")) {
+
+					info = new Info(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED, rrn,
+							stan);
 					response = new BillInquiryResponse(info, null, null);
 					transactionStatus = Constants.Status.Expired;
 
-					
 				}
-			
+
 				else if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
 					String billstatus = "";
@@ -1393,7 +1406,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		}
 		return response;
 	}
-	
+
 	@Override
 	public BillInquiryResponse billInquiryVms(HttpServletRequest httpRequestData, BillInquiryRequest request,
 			String parentBiller, String subBiller) {
@@ -1432,7 +1445,7 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 		String billingDate = "";
 		String expiryDate = "";
 		String oneBillNumber = "";
-		BigDecimal requestAmount = null, amountPaid = null;
+		BigDecimal requestAmount = null, requestAmountafterduedate = null, amountPaid = null;
 		double amountAfterDueDate = 0;
 		String bankName = "", bankCode = "", branchName = "", branchCode = "", billerId = "", billerName = "",
 				billerNumber = "";
@@ -1468,23 +1481,30 @@ public class BillInquiryServiceImpl implements BillInquiryService {
 			if (getVoucherResponse != null) {
 				info = new Info(getVoucherResponse.getResponse().getResponseCode(),
 						getVoucherResponse.getResponse().getResponseDesc(), rrn, stan);
-				
-				
-				if(getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus().equalsIgnoreCase("EXPIRED")) {
-					
-					info = new Info(Constants.ResponseCodes.BILL_EXPIRED,
-							Constants.ResponseDescription.EXPIRED, rrn, stan);
+
+				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() == null) {
+
+					info = new Info(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					response = new BillInquiryResponse(info, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+
+				else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
+						.equalsIgnoreCase("EXPIRED")) {
+
+					info = new Info(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED, rrn,
+							stan);
 					response = new BillInquiryResponse(info, null, null);
 					transactionStatus = Constants.Status.Expired;
 
-					
 				}
-			
+
 				else if (getVoucherResponse.getResponse().getResponseCode().equals(ResponseCodes.OK)) {
 
 					String billstatus = "";
 
-					BigDecimal requestAmountafterduedate = null;
 					if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() != null) {
 
 						String amountStr = getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher()

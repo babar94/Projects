@@ -409,6 +409,12 @@ public class FilterRequestResponseUtils {
 		public int getStatus() {
 			return original.getStatus();
 		}
+
+		@Override
+		public void sendRedirect(String location, int sc, boolean clearBuffer) throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 

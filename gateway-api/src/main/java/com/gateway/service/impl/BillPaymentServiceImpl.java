@@ -673,14 +673,13 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 												parentBillerId, subBillerId);
 									}
 
-									else if (type.equalsIgnoreCase(Constants.BillerType.VMS)
+									else if (type.equalsIgnoreCase(Constants.BillerType.VMS_OFFLINE_BILLER)
 											&& subBiller.get().getIsActive()) {
 										// offline apis
 										billPaymentResponse = billPaymentOfflineVms(request, httpRequestData,
 												parentBillerId, subBillerId);
 									}
 
-									
 									else {
 										LOG.info("Biller does not exists.");
 										infoPay = new InfoPay(Constants.ResponseCodes.INVALID_BILLER_ID,
@@ -1594,11 +1593,20 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			if (getVoucherResponse != null) {
 
-				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
+				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() == null) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL,
+							Constants.ResponseDescription.SERVICE_FAIL, rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+
+				}
+
+				else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
 						.equalsIgnoreCase("EXPIRED")) {
 
-					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED, rrn,
-							stan);
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED,
+							rrn, stan);
 					response = new BillPaymentResponse(infoPay, null, null);
 					transactionStatus = Constants.Status.Expired;
 
@@ -1981,11 +1989,22 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
 			if (getVoucherResponse != null) {
 
-				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
+				
+				if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher() == null) {
+
+					infoPay = new InfoPay(Constants.ResponseCodes.SERVICE_FAIL, Constants.ResponseDescription.SERVICE_FAIL,
+							rrn, stan);
+					response = new BillPaymentResponse(infoPay, null, null);
+					transactionStatus = Constants.Status.Fail;
+			
+				}
+
+				
+				else if (getVoucherResponse.getResponse().getOfflineBillerGetvoucher().getGetvoucher().getBillStatus()
 						.equalsIgnoreCase("EXPIRED")) {
 
-					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED, rrn,
-							stan);
+					infoPay = new InfoPay(Constants.ResponseCodes.BILL_EXPIRED, Constants.ResponseDescription.EXPIRED,
+							rrn, stan);
 					response = new BillPaymentResponse(infoPay, null, null);
 					transactionStatus = Constants.Status.Expired;
 
@@ -2133,7 +2152,8 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 											// success
 
 									getVoucherResponse = serviceCaller.get(inquiryParams,
-											VmsOfflineGetVoucherResponse.class, stan, Constants.ACTIVITY.BillInquiry, "");
+											VmsOfflineGetVoucherResponse.class, stan, Constants.ACTIVITY.BillInquiry,
+											"");
 
 									if (getVoucherResponse != null) {
 										if (getVoucherResponse.getResponse().getResponseCode()
