@@ -40,7 +40,6 @@ import com.gateway.model.mpay.response.billinquiry.bppra.ChallanFee;
 import com.gateway.model.mpay.response.billinquiry.dls.DlsGetVoucherResponse;
 import com.gateway.model.mpay.response.billinquiry.dls.FeeTypeListWrapper;
 import com.gateway.repository.MPAYLogRepository;
-import com.gateway.utils.BillerConstant.Aiou;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kong.unirest.HttpResponse;
@@ -290,22 +289,6 @@ public class UtilMethods {
 		return value != null && !value.isEmpty() ? String.format("%-30s", value) : "Please Fill";
 	}
 
-	// Ahmed Ashraf
-	public static String padRight(String value, int n, boolean defaultvalue, String Tag) {
-
-		if (defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
-			return (value != null && !value.isEmpty() ? String.format("%-" + n + "s", value) : "Please Fill");
-		else
-			return String.format("%-" + n + "s", value);
-	}
-
-	public static String padLeft(String value, int n, boolean defaultvalue, String Tag) {
-
-		if (defaultvalue && Tag.equalsIgnoreCase(Aiou.AIOU))
-			return (value != null && !value.isEmpty() ? String.format("%" + n + "s", value) : "Please Fill");
-		else
-			return String.format("%" + n + "s", value);
-	}
 
 	public String getClientIp(HttpServletRequest request) {
 

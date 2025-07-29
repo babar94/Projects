@@ -1,13 +1,10 @@
 package com.gateway.service;
 
-
 import com.gateway.request.AuthenticationRequest;
 import com.gateway.response.AuthenticationResponse;
-
-
 
 public interface CredentialDetailsService {
 
 	public AuthenticationResponse authenticatedToken(AuthenticationRequest authenticationRequest);
-	
+
 }

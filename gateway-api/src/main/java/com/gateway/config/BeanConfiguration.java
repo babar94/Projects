@@ -27,15 +27,5 @@ public class BeanConfiguration {
 		return new ModelMapper();
 	}
 
-//	@Bean
-//	public FilterRegistrationBean<DuplicateTransactionCheckFilter> duplicateTransactionCheckFilterRegistration(
-//			PaymentLogRepository paymentLogRepository, ObjectMapper objectMapper) {
-//		FilterRegistrationBean<DuplicateTransactionCheckFilter> registrationBean = new FilterRegistrationBean<>();
-//		registrationBean.setFilter(new DuplicateTransactionCheckFilter(paymentLogRepository, objectMapper));
-//
-//		// Add URL patterns to include
-//		registrationBean.addUrlPatterns("/api/v1/bill/billinquiry", "/api/v1/bill/billpayment");
-//		return registrationBean;
-//	}
 
 }

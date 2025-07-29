@@ -26,42 +26,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-//	@Value("${springfox.documentation.swagger.v2.path:#{null}}")
-//	private String swaggerApiDocsPath;
-//	@Value("${swagger.enabled:false}")
-//	private Boolean swaggerEnabled;
-
-	public static final String[] PUBLIC_URLS = { "/api/v1/authenticate", "/v3/api-docs", "/v2/api-docs",
-			"/swagger-resources/**", "/swagger-ui/**", "/webjars/**" };
+	public static final String[] PUBLIC_URLS = { "/api/v1/authenticate", "/v3/api-docs/**",
+			"/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**" };
 
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final CustomCredentialsServiceImpl customCredentialsServiceImpl;
 
 	private final JwtRequestFilter jwtRequestFilter;
-	// private final DuplicateTransactionCheckFilter
-	// duplicateTransactionCheckFilter;
 
-//	@Override
-//	protected void configure(HttpSecurity httpSecurity) throws Exception {
-//		// We don't need CSRF for this example
-//		httpSecurity.csrf().disable().authorizeRequests().antMatchers(PUBLIC_URLS).permitAll() // Public URLs are
-//																								// permitted for all
-//				.anyRequest().authenticated() // All other requests require authentication
-//				.and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling()
-//				.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//	}
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		http.csrf(AbstractHttpConfigurer::disable)
-//				.authorizeHttpRequests(
-//						request -> request.requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated())
-//				.exceptionHandling(ex->ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-//				.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//				.authenticationProvider(authenticationProvider())
-//				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-//		return http.build();
-//	}
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
@@ -73,42 +45,6 @@ public class WebSecurityConfig {
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
-
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		http.csrf(AbstractHttpConfigurer::disable)
-//				.authorizeHttpRequests(
-//						request -> request.requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated())
-//				.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-//				.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//				.authenticationProvider(authenticationProvider())
-//				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-//				.addFilterBefore(duplicateTransactionCheckFilter, JwtRequestFilter.class); // Add your
-//																							// DuplicateTransactionCheckFilter
-//		return http.build();
-//	}
-
-//	private String[] anonymousEndpoints() {
-//		String endpoints[] = { CustomErrorController.PATH, ApiController.AUTHENTICATE_URL, "/.well-known/**" };
-//
-//		if (swaggerEnabled) {
-//			String[] PUBLIC_URLS = { ApiController.AUTHENTICATE_URL, "/v3/api-docs", "/v2/api-docs",
-//					"/swagger-resources/**", "/swagger-ui/**", "/webjars/**"
-//
-//			};
-//		}
-//
-//		return endpoints;
-//	}
-//	private String[] anonymousEndpoints() {
-//		String endpoints[] = { CustomErrorController.PATH, ApiController.AUTHENTICATE_URL, "/.well-known/**" };
-//		if (swaggerEnabled) {
-//			String swaggerEndpoints[] = { "/swagger-ui.html", swaggerApiDocsPath, "/webjars/**",
-//					"/swagger-resources/**" };
-//			endpoints = ArrayUtils.addAll(endpoints, swaggerEndpoints);
-//		}
-//		return endpoints;
-//	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

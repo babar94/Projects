@@ -5,14 +5,17 @@ import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.gateway.utils.Constants;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 @SpringBootApplication(scanBasePackages = { "com.gateway" })
 @EnableEncryptableProperties
-
+@EnableTransactionManagement
+@EnableConfigurationProperties
 public class Application {
 
 	public static void main(String[] args) {

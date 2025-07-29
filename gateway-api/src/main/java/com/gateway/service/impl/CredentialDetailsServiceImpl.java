@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,9 +21,8 @@ import com.gateway.response.AuthenticationResponse;
 import com.gateway.service.AuditLoggingService;
 import com.gateway.service.CredentialDetailsService;
 import com.gateway.utils.Constants;
-import com.gateway.utils.Constants.ResponseDescription;
 import com.gateway.utils.JwtTokenUtil;
-
+import com.gateway.utils.Constants.ResponseDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 @Service
@@ -41,8 +39,8 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
-	@Autowired
-	private AuditLoggingService auditLoggingService;
+//	@Autowired
+//	private AuditLoggingService auditLoggingService;
 
 	@Value("${security.login.max-attempts}")
 	private int maxAttempts;
@@ -134,10 +132,10 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 				ObjectMapper respMapper = new ObjectMapper();
 				String responseAsString = respMapper.writeValueAsString(response);
 
-				auditLoggingService.auditLog("Authentication", response.getResponseCode(),
-						response.getResponseDescription(), updatedJsonString, responseAsString, requestDatetime,
-						requestDatetime, null, null, null, authenticationRequest.getChannel(),
-						authenticationRequest.getUsername());
+//				auditLoggingService.auditLog("Authentication", response.getResponseCode(),
+//						response.getResponseDescription(), updatedJsonString, responseAsString, requestDatetime,
+//						requestDatetime, null, null, null, authenticationRequest.getChannel(),
+//						authenticationRequest.getUsername());
 
 			} catch (Exception ex) {
 				return response;

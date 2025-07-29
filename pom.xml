@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gateway</groupId>
-  <artifactId>nbp-payment-gateway</artifactId>
+  <artifactId>gateway-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
  <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -16,31 +16,10 @@
   <description>Root Maven Project</description>
   <modules>
     <module>gateway-api</module>
-    <module>gateway-dao</module>
-    <module>gateway-model</module>
-    <module>gateway-utils</module>
   </modules>
     <dependencyManagement>
 		<dependencies>
 
-		<dependency>
-			<groupId>com.gateway</groupId>
-			<artifactId>gateway-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-	    <dependency>
-			<groupId>com.gateway</groupId>
-			<artifactId>gateway-models</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-        <dependency>
-			<groupId>com.gateway</groupId>
-			<artifactId>gateway-dao</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

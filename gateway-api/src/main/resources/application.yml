@@ -8,13 +8,6 @@ jwt:
   
 server:
   port: 8082
-  ssl:
-    enabled: false
-    key-store-type: PKCS12
-    key-store: server.p12
-    key-alias: nbpuat
-    key-password: Silv3r@321
-    key-store-password: Silv3r@321
   
   
 logging:
@@ -28,7 +21,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_UAT;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
+    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
 
     username : ENC(aF3V2Gker0iesnTTR30h2c7MVmCyi8kV)
     password : ENC(lG2+V+BWsvTE1yGscQoO/IF9dM+xU3ea)
@@ -48,6 +41,10 @@ spring:
       ddl-auto: none #none update, create-drop
     properties:
       hibernate:
+        default_batch_fetch_size: 100
+        jdbc:
+          fetch_size: 100
+          batch_size: 50
         dialect: org.hibernate.dialect.SQLServer2012Dialect
     
 springfox.documentation.swagger.v2.path: /docs
@@ -55,54 +52,23 @@ springfox.documentation.swagger.v2.path: /docs
 swagger:
   enabled: true  
   
-  
-payment:
-  pendingThresholdMinutes: 15
-  pendingVoucherUpdateMessage: A Transaction for this voucher has already been made, but marking your voucher to paid for some reason. this will be fixed within a few hours.
-  pendingPaymentMessage: A Transaction for this voucher is pending, please wait while that transaction is successful of rejected.	
-  log:
-    table: payment_log
-  
 api:
-  title: OPEN CONNECT API
+  title: Translation Management System
   description: REST Services for interacting with the exchange
   version: 1.0
-  contact: 033333333
-  name: Paysys Labs
+  contact: 
+  name: Translation Management System
   link: http://www.paysyslabs.com/
   email: info@paysyslabs.com
   url-patterns: /api/v1/*
 
 
-mpay:
-   external:
-      username: 'INPUTT'
-      password: ''
-      operand: 'EQ'
-      company: 'PK0010001'
-      columnName: 'LEGAL.ID'
-      criteriaValue: 'ACCOUNT'
       
 security:
   login:
     max-attempts: 3
     
     
-fbr:
-  identification:
-   type: 5  
-  bank:
-   mnemonic: NBP	
-
-uom:
-  bank:
-   mnemonic: UOM
-  reserved:     
-
-
-bzu:
-  username : nbp@361
-  password : NBP@791
   
 service:
   auth:
@@ -138,57 +104,4 @@ service:
     read: 75000
   concurrency:
     maxtotal: 200
-    maxperroute: 100
-
-#simulator key
-mpay.calls.simulator: 0 
-
-slic:
-   billerIdLoan: 1701
-   billerIdPremium: 1702
-  
-bppra:  
-   tenderPrefix: 337
-   supplierPrefix: 787 
-   authticateCall: https://bppdev.vdc.services:7443/api/Aouth/authenticate
-   tokenInquiryCall: https://bppdev.vdc.services:7443/api/Aouth/Inititate-Enquery
-   tenderChallanInquiryCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/RequestChallanByChallanCode
-   tenderChallanPaidCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/MarkChallanPaid   
-   supplierChallanInquiryCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/RequestSupplierChallanByChallanCode
-   supplierChallanPaidCall: https://bppdev.vdc.services:7443/api/ChallanEnquire/MarkSupplierChallanPaid   
-   completeInquiryCall: https://bppdev.vdc.services:7443/api/Aouth/Complete-Enquery  
-   clientSecret: Gsz-mtdhh3aSCscvUsLxUne2piVaoVxRnlhiZZEIJV4bUOiIh_m2SidXkKIh0NDORxL3tJDRsu3eQdfTVpat2dwPjfEi0PP80_a-DYDPrTCNMtKPbMM7B4svjBugW5fd
-   requestFormAuth: client
-   requestFormChallanEnquire: enquirer
-   branchCode: 9211
-   personName: Ali
-   
-
-bise:
-  kohat:
-     username: nbpapitest
-     password: nbpapitest
-   
-   
-lesco:
-   coll_Mechanism_Code: 13
-   bank_Branch_Code: 22001
-  
-pithm:
-   paymentMode: NBP branch
-   
-pu:
- channel: cmd_statement
-
-wasa:
-  consumerCell: "00000000000"
-  payMode: 1
-  tranStatus: 1
- 
-memcached:
-  host: 127.0.0.1
-  port: 11211
-  expireTime: 259200
-
-billerCategory: Offline Biller
-           
+    maxperroute: 100           
