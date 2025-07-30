@@ -18,6 +18,14 @@ git branch -M main
 git push -u origin main
 ```
 
+Implement translation managent System below :
+1) Perform login authentication.
+1) Perform CRUD operation on translation generation.
+2) Junit test cases.
+3) Docker File.
+4) vulnerbilty report.
+5) Efficient code style
+
 ## Integrate with your tools
 
 - [ ] [Set up project integrations](/tms-api-/-/settings/integrations)
