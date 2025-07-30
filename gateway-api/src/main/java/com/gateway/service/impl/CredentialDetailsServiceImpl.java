@@ -1,6 +1,5 @@
 package com.gateway.service.impl;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import com.gateway.entity.Credential;
 import com.gateway.repository.CredentialDao;
 import com.gateway.request.AuthenticationRequest;
 import com.gateway.response.AuthenticationResponse;
-import com.gateway.service.AuditLoggingService;
 import com.gateway.service.CredentialDetailsService;
 import com.gateway.utils.Constants;
 import com.gateway.utils.JwtTokenUtil;
@@ -38,9 +36,6 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-
-//	@Autowired
-//	private AuditLoggingService auditLoggingService;
 
 	@Value("${security.login.max-attempts}")
 	private int maxAttempts;
@@ -114,29 +109,19 @@ public class CredentialDetailsServiceImpl implements CredentialDetailsService {
 			return response;
 		} finally {
 
-			Date requestDatetime = new Date();
 			try {
 
 				ObjectMapper reqMapper = new ObjectMapper();
 				String requestAsString = reqMapper.writeValueAsString(authenticationRequest);
 
+				Map<String, Object> map = reqMapper.readValue(requestAsString,
+						new TypeReference<Map<String, Object>>() {
+						});
+
+				map.remove("username");
+				map.remove("password");
+
 				
-		        Map<String, Object> map = reqMapper.readValue(requestAsString, new TypeReference<Map<String, Object>>() {});
-
-		        map.remove("username");
-		        map.remove("password");
-		        
-		        String updatedJsonString = reqMapper.writeValueAsString(map);
-
-				
-				ObjectMapper respMapper = new ObjectMapper();
-				String responseAsString = respMapper.writeValueAsString(response);
-
-//				auditLoggingService.auditLog("Authentication", response.getResponseCode(),
-//						response.getResponseDescription(), updatedJsonString, responseAsString, requestDatetime,
-//						requestDatetime, null, null, null, authenticationRequest.getChannel(),
-//						authenticationRequest.getUsername());
-
 			} catch (Exception ex) {
 				return response;
 			}

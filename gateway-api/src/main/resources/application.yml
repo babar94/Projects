@@ -21,7 +21,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.0.110.3:1440;databaseName=BEOE_BACKOFFICE_NEW;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
+    url: jdbc:sqlserver://localhost;databaseName=tms;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=false  
 
     username : ENC(aF3V2Gker0iesnTTR30h2c7MVmCyi8kV)
     password : ENC(lG2+V+BWsvTE1yGscQoO/IF9dM+xU3ea)
@@ -57,9 +57,7 @@ api:
   description: REST Services for interacting with the exchange
   version: 1.0
   contact: 
-  name: Translation Management System
-  link: http://www.paysyslabs.com/
-  email: info@paysyslabs.com
+  name: Translation Management System 
   url-patterns: /api/v1/*
 
 
@@ -90,8 +88,6 @@ service:
     rda:
       password-length: 10
       default-package: 1  
-  url:
-    queue: http://10.0.110.1:7033/nbpl/queueforwarding/
     
   thread-pool:
     notification: 4
