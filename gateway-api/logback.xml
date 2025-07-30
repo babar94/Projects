@@ -26,15 +26,6 @@
 		<appender-ref ref="STDOUT" />
 	</root>
 
-<!--  
-	<logger name="com.zaxxer.hikari" level="INFO" />
-	<logger name="org.postgresql" level="INFO" />
-	<logger name="com.paysyslabs.rest" level="DEBUG" />
-	<logger name="org.springframework.boot.actuate.audit.listener"
-		level="ERROR" />
-	<logger
-		name="org.apache.http.client.protocol.RequestTargetAuthentication"
-		level="ERROR" />
--->
+
 
 </configuration>
