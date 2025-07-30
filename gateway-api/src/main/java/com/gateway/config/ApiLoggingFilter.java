@@ -1,4 +1,3 @@
-package com.gateway.config;
 //package com.gateway.config;
 //
 //import java.io.IOException;

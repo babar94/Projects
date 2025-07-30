@@ -1,46 +1,46 @@
-2025-07-29 11:28:00,214 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
-2025-07-29 11:28:00,268 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 22516 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
-2025-07-29 11:28:00,269 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
-2025-07-29 11:28:00,269 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
-2025-07-29 11:28:00,314 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@7ee55e70
-2025-07-29 11:28:01,302 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-29 11:28:01,324 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
-2025-07-29 11:28:01,446 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 131 ms. Found 17 JPA repository interfaces.
-2025-07-29 11:28:01,732 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
-2025-07-29 11:28:01,733 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2025-07-29 11:28:01,734 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2025-07-29 11:28:01,735 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:28:01,735 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:28:01,735 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:28:02,030 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 11:28:02,030 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 11:28:02,031 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-07-29 11:28:02,068 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8082 (http)
-2025-07-29 11:28:02,080 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8082"]
-2025-07-29 11:28:02,083 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
-2025-07-29 11:28:02,085 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
-2025-07-29 11:28:02,158 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
-2025-07-29 11:28:02,159 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-07-29 11:28:02,159 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1845 ms
-2025-07-29 11:28:02,198 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2025-07-29 11:28:02,206 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2025-07-29 11:28:02,209 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2025-07-29 11:28:02,221 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@1805383 with name: jasyptStringEncryptor
-2025-07-29 11:28:02,392 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-29 11:28:02,484 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
-2025-07-29 11:28:02,536 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
-2025-07-29 11:28:02,833 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-29 11:28:02,875 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
-2025-07-29 11:28:03,366 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: a9408249-d3fd-447d-b472-20670f93a128
-2025-07-29 11:28:03,368 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
-2025-07-29 11:28:03,423 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-29 11:28:03,424 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
-2025-07-29 11:28:03,536 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
+2025-07-30 11:26:20,001 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 11:26:20,059 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 14424 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
+2025-07-30 11:26:20,060 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
+2025-07-30 11:26:20,061 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
+2025-07-30 11:26:20,107 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@c0b41d6
+2025-07-30 11:26:21,185 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-30 11:26:21,205 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
+2025-07-30 11:26:21,335 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 139 ms. Found 17 JPA repository interfaces.
+2025-07-30 11:26:21,652 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
+2025-07-30 11:26:21,653 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:26:21,654 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:26:21,654 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:21,654 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:21,655 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:21,985 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:26:21,986 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:26:21,987 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-07-30 11:26:22,022 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8085 (http)
+2025-07-30 11:26:22,037 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:26:22,040 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
+2025-07-30 11:26:22,040 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
+2025-07-30 11:26:22,125 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
+2025-07-30 11:26:22,126 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2025-07-30 11:26:22,126 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 2019 ms
+2025-07-30 11:26:22,165 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
+2025-07-30 11:26:22,174 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
+2025-07-30 11:26:22,176 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
+2025-07-30 11:26:22,190 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@30fbc23 with name: jasyptStringEncryptor
+2025-07-30 11:26:22,379 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-30 11:26:22,447 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-07-30 11:26:22,491 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
+2025-07-30 11:26:22,863 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-30 11:26:22,910 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
+2025-07-30 11:26:23,447 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 341edc5d-fdb4-4a67-bfd5-ccec87faea89
+2025-07-30 11:26:23,450 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
+2025-07-30 11:26:23,502 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-30 11:26:23,506 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
+2025-07-30 11:26:23,636 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (sql-pool)']
 	Database driver: undefined/unknown
 	Database version: 11.0
@@ -48,9 +48,9 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-07-29 11:28:05,245 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-29 11:28:06,599 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
-2025-07-29 11:28:06,712 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
+2025-07-30 11:26:25,803 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-30 11:26:26,872 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
+2025-07-30 11:26:26,907 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
 	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576)
@@ -189,248 +189,35 @@ Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'FK2bqhnj
 	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
 	... 122 common frames omitted
-2025-07-29 11:28:06,717 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table biller_configuration alter column biller_address varchar(100)
-2025-07-29 11:28:06,825 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table biller_configuration alter column created_date date
-2025-07-29 11:40:46,417 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
-2025-07-29 11:40:46,469 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 23320 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
-2025-07-29 11:40:46,470 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
-2025-07-29 11:40:46,471 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
-2025-07-29 11:40:46,518 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@7ee55e70
-2025-07-29 11:40:47,900 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-29 11:40:47,932 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
-2025-07-29 11:40:48,082 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 162 ms. Found 17 JPA repository interfaces.
-2025-07-29 11:40:48,391 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
-2025-07-29 11:40:48,392 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:40:48,393 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 11:40:48,705 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 11:40:48,706 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 11:40:48,706 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-07-29 11:40:48,734 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8082 (http)
-2025-07-29 11:40:48,749 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8082"]
-2025-07-29 11:40:48,751 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
-2025-07-29 11:40:48,752 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
-2025-07-29 11:40:48,825 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
-2025-07-29 11:40:48,825 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-07-29 11:40:48,825 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 2307 ms
-2025-07-29 11:40:48,860 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2025-07-29 11:40:48,868 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2025-07-29 11:40:48,870 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2025-07-29 11:40:48,882 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@9f0fc36 with name: jasyptStringEncryptor
-2025-07-29 11:40:49,066 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-29 11:40:49,179 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
-2025-07-29 11:40:49,231 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
-2025-07-29 11:40:49,572 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-29 11:40:49,615 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
-2025-07-29 11:40:50,080 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 3b6d6b22-786c-4db1-a46c-661052bf0f6c
-2025-07-29 11:40:50,084 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
-2025-07-29 11:40:50,128 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-29 11:40:50,129 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
-2025-07-29 11:40:50,222 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (sql-pool)']
-	Database driver: undefined/unknown
-	Database version: 11.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-07-29 11:40:51,864 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-29 11:40:52,948 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
-2025-07-29 11:40:52,989 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:516)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:334)
-	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:233)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
-	at java.base/java.util.HashMap.forEach(HashMap.java:1421)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1517)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
-	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1725)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1474)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768)
-	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1745)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768)
-	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:230)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:184)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:179)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:164)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:96)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245)
-	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52)
-	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4428)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1160)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:716)
-	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:769)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1160)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:716)
-	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:412)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:866)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351)
-	at com.gateway.Application.main(Application.java:22)
-Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.
-	at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(SQLServerException.java:276)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.getNextResult(SQLServerStatement.java:1787)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.doExecuteStatement(SQLServerStatement.java:975)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement$StmtExecCmd.doExecute(SQLServerStatement.java:869)
-	at com.microsoft.sqlserver.jdbc.TDSCommand.execute(IOBuffer.java:7745)
-	at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(SQLServerConnection.java:4700)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeCommand(SQLServerStatement.java:321)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeStatement(SQLServerStatement.java:253)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.execute(SQLServerStatement.java:842)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:95)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
-	... 122 common frames omitted
-2025-07-29 11:40:52,997 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table biller_configuration alter column modified_date date
-2025-07-29 11:40:53,057 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table biller_credentials (id bigint identity not null, biller_id varchar(255) not null, biller_name varchar(255) not null, created_at datetime2(6), modified_at datetime2(6), password varchar(255) not null, status bit, username varchar(255) not null, primary key (id))
-2025-07-29 11:40:53,102 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table nbp_fee_type (id bigint identity not null, fees float(53), fees_type varchar(255), payment_id bigint, source_table varchar(255), type_detail varchar(255), primary key (id))
-2025-07-29 11:40:53,138 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table payment_log alter column bank_code varchar(255)
-2025-07-29 11:40:53,172 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table payment_log alter column bank_name varchar(255)
-2025-07-29 11:40:53,215 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table payment_log alter column branch_code varchar(255)
-2025-07-29 11:40:53,247 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table payment_log alter column branch_name varchar(255)
-2025-07-29 11:40:53,280 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table payment_log alter column fee_detail varchar(500)
-2025-07-29 11:40:53,316 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table pending_payments add biller_id varchar(255)
-2025-07-29 11:40:53,352 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table pg_payment_log alter column name varchar(255)
-2025-07-29 11:40:53,389 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table pg_payment_log alter column nbp_discount_type varchar(255)
-2025-07-29 11:40:53,423 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table pg_payment_log alter column others_discount_type varchar(255)
-2025-07-29 11:40:53,458 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table reserved_field_attributes (id bigint identity not null, biller_id varchar(255), biller_name varchar(255), reserved_field1 varchar(255), reserved_field10 varchar(255), reserved_field2 varchar(255), reserved_field3 varchar(255), reserved_field4 varchar(255), reserved_field5 varchar(255), reserved_field6 varchar(255), reserved_field7 varchar(255), reserved_field8 varchar(255), reserved_field9 varchar(255), primary key (id))
-2025-07-29 11:40:53,502 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translation_tags (id bigint identity not null, tag varchar(255), translation_id bigint, primary key (id))
-2025-07-29 11:40:53,539 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translations (id bigint identity not null, content varchar(255), locale varchar(255), translation_key varchar(255), primary key (id))
-2025-07-29 11:40:53,572 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table biller_credentials drop constraint UKfbyi2b9o8vndnr9htaunmj6ma
-2025-07-29 11:40:53,603 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table biller_credentials add constraint UKfbyi2b9o8vndnr9htaunmj6ma unique (biller_id)
-2025-07-29 11:40:53,800 [main] DEBUG [SQL] - [USER=""] - [REF=""] drop index translations.UK86mkdawbitdf0x20h3kmcgv94
-2025-07-29 11:40:53,836 [main] DEBUG [SQL] - [USER=""] - [REF=""] create unique nonclustered index UK86mkdawbitdf0x20h3kmcgv94 on translations (translation_key, locale) where translation_key is not null and locale is not null
-2025-07-29 11:40:54,021 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table translation_tags add constraint FK5jbff8hb9ejknn5guux3q5us7 foreign key (translation_id) references translations
-2025-07-29 11:40:54,056 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-07-29 11:40:54,388 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-07-29 11:40:54,425 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
-2025-07-29 11:40:54,425 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
-2025-07-29 11:40:54,451 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
-2025-07-29 11:40:54,455 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
-2025-07-29 11:40:54,455 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
-2025-07-29 11:40:54,455 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
-2025-07-29 11:40:54,533 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-07-29 11:40:54,534 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-07-29 11:40:55,298 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
-2025-07-29 11:40:55,401 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
-2025-07-29 11:40:55,585 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-07-29 11:40:55,641 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-07-29 11:40:55,732 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
-2025-07-29 11:40:56,242 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8082"]
-2025-07-29 11:40:56,301 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8082 (http) with context path '/'
-2025-07-29 11:40:56,303 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
-2025-07-29 11:40:56,303 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
-2025-07-29 11:40:56,303 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
-2025-07-29 11:40:56,303 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
-2025-07-29 11:40:56,304 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
-2025-07-29 11:40:56,304 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
-2025-07-29 11:40:56,304 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
-2025-07-29 11:40:56,304 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
-2025-07-29 11:40:56,304 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 11:40:56,304 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 11:40:56,304 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 11:40:56,316 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
+2025-07-30 11:26:27,182 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-30 11:26:27,483 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-30 11:26:27,517 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
+2025-07-30 11:26:27,517 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
+2025-07-30 11:26:27,544 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
+2025-07-30 11:26:27,547 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
+2025-07-30 11:26:27,548 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
+2025-07-30 11:26:27,548 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
+2025-07-30 11:26:27,642 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-07-30 11:26:27,643 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-07-30 11:26:28,499 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
+2025-07-30 11:26:28,579 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-07-30 11:26:28,762 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-30 11:26:28,815 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-30 11:26:28,909 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
+2025-07-30 11:26:29,503 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:26:29,560 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8085 (http) with context path '/'
+2025-07-30 11:26:29,561 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
+2025-07-30 11:26:29,561 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
+2025-07-30 11:26:29,561 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
+2025-07-30 11:26:29,561 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
+2025-07-30 11:26:29,562 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
+2025-07-30 11:26:29,562 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:26:29,562 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:26:29,562 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
+2025-07-30 11:26:29,562 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:26:29,562 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:29,562 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:26:29,577 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
 
 
 ============================
@@ -1896,52 +1683,52 @@ Unconditional classes:
 
 
 
-2025-07-29 11:40:56,320 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 10.613 seconds (process running for 14.883)
-2025-07-29 11:40:56,321 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
-2025-07-29 11:40:56,323 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
-2025-07-29 16:47:12,282 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
-2025-07-29 16:47:12,513 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 28352 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
-2025-07-29 16:47:12,517 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
-2025-07-29 16:47:12,521 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
-2025-07-29 16:47:12,673 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@1a15b789
-2025-07-29 16:47:13,841 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-29 16:47:13,861 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
-2025-07-29 16:47:13,995 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 139 ms. Found 17 JPA repository interfaces.
-2025-07-29 16:47:14,247 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
-2025-07-29 16:47:14,248 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 16:47:14,250 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 16:47:14,250 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 16:47:14,250 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 16:47:14,250 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 16:47:14,250 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2025-07-29 16:47:14,251 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2025-07-29 16:47:14,251 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 16:47:14,251 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 16:47:14,251 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 16:47:14,499 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 16:47:14,499 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 16:47:14,499 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-07-29 16:47:14,528 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8082 (http)
-2025-07-29 16:47:14,541 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8082"]
-2025-07-29 16:47:14,543 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
-2025-07-29 16:47:14,544 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
-2025-07-29 16:47:14,646 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
-2025-07-29 16:47:14,646 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-07-29 16:47:14,647 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1974 ms
-2025-07-29 16:47:14,693 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2025-07-29 16:47:14,703 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2025-07-29 16:47:14,706 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2025-07-29 16:47:14,726 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@239b98cb with name: jasyptStringEncryptor
-2025-07-29 16:47:14,897 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-29 16:47:14,955 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
-2025-07-29 16:47:14,995 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
-2025-07-29 16:47:15,253 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-29 16:47:15,281 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
-2025-07-29 16:47:15,783 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 8a5881f8-2fcc-46dd-ab37-7364f77287e6
-2025-07-29 16:47:15,785 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
-2025-07-29 16:47:15,813 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-29 16:47:15,814 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
-2025-07-29 16:47:15,917 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
+2025-07-30 11:26:29,582 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 10.22 seconds (process running for 14.163)
+2025-07-30 11:26:29,584 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
+2025-07-30 11:26:29,587 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2025-07-30 11:26:36,319 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 11:26:36,371 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 17920 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
+2025-07-30 11:26:36,372 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
+2025-07-30 11:26:36,372 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
+2025-07-30 11:26:36,419 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@4837595f
+2025-07-30 11:26:37,392 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-30 11:26:37,419 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
+2025-07-30 11:26:37,559 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 151 ms. Found 17 JPA repository interfaces.
+2025-07-30 11:26:37,869 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
+2025-07-30 11:26:37,870 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:26:37,871 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:26:37,872 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:37,872 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:37,872 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:37,872 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
+2025-07-30 11:26:37,873 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
+2025-07-30 11:26:37,873 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:37,873 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:37,873 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:26:38,157 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:26:38,157 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:26:38,158 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-07-30 11:26:38,189 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8085 (http)
+2025-07-30 11:26:38,200 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:26:38,203 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
+2025-07-30 11:26:38,204 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
+2025-07-30 11:26:38,272 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
+2025-07-30 11:26:38,273 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2025-07-30 11:26:38,273 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1854 ms
+2025-07-30 11:26:38,307 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
+2025-07-30 11:26:38,321 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
+2025-07-30 11:26:38,323 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
+2025-07-30 11:26:38,334 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@5cc3e49b with name: jasyptStringEncryptor
+2025-07-30 11:26:38,508 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-30 11:26:38,558 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-07-30 11:26:38,600 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
+2025-07-30 11:26:38,874 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-30 11:26:38,906 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
+2025-07-30 11:26:39,418 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 101be00f-7411-41e1-9642-1cd7ace74a2b
+2025-07-30 11:26:39,421 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
+2025-07-30 11:26:39,452 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-30 11:26:39,453 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
+2025-07-30 11:26:39,555 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (sql-pool)']
 	Database driver: undefined/unknown
 	Database version: 11.0
@@ -1949,9 +1736,9 @@ Unconditional classes:
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-07-29 16:47:17,112 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-29 16:47:18,294 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
-2025-07-29 16:47:18,338 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
+2025-07-30 11:26:41,000 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-30 11:26:42,102 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
+2025-07-30 11:26:42,141 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
 	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576)
@@ -2090,40 +1877,35 @@ Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'FK2bqhnj
 	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
 	... 122 common frames omitted
-2025-07-29 16:47:18,356 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translation_tags (id bigint identity not null, tag varchar(255), translation_id bigint, primary key (id))
-2025-07-29 16:47:18,395 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translations (id bigint identity not null, content varchar(255), locale varchar(255), translation_key varchar(255), primary key (id))
-2025-07-29 16:47:18,478 [main] DEBUG [SQL] - [USER=""] - [REF=""] drop index translations.UK86mkdawbitdf0x20h3kmcgv94
-2025-07-29 16:47:18,519 [main] DEBUG [SQL] - [USER=""] - [REF=""] create unique nonclustered index UK86mkdawbitdf0x20h3kmcgv94 on translations (translation_key, locale) where translation_key is not null and locale is not null
-2025-07-29 16:47:18,693 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table translation_tags add constraint FK5jbff8hb9ejknn5guux3q5us7 foreign key (translation_id) references translations
-2025-07-29 16:47:18,739 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-07-29 16:47:18,953 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-07-29 16:47:18,974 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
-2025-07-29 16:47:18,974 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
-2025-07-29 16:47:18,994 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
-2025-07-29 16:47:18,996 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
-2025-07-29 16:47:18,997 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
-2025-07-29 16:47:18,997 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
-2025-07-29 16:47:19,046 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-07-29 16:47:19,047 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-07-29 16:47:19,581 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
-2025-07-29 16:47:19,649 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
-2025-07-29 16:47:19,792 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-07-29 16:47:19,845 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-07-29 16:47:19,928 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
-2025-07-29 16:47:20,467 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8082"]
-2025-07-29 16:47:20,514 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8082 (http) with context path '/'
-2025-07-29 16:47:20,515 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
-2025-07-29 16:47:20,517 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
-2025-07-29 16:47:20,517 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 16:47:20,517 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 16:47:20,517 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 16:47:20,527 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
+2025-07-30 11:26:42,452 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-30 11:26:42,735 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-30 11:26:42,767 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
+2025-07-30 11:26:42,767 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
+2025-07-30 11:26:42,789 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
+2025-07-30 11:26:42,794 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
+2025-07-30 11:26:42,795 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
+2025-07-30 11:26:42,795 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
+2025-07-30 11:26:42,865 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-07-30 11:26:42,866 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-07-30 11:26:43,540 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
+2025-07-30 11:26:43,630 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-07-30 11:26:43,828 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-30 11:26:43,890 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-30 11:26:43,972 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
+2025-07-30 11:26:44,557 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:26:44,594 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8085 (http) with context path '/'
+2025-07-30 11:26:44,596 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
+2025-07-30 11:26:44,596 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
+2025-07-30 11:26:44,596 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
+2025-07-30 11:26:44,596 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
+2025-07-30 11:26:44,596 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
+2025-07-30 11:26:44,597 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:26:44,597 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:26:44,597 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
+2025-07-30 11:26:44,597 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:26:44,597 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:26:44,597 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:26:44,612 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
 
 
 ============================
@@ -3589,79 +3371,52 @@ Unconditional classes:
 
 
 
-2025-07-29 16:47:20,531 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 8.673 seconds (process running for 9.376)
-2025-07-29 16:47:20,532 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
-2025-07-29 16:47:20,534 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
-2025-07-29 16:47:57,760 [http-nio-8082-exec-2] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-07-29 16:47:57,761 [http-nio-8082-exec-2] INFO  [DispatcherServlet] - [USER=""] - [REF=""] Initializing Servlet 'dispatcherServlet'
-2025-07-29 16:47:57,761 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected StandardServletMultipartResolver
-2025-07-29 16:47:57,762 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected AcceptHeaderLocaleResolver
-2025-07-29 16:47:57,762 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected FixedThemeResolver
-2025-07-29 16:47:57,762 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@6a651151
-2025-07-29 16:47:57,764 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected org.springframework.web.servlet.support.SessionFlashMapManager@8108420
-2025-07-29 16:47:57,764 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2025-07-29 16:47:57,764 [http-nio-8082-exec-2] INFO  [DispatcherServlet] - [USER=""] - [REF=""] Completed initialization in 3 ms
-2025-07-29 16:47:57,788 [http-nio-8082-exec-2] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
-2025-07-29 16:47:57,788 [http-nio-8082-exec-2] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token does not begin with Bearer String
-2025-07-29 16:47:57,795 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/authenticate", parameters={}
-2025-07-29 16:47:57,796 [http-nio-8082-exec-2] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.AuthenticationController#createAuthenticationToken(AuthenticationRequest, HttpServletRequest)
-2025-07-29 16:47:57,861 [http-nio-8082-exec-2] INFO  [CredentialDetailsServiceImpl] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - Calling Customer Inquiry
-2025-07-29 16:47:57,946 [http-nio-8082-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=? and c1_0.channel_name=? and c1_0.is_enable=?
-2025-07-29 16:47:58,115 [http-nio-8082-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
-2025-07-29 17:46:19,849 [RMI TCP Connection(61)-127.0.0.1] INFO  [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application shutdown requested.
-2025-07-29 17:46:19,867 [RMI TCP Connection(61)-127.0.0.1] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
-2025-07-29 17:46:19,874 [RMI TCP Connection(61)-127.0.0.1] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@1a15b789, started on Tue Jul 29 16:47:12 PKT 2025
-2025-07-29 17:46:19,922 [RMI TCP Connection(63)-127.0.0.1] INFO  [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application shutdown requested.
-2025-07-29 17:46:19,987 [RMI TCP Connection(61)-127.0.0.1] INFO  [GracefulShutdown] - [USER=""] - [REF=""] Commencing graceful shutdown. Waiting for active requests to complete
-2025-07-29 17:46:20,005 [tomcat-shutdown] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Pausing ProtocolHandler ["http-nio-8082"]
-2025-07-29 17:46:20,308 [tomcat-shutdown] INFO  [GracefulShutdown] - [USER=""] - [REF=""] Graceful shutdown complete
-2025-07-29 17:46:20,315 [RMI TCP Connection(61)-127.0.0.1] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Stopping ProtocolHandler ["http-nio-8082"]
-2025-07-29 17:46:20,349 [RMI TCP Connection(61)-127.0.0.1] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-07-29 17:46:20,390 [RMI TCP Connection(61)-127.0.0.1] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Shutdown initiated...
-2025-07-29 17:46:20,397 [RMI TCP Connection(61)-127.0.0.1] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Shutdown completed.
-2025-07-29 18:59:52,726 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
-2025-07-29 18:59:52,773 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 4856 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
-2025-07-29 18:59:52,774 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
-2025-07-29 18:59:52,775 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
-2025-07-29 18:59:52,818 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@4837595f
-2025-07-29 18:59:53,711 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-29 18:59:53,732 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
-2025-07-29 18:59:53,846 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 124 ms. Found 17 JPA repository interfaces.
-2025-07-29 18:59:54,061 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
-2025-07-29 18:59:54,062 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 18:59:54,063 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 18:59:54,312 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 18:59:54,312 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 18:59:54,313 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-07-29 18:59:54,340 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8085 (http)
-2025-07-29 18:59:54,351 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8085"]
-2025-07-29 18:59:54,353 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
-2025-07-29 18:59:54,354 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
-2025-07-29 18:59:54,423 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
-2025-07-29 18:59:54,424 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-07-29 18:59:54,424 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1606 ms
-2025-07-29 18:59:54,463 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2025-07-29 18:59:54,472 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2025-07-29 18:59:54,474 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2025-07-29 18:59:54,488 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@49cb5030 with name: jasyptStringEncryptor
-2025-07-29 18:59:54,679 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-29 18:59:54,769 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
-2025-07-29 18:59:54,814 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
-2025-07-29 18:59:55,111 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-29 18:59:55,144 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
-2025-07-29 18:59:55,614 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: ae41deaa-3cb0-42c8-970d-631d847796ed
-2025-07-29 18:59:55,616 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
-2025-07-29 18:59:55,648 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-29 18:59:55,649 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
-2025-07-29 18:59:55,733 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
+2025-07-30 11:26:44,616 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 9.01 seconds (process running for 10.261)
+2025-07-30 11:26:44,617 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
+2025-07-30 11:26:44,620 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2025-07-30 11:38:53,561 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 11:38:53,612 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 41956 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
+2025-07-30 11:38:53,615 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
+2025-07-30 11:38:53,616 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
+2025-07-30 11:38:53,669 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@5d332969
+2025-07-30 11:38:54,702 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-30 11:38:54,735 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
+2025-07-30 11:38:54,866 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 153 ms. Found 17 JPA repository interfaces.
+2025-07-30 11:38:55,188 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
+2025-07-30 11:38:55,189 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:38:55,190 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:38:55,190 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:38:55,190 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:38:55,190 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:38:55,191 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
+2025-07-30 11:38:55,191 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
+2025-07-30 11:38:55,191 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:38:55,191 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:38:55,191 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
+2025-07-30 11:38:55,489 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:38:55,489 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
+2025-07-30 11:38:55,490 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-07-30 11:38:55,522 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8085 (http)
+2025-07-30 11:38:55,537 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:38:55,541 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
+2025-07-30 11:38:55,541 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
+2025-07-30 11:38:55,613 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
+2025-07-30 11:38:55,614 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2025-07-30 11:38:55,614 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1945 ms
+2025-07-30 11:38:55,647 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
+2025-07-30 11:38:55,654 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
+2025-07-30 11:38:55,656 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
+2025-07-30 11:38:55,667 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@44384b4a with name: jasyptStringEncryptor
+2025-07-30 11:38:55,858 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-30 11:38:55,910 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-07-30 11:38:55,945 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
+2025-07-30 11:38:56,270 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-30 11:38:56,306 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
+2025-07-30 11:38:56,774 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 7f0abefe-779f-489e-914a-b76bd9337a14
+2025-07-30 11:38:56,777 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
+2025-07-30 11:38:56,809 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-30 11:38:56,811 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
+2025-07-30 11:38:56,906 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (sql-pool)']
 	Database driver: undefined/unknown
 	Database version: 11.0
@@ -3669,9 +3424,9 @@ Unconditional classes:
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-07-29 18:59:56,982 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-29 18:59:58,392 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
-2025-07-29 18:59:58,430 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
+2025-07-30 11:38:58,545 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-30 11:39:00,210 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
+2025-07-30 11:39:00,253 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
 	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576)
@@ -3810,40 +3565,35 @@ Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'FK2bqhnj
 	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
 	... 122 common frames omitted
-2025-07-29 18:59:58,448 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translation_tags (id bigint identity not null, tag varchar(255), translation_id bigint, primary key (id))
-2025-07-29 18:59:58,485 [main] DEBUG [SQL] - [USER=""] - [REF=""] create table translations (id bigint identity not null, content varchar(255), locale varchar(255), translation_key varchar(255), primary key (id))
-2025-07-29 18:59:58,547 [main] DEBUG [SQL] - [USER=""] - [REF=""] drop index translations.UK86mkdawbitdf0x20h3kmcgv94
-2025-07-29 18:59:58,578 [main] DEBUG [SQL] - [USER=""] - [REF=""] create unique nonclustered index UK86mkdawbitdf0x20h3kmcgv94 on translations (translation_key, locale) where translation_key is not null and locale is not null
-2025-07-29 18:59:58,712 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table translation_tags add constraint FK5jbff8hb9ejknn5guux3q5us7 foreign key (translation_id) references translations
-2025-07-29 18:59:58,747 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-07-29 18:59:58,996 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-07-29 18:59:59,023 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
-2025-07-29 18:59:59,023 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
-2025-07-29 18:59:59,047 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
-2025-07-29 18:59:59,049 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
-2025-07-29 18:59:59,049 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
-2025-07-29 18:59:59,050 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
-2025-07-29 18:59:59,111 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-07-29 18:59:59,111 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-07-29 18:59:59,730 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
-2025-07-29 18:59:59,823 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
-2025-07-29 19:00:00,038 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-07-29 19:00:00,110 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-07-29 19:00:00,195 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
-2025-07-29 19:00:00,678 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8085"]
-2025-07-29 19:00:00,725 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8085 (http) with context path '/'
-2025-07-29 19:00:00,727 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
-2025-07-29 19:00:00,728 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
-2025-07-29 19:00:00,728 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 19:00:00,728 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 19:00:00,728 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 19:00:00,741 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
+2025-07-30 11:39:00,541 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-30 11:39:00,974 [main] INFO  [QueryEnhancerFactory] - [USER=""] - [REF=""] Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-30 11:39:01,013 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtRequestFilter urls=[/*] order=2147483647
+2025-07-30 11:39:01,013 [main] DEBUG [ServletContextInitializerBeans] - [USER=""] - [REF=""] Mapping servlets: dispatcherServlet urls=[/]
+2025-07-30 11:39:01,047 [main] DEBUG [OrderedRequestContextFilter] - [USER=""] - [REF=""] Filter 'requestContextFilter' configured for use
+2025-07-30 11:39:01,053 [main] DEBUG [OrderedCharacterEncodingFilter] - [USER=""] - [REF=""] Filter 'characterEncodingFilter' configured for use
+2025-07-30 11:39:01,053 [main] DEBUG [DelegatingFilterProxyRegistrationBean$1] - [USER=""] - [REF=""] Filter 'springSecurityFilterChain' configured for use
+2025-07-30 11:39:01,053 [main] DEBUG [OrderedFormContentFilter] - [USER=""] - [REF=""] Filter 'formContentFilter' configured for use
+2025-07-30 11:39:01,138 [main] INFO  [InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-07-30 11:39:01,139 [main] WARN  [InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - [USER=""] - [REF=""] Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-07-30 11:39:01,939 [main] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] 11 mappings in 'requestMappingHandlerMapping'
+2025-07-30 11:39:02,052 [main] DEBUG [SimpleUrlHandlerMapping] - [USER=""] - [REF=""] Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-07-30 11:39:02,272 [main] DEBUG [RequestMappingHandlerAdapter] - [USER=""] - [REF=""] ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-30 11:39:02,335 [main] DEBUG [ExceptionHandlerExceptionResolver] - [USER=""] - [REF=""] ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-30 11:39:02,435 [main] DEBUG [SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin] - [USER=""] - [REF=""] Application Admin MBean registered with name 'org.springframework.boot:type=Admin,name=SpringApplication'
+2025-07-30 11:39:03,045 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Starting ProtocolHandler ["http-nio-8085"]
+2025-07-30 11:39:03,080 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat started on port 8085 (http) with context path '/'
+2025-07-30 11:39:03,082 [main] INFO  [RefreshScopeRefreshedEventListener] - [USER=""] - [REF=""] Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
+2025-07-30 11:39:03,083 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source commandLineArgs refreshed
+2025-07-30 11:39:03,083 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemProperties refreshed
+2025-07-30 11:39:03,083 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source systemEnvironment refreshed
+2025-07-30 11:39:03,084 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source random refreshed
+2025-07-30 11:39:03,084 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:39:03,084 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
+2025-07-30 11:39:03,084 [main] INFO  [CachingDelegateEncryptablePropertySource] - [USER=""] - [REF=""] Property Source applicationInfo refreshed
+2025-07-30 11:39:03,084 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-07-30 11:39:03,084 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-07-30 11:39:03,084 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
+2025-07-30 11:39:03,098 [main] DEBUG [ConditionEvaluationReportLogger] - [USER=""] - [REF=""] 
 
 
 ============================
@@ -5309,198 +5059,191 @@ Unconditional classes:
 
 
 
-2025-07-29 19:00:00,744 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 8.546 seconds (process running for 9.451)
-2025-07-29 19:00:00,756 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
-2025-07-29 19:00:00,759 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
-2025-07-29 19:00:41,887 [background-preinit] INFO  [Version] - [USER=""] - [REF=""] HV000001: Hibernate Validator 8.0.2.Final
-2025-07-29 19:00:41,935 [main] INFO  [Application] - [USER=""] - [REF=""] Starting Application using Java 17.0.4.1 with PID 26980 (D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api\target\classes started by Syed Babar Kamal in D:\Personal\Transaction Managment System\TMS\tms-service\gateway-api)
-2025-07-29 19:00:41,937 [main] INFO  [Application] - [USER=""] - [REF=""] No active profile set, falling back to 1 default profile: "default"
-2025-07-29 19:00:41,937 [main] DEBUG [SpringApplication] - [USER=""] - [REF=""] Loading source class com.gateway.Application
-2025-07-29 19:00:41,979 [main] DEBUG [AnnotationConfigServletWebServerApplicationContext] - [USER=""] - [REF=""] Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@4837595f
-2025-07-29 19:00:42,811 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-29 19:00:42,830 [main] DEBUG [AutoConfigurationPackages] - [USER=""] - [REF=""] @EnableAutoConfiguration was declared on a class in the package 'com.gateway'. Automatic @Repository and @Entity scanning is enabled.
-2025-07-29 19:00:42,925 [main] INFO  [RepositoryConfigurationDelegate] - [USER=""] - [REF=""] Finished Spring Data repository scanning in 103 ms. Found 17 JPA repository interfaces.
-2025-07-29 19:00:43,157 [main] INFO  [EnableEncryptablePropertiesBeanFactoryPostProcessor] - [USER=""] - [REF=""] Post-processing PropertySource instances
-2025-07-29 19:00:43,157 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2025-07-29 19:00:43,158 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource commandLineArgs [org.springframework.core.env.SimpleCommandLinePropertySource] to EncryptableEnumerablePropertySourceWrapper
-2025-07-29 19:00:43,158 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 19:00:43,158 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Skipping PropertySource servletContextInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
-2025-07-29 19:00:43,158 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 19:00:43,158 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2025-07-29 19:00:43,159 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2025-07-29 19:00:43,159 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.properties]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 19:00:43,159 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 19:00:43,159 [main] INFO  [EncryptablePropertySourceConverter] - [USER=""] - [REF=""] Converting PropertySource applicationInfo [org.springframework.boot.ApplicationInfoPropertySource] to EncryptableMapPropertySourceWrapper
-2025-07-29 19:00:43,395 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 19:00:43,396 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] Code archive: C:\Users\Syed Babar Kamal\.m2\repository\org\springframework\boot\spring-boot\3.5.0\spring-boot-3.5.0.jar
-2025-07-29 19:00:43,396 [main] DEBUG [TomcatServletWebServerFactory] - [USER=""] - [REF=""] None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-07-29 19:00:43,425 [main] INFO  [TomcatWebServer] - [USER=""] - [REF=""] Tomcat initialized with port 8085 (http)
-2025-07-29 19:00:43,439 [main] INFO  [Http11NioProtocol] - [USER=""] - [REF=""] Initializing ProtocolHandler ["http-nio-8085"]
-2025-07-29 19:00:43,441 [main] INFO  [StandardService] - [USER=""] - [REF=""] Starting service [Tomcat]
-2025-07-29 19:00:43,441 [main] INFO  [StandardEngine] - [USER=""] - [REF=""] Starting Servlet engine: [Apache Tomcat/11.0.8]
-2025-07-29 19:00:43,509 [main] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring embedded WebApplicationContext
-2025-07-29 19:00:43,510 [main] DEBUG [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-07-29 19:00:43,510 [main] INFO  [ServletWebServerApplicationContext] - [USER=""] - [REF=""] Root WebApplicationContext: initialization completed in 1531 ms
-2025-07-29 19:00:43,546 [main] INFO  [DefaultLazyPropertyFilter] - [USER=""] - [REF=""] Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2025-07-29 19:00:43,554 [main] INFO  [DefaultLazyPropertyResolver] - [USER=""] - [REF=""] Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2025-07-29 19:00:43,557 [main] INFO  [DefaultLazyPropertyDetector] - [USER=""] - [REF=""] Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2025-07-29 19:00:43,568 [main] INFO  [DefaultLazyEncryptor] - [USER=""] - [REF=""] Found Custom Encryptor Bean org.jasypt.encryption.pbe.StandardPBEStringEncryptor@7e58f697 with name: jasyptStringEncryptor
-2025-07-29 19:00:43,712 [main] INFO  [LogHelper] - [USER=""] - [REF=""] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-29 19:00:43,758 [main] INFO  [Version] - [USER=""] - [REF=""] HHH000412: Hibernate ORM core version 6.6.15.Final
-2025-07-29 19:00:43,791 [main] INFO  [RegionFactoryInitiator] - [USER=""] - [REF=""] HHH000026: Second-level cache disabled
-2025-07-29 19:00:44,045 [main] INFO  [SpringPersistenceUnitInfo] - [USER=""] - [REF=""] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-29 19:00:44,078 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Starting...
-2025-07-29 19:00:44,500 [main] INFO  [HikariPool] - [USER=""] - [REF=""] sql-pool - Added connection ConnectionID:1 ClientConnectionId: 6568241f-4422-4608-bb2a-9a3b1efc421f
-2025-07-29 19:00:44,502 [main] INFO  [HikariDataSource] - [USER=""] - [REF=""] sql-pool - Start completed.
-2025-07-29 19:00:44,531 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000025: SQLServer2012Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-29 19:00:44,533 [main] WARN  [deprecation] - [USER=""] - [REF=""] HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
-2025-07-29 19:00:44,615 [main] INFO  [pooling] - [USER=""] - [REF=""] HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (sql-pool)']
-	Database driver: undefined/unknown
-	Database version: 11.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-07-29 19:00:45,845 [main] INFO  [JtaPlatformInitiator] - [USER=""] - [REF=""] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-29 19:00:47,079 [main] DEBUG [SQL] - [USER=""] - [REF=""] alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)
-2025-07-29 19:00:47,114 [main] WARN  [ExceptionHandlerLoggedImpl] - [USER=""] - [REF=""] GenerationTarget encountered exception accepting command : Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table api_gw_reserved_fields_mapping alter column biller_id varchar(255)" via JDBC [The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:516)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:334)
-	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:233)
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
-	at java.base/java.util.HashMap.forEach(HashMap.java:1421)
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1517)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
-	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
-	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1725)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1474)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768)
-	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
-	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1745)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:785)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:768)
-	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
-	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:230)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:184)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:179)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:164)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:96)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245)
-	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52)
-	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4428)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1160)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:716)
-	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:769)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1164)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1160)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:716)
-	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:412)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:866)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351)
-	at com.gateway.Application.main(Application.java:22)
-Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: The object 'FK2bqhnjtd6i46tjhxnwdnrqn58' is dependent on column 'biller_id'.
-	at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(SQLServerException.java:276)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.getNextResult(SQLServerStatement.java:1787)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.doExecuteStatement(SQLServerStatement.java:975)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement$StmtExecCmd.doExecute(SQLServerStatement.java:869)
-	at com.microsoft.sqlserver.jdbc.TDSCommand.execute(IOBuffer.java:7745)
-	at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(SQLServerConnection.java:4700)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeCommand(SQLServerStatement.java:321)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeStatement(SQLServerStatement.java:253)
-	at com.microsoft.sqlserver.jdbc.SQLServerStatement.execute(SQLServerStatement.java:842)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:95)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
-	... 122 common frames omitted
-2025-07-29 19:00:47,458 [main] INFO  [LocalContainerEntityManagerFactoryBean] - [USER=""] - [REF=""] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-30 11:39:03,102 [main] INFO  [Application] - [USER=""] - [REF=""] Started Application in 10.198 seconds (process running for 11.536)
+2025-07-30 11:39:03,105 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state LivenessState changed to CORRECT
+2025-07-30 11:39:03,107 [main] DEBUG [ApplicationAvailabilityBean] - [USER=""] - [REF=""] Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2025-07-30 11:39:29,092 [http-nio-8085-exec-1] INFO  [[/]] - [USER=""] - [REF=""] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-30 11:39:29,092 [http-nio-8085-exec-1] INFO  [DispatcherServlet] - [USER=""] - [REF=""] Initializing Servlet 'dispatcherServlet'
+2025-07-30 11:39:29,092 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected StandardServletMultipartResolver
+2025-07-30 11:39:29,092 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected AcceptHeaderLocaleResolver
+2025-07-30 11:39:29,092 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected FixedThemeResolver
+2025-07-30 11:39:29,094 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3a3a0b3b
+2025-07-30 11:39:29,095 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Detected org.springframework.web.servlet.support.SessionFlashMapManager@5d1206e0
+2025-07-30 11:39:29,095 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-07-30 11:39:29,095 [http-nio-8085-exec-1] INFO  [DispatcherServlet] - [USER=""] - [REF=""] Completed initialization in 3 ms
+2025-07-30 11:39:29,123 [http-nio-8085-exec-1] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:39:29,124 [http-nio-8085-exec-1] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token does not begin with Bearer String
+2025-07-30 11:39:29,130 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/authenticate", parameters={}
+2025-07-30 11:39:29,133 [http-nio-8085-exec-1] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.AuthenticationController#createAuthenticationToken(AuthenticationRequest, HttpServletRequest)
+2025-07-30 11:39:29,232 [http-nio-8085-exec-1] INFO  [CredentialDetailsServiceImpl] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - Calling Customer Inquiry
+2025-07-30 11:39:29,358 [http-nio-8085-exec-1] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=? and c1_0.channel_name=? and c1_0.is_enable=?
+2025-07-30 11:39:29,644 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:45:37,353 [http-nio-8085-exec-5] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:45:37,353 [http-nio-8085-exec-5] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token does not begin with Bearer String
+2025-07-30 11:45:37,354 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/authenticate", parameters={}
+2025-07-30 11:45:37,354 [http-nio-8085-exec-5] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.AuthenticationController#createAuthenticationToken(AuthenticationRequest, HttpServletRequest)
+2025-07-30 11:45:37,356 [http-nio-8085-exec-5] INFO  [CredentialDetailsServiceImpl] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - Calling Customer Inquiry
+2025-07-30 11:45:37,358 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=? and c1_0.channel_name=? and c1_0.is_enable=?
+2025-07-30 11:45:37,601 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:45:37,605 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:45:37,639 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:45:38,318 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.id=?
+2025-07-30 11:45:38,446 [http-nio-8085-exec-5] INFO  [CredentialDetailsServiceImpl] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - Authenticating Customer
+2025-07-30 11:45:38,577 [http-nio-8085-exec-5] INFO  [CredentialDetailsServiceImpl] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - Token Gen
+2025-07-30 11:45:38,595 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:46:43,898 [http-nio-8085-exec-8] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:46:43,944 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:46:43,946 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:46:44,026 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:46:44,030 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/create", parameters={}
+2025-07-30 11:46:44,030 [http-nio-8085-exec-8] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#createTranslation(TranslationCreateRequest)
+2025-07-30 11:46:44,090 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select top (?) t1_0.id from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:46:44,213 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] insert into translations (content,locale,translation_key) values (?,?,?)
+2025-07-30 11:46:44,407 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:46:44,443 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:46:44,561 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:47:05,561 [http-nio-8085-exec-9] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:47:05,562 [http-nio-8085-exec-9] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:47:05,564 [http-nio-8085-exec-9] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:47:05,683 [http-nio-8085-exec-9] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:47:05,687 [http-nio-8085-exec-9] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/create", parameters={}
+2025-07-30 11:47:05,687 [http-nio-8085-exec-9] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#createTranslation(TranslationCreateRequest)
+2025-07-30 11:47:05,691 [http-nio-8085-exec-9] DEBUG [SQL] - [USER=""] - [REF=""] select top (?) t1_0.id from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:47:05,730 [http-nio-8085-exec-9] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:50:25,844 [http-nio-8085-exec-1] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:50:25,846 [http-nio-8085-exec-1] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:50:25,850 [http-nio-8085-exec-1] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:50:25,909 [http-nio-8085-exec-1] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:50:25,912 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/create", parameters={}
+2025-07-30 11:50:25,912 [http-nio-8085-exec-1] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#createTranslation(TranslationCreateRequest)
+2025-07-30 11:50:25,915 [http-nio-8085-exec-1] DEBUG [SQL] - [USER=""] - [REF=""] select top (?) t1_0.id from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:50:25,975 [http-nio-8085-exec-1] DEBUG [SQL] - [USER=""] - [REF=""] insert into translations (content,locale,translation_key) values (?,?,?)
+2025-07-30 11:50:26,095 [http-nio-8085-exec-1] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:50:26,192 [http-nio-8085-exec-1] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:51:13,797 [http-nio-8085-exec-3] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:51:13,800 [http-nio-8085-exec-3] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token has expired
+2025-07-30 11:51:13,803 [http-nio-8085-exec-3] INFO  [JwtAuthenticationEntryPoint] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - INVALID CREDENTIALS
+2025-07-30 11:51:29,728 [http-nio-8085-exec-4] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:51:29,729 [http-nio-8085-exec-4] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:51:29,731 [http-nio-8085-exec-4] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:51:29,790 [http-nio-8085-exec-4] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:51:29,792 [http-nio-8085-exec-4] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signup.title", parameters={}
+2025-07-30 11:51:29,792 [http-nio-8085-exec-4] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:51:29,838 [http-nio-8085-exec-4] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:51:29,953 [http-nio-8085-exec-4] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:52:00,979 [http-nio-8085-exec-5] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:52:00,979 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:52:00,981 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:52:01,042 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:52:01,045 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:52:01,046 [http-nio-8085-exec-5] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:52:01,075 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:52:01,161 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:52:07,819 [http-nio-8085-exec-6] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:52:07,821 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:52:07,824 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:52:07,882 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:52:07,885 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:52:07,885 [http-nio-8085-exec-6] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:52:07,917 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:52:07,995 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] delete tt1_0 from translation_tags tt1_0 where tt1_0.translation_id=?
+2025-07-30 11:52:08,032 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:52:08,068 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] update translations set content=?,locale=?,translation_key=? where id=?
+2025-07-30 11:52:08,165 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:54:01,254 [http-nio-8085-exec-8] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:54:01,255 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:54:01,257 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:54:01,317 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:54:01,320 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:54:01,321 [http-nio-8085-exec-8] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:54:01,356 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:54:01,390 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] delete tt1_0 from translation_tags tt1_0 where tt1_0.translation_id=?
+2025-07-30 11:54:01,417 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:54:01,449 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] update translations set content=?,locale=?,translation_key=? where id=?
+2025-07-30 11:54:01,533 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:55:11,801 [http-nio-8085-exec-2] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:55:11,802 [http-nio-8085-exec-2] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:55:11,805 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:55:11,921 [http-nio-8085-exec-2] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:55:11,925 [http-nio-8085-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:55:11,926 [http-nio-8085-exec-2] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:55:12,014 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:55:12,059 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] delete tt1_0 from translation_tags tt1_0 where tt1_0.translation_id=?
+2025-07-30 11:55:12,100 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:55:12,148 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] update translations set content=?,locale=?,translation_key=? where id=?
+2025-07-30 11:55:12,318 [http-nio-8085-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:56:43,307 [http-nio-8085-exec-5] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:56:43,309 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:56:43,311 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:56:43,442 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:56:43,445 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:56:43,445 [http-nio-8085-exec-5] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:56:43,573 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:56:43,638 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] delete tt1_0 from translation_tags tt1_0 where tt1_0.translation_id=?
+2025-07-30 11:56:43,704 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:56:43,774 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:56:43,942 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 11:57:02,429 [http-nio-8085-exec-6] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 11:57:02,429 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 11:57:02,432 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 11:57:02,514 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 11:57:02,517 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] PUT "/api/v1/update/signIn.title", parameters={}
+2025-07-30 11:57:02,518 [http-nio-8085-exec-6] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#updateTranslation(String, TranslationUpdateRequest)
+2025-07-30 11:57:02,576 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 11:57:02,613 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] delete tt1_0 from translation_tags tt1_0 where tt1_0.translation_id=?
+2025-07-30 11:57:02,652 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:57:02,684 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 11:57:02,790 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 12:00:50,124 [http-nio-8085-exec-8] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:00:50,126 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 12:00:50,129 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 12:00:50,188 [http-nio-8085-exec-8] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 12:00:50,191 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] GET "/api/v1/export", parameters={}
+2025-07-30 12:00:50,191 [http-nio-8085-exec-8] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#exportTranslations()
+2025-07-30 12:00:50,231 [http-nio-8085-exec-8] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0
+2025-07-30 12:00:50,324 [http-nio-8085-exec-8] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8]
+2025-07-30 12:00:50,325 [http-nio-8085-exec-8] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Writing [{home.title={en=home button}, signIn.title={en=Sign In title}}]
+2025-07-30 12:00:50,328 [http-nio-8085-exec-8] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 12:02:07,742 [http-nio-8085-exec-2] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:02:07,744 [http-nio-8085-exec-2] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 12:02:07,748 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 12:02:07,816 [http-nio-8085-exec-2] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 12:02:07,818 [http-nio-8085-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] POST "/api/v1/create", parameters={}
+2025-07-30 12:02:07,818 [http-nio-8085-exec-2] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#createTranslation(TranslationCreateRequest)
+2025-07-30 12:02:07,822 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] select top (?) t1_0.id from translations t1_0 where t1_0.translation_key=? and t1_0.locale=?
+2025-07-30 12:02:07,889 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] insert into translations (content,locale,translation_key) values (?,?,?)
+2025-07-30 12:02:08,027 [http-nio-8085-exec-2] DEBUG [SQL] - [USER=""] - [REF=""] insert into translation_tags (tag,translation_id) values (?,?)
+2025-07-30 12:02:08,130 [http-nio-8085-exec-2] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 12:02:27,872 [http-nio-8085-exec-3] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:02:27,873 [http-nio-8085-exec-3] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 12:02:27,877 [http-nio-8085-exec-3] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 12:02:27,934 [http-nio-8085-exec-3] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 12:02:27,935 [http-nio-8085-exec-3] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] GET "/api/v1/export", parameters={}
+2025-07-30 12:02:27,936 [http-nio-8085-exec-3] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#exportTranslations()
+2025-07-30 12:02:27,965 [http-nio-8085-exec-3] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t1_0.translation_key from translations t1_0
+2025-07-30 12:02:28,046 [http-nio-8085-exec-3] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8]
+2025-07-30 12:02:28,046 [http-nio-8085-exec-3] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Writing [{home.title={en=home button}, signIn.title={en=Sign In title, fr=fr en  tbn}}]
+2025-07-30 12:02:28,047 [http-nio-8085-exec-3] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 12:02:48,446 [http-nio-8085-exec-4] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:02:48,447 [http-nio-8085-exec-4] WARN  [JwtRequestFilter] - [USER=""] - [REF=""] JWT Token has expired
+2025-07-30 12:02:48,448 [http-nio-8085-exec-4] INFO  [JwtAuthenticationEntryPoint] - [USER=""] - [REF=""] CredentialDetailsServiceImpl - INVALID CREDENTIALS
+2025-07-30 12:02:59,813 [http-nio-8085-exec-5] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:02:59,815 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 12:02:59,817 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 12:02:59,919 [http-nio-8085-exec-5] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 12:02:59,922 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] GET "/api/v1/api/translations?locale=en", parameters={masked}
+2025-07-30 12:02:59,923 [http-nio-8085-exec-5] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#getTranslations(String)
+2025-07-30 12:02:59,947 [http-nio-8085-exec-5] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t2_0.translation_id,t2_0.id,t2_0.tag,t1_0.translation_key from translations t1_0 join translation_tags t2_0 on t1_0.id=t2_0.translation_id where t1_0.locale=?
+2025-07-30 12:02:59,998 [http-nio-8085-exec-5] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8]
+2025-07-30 12:02:59,999 [http-nio-8085-exec-5] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Writing [[TranslationResponseDTO(translationKey=home.title, locale=en, content=home button, tags=[web, mobile (truncated)...]
+2025-07-30 12:03:00,004 [http-nio-8085-exec-5] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK
+2025-07-30 12:03:48,767 [http-nio-8085-exec-6] INFO  [JwtRequestFilter] - [USER=""] - [REF=""] JwtRequestFilter execution
+2025-07-30 12:03:48,768 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - Finding user in credentials Table - username:
+2025-07-30 12:03:48,769 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select c1_0.id,c1_0.bank_mnemonic,c1_0.channel_name,c1_0.consumer_number,c1_0.description,c1_0.is_enable,c1_0.password,c1_0.remaining_count,c1_0.reserved_field,c1_0.username from api_gw_credentials c1_0 where c1_0.username=?
+2025-07-30 12:03:48,831 [http-nio-8085-exec-6] INFO  [CustomCredentialsServiceImpl] - [USER=""] - [REF=""] CustomCredentialsServiceImpl - User found with username:
+2025-07-30 12:03:48,835 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] GET "/api/v1/api/translations?locale=fr", parameters={masked}
+2025-07-30 12:03:48,836 [http-nio-8085-exec-6] DEBUG [RequestMappingHandlerMapping] - [USER=""] - [REF=""] Mapped to com.gateway.controller.TranslationController#getTranslations(String)
+2025-07-30 12:03:48,839 [http-nio-8085-exec-6] DEBUG [SQL] - [USER=""] - [REF=""] select t1_0.id,t1_0.content,t1_0.locale,t2_0.translation_id,t2_0.id,t2_0.tag,t1_0.translation_key from translations t1_0 join translation_tags t2_0 on t1_0.id=t2_0.translation_id where t1_0.locale=?
+2025-07-30 12:03:48,871 [http-nio-8085-exec-6] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8]
+2025-07-30 12:03:48,872 [http-nio-8085-exec-6] DEBUG [HttpEntityMethodProcessor] - [USER=""] - [REF=""] Writing [[TranslationResponseDTO(translationKey=signIn.title, locale=fr, content=fr en  tbn, tags=[desktop])]]
+2025-07-30 12:03:48,874 [http-nio-8085-exec-6] DEBUG [DispatcherServlet] - [USER=""] - [REF=""] Completed 200 OK

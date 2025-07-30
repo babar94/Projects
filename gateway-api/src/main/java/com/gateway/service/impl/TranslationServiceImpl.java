@@ -1,5 +1,6 @@
 package com.gateway.service.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class TranslationServiceImpl implements TranslationService {
 	private final TranslationRepository translationRepository;
 	private final TranslationTagRepository tagRepository;
 
+	@Override
 	public ResponseMessage createTranslation(TranslationCreateRequest request) {
 
 		ResponseMessage responseMessage = new ResponseMessage();
@@ -61,7 +63,8 @@ public class TranslationServiceImpl implements TranslationService {
 		return responseMessage;
 	}
 
-    @Transactional
+	@Transactional
+	@Override
 	public ResponseMessage updateTranslation(String translationKey, TranslationUpdateRequest request) {
 		ResponseMessage responseMessage = new ResponseMessage();
 
@@ -91,40 +94,54 @@ public class TranslationServiceImpl implements TranslationService {
 		}
 		return responseMessage;
 	}
-    
-    
-    public List<TranslationResponseDTO> getTranslationsWithTags(String locale) {
-        List<Translation> translations = translationRepository.findAllWithTagsByLocale(locale);
-        return translations.stream().map(t -> {
-            List<String> tags = t.getTags().stream()
-                                 .map(TranslationTag::getTag)
-                                 .collect(Collectors.toList());
-            return new TranslationResponseDTO(
-                t.getTranslationKey(),
-                t.getLocale(),
-                t.getContent(),
-                tags
-            );
-        }).collect(Collectors.toList());
-    }
 
-    
-    @Override
-    public Map<String, Map<String, String>> getAllTranslationsAsJson() {
-        List<Translation> translations = translationRepository.findAll();
+	@Override
+	public List<TranslationResponseDTO> getTranslationsWithTags(String locale) {
 
-        Map<String, Map<String, String>> translationMap = new HashMap<>();
+		try {
 
-        for (Translation translation : translations) {
-            String key = translation.getTranslationKey();
+			List<Translation> translations = translationRepository.findAllWithTagsByLocale(locale);
+			return translations.stream().map(t -> {
+				List<String> tags = t.getTags().stream().map(TranslationTag::getTag).collect(Collectors.toList());
+				return new TranslationResponseDTO(t.getTranslationKey(), t.getLocale(), t.getContent(), tags);
+			}).collect(Collectors.toList());
 
-            translationMap
-                .computeIfAbsent(key, k -> new HashMap<>())
-                .put(translation.getLocale(), translation.getContent());
-        }
+		}
 
-        return translationMap;
-    }
+		catch (Exception e) {
+			LOG.info("Exception occur in GetTranslationsWithTags updated" + e.getMessage());
+			return Collections.emptyList();
+
+		}
+	}
+
+	@Override
+	public Map<String, Map<String, String>> getAllTranslationsAsJson() {
+
+		try {
+
+			List<Translation> translations = translationRepository.findAll();
+
+			Map<String, Map<String, String>> translationMap = new HashMap<>();
+
+			for (Translation translation : translations) {
+				String key = translation.getTranslationKey();
+
+				translationMap.computeIfAbsent(key, k -> new HashMap<>()).put(translation.getLocale(),
+						translation.getContent());
+			}
+
+			return translationMap;
+
+		}
+
+		catch (Exception e) {
+			LOG.info("Exception occur in GetAllTranslationsAsJson updated" + e.getMessage());
+			return Collections.emptyMap();
+
+		}
+
+	}
 
 	private void saveTags(List<String> tags, Translation translation) {
 		if (tags != null) {

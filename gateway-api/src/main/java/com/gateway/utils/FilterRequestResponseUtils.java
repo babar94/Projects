@@ -33,10 +33,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class FilterRequestResponseUtils {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(FilterRequestResponseUtils.class);
-	
-	
+
 	public String getReqHeaders(HttpServletRequest req) throws IOException {
 		String headersList = "";
 
@@ -44,36 +43,34 @@ public class FilterRequestResponseUtils {
 				.collect(Collectors.toMap(h -> h, req::getHeader));
 
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			logger.info("{} : {} , ",entry.getKey(),entry.getValue());
+			logger.info("{} : {} , ", entry.getKey(), entry.getValue());
 			headersList += entry.getKey() + ":" + entry.getValue() + ",";
 		}
-		headersList=org.apache.commons.lang3.StringUtils.chop(headersList);
+		headersList = org.apache.commons.lang3.StringUtils.chop(headersList);
 		return headersList;
 	}
-	
-	
+
 	public String getResHeaders(HttpServletResponse res) throws IOException {
 		String headersList = "";
 
-	     ArrayList<String> names = new ArrayList<>(res.getHeaderNames());
-	     
-			Map<String, String> headers = new HashMap<>();
-			names.forEach(name -> {
-				if (res.getHeader(name) != null) {
-					headers.put(name, res.getHeader(name));
-				}
-			});
-	     
-			for (Map.Entry<String, String> entry : headers.entrySet()) {
-				logger.info("{} : {} , ",entry.getKey(),entry.getValue());
-				headersList += entry.getKey() + ":" + entry.getValue() + ",";
+		ArrayList<String> names = new ArrayList<>(res.getHeaderNames());
+
+		Map<String, String> headers = new HashMap<>();
+		names.forEach(name -> {
+			if (res.getHeader(name) != null) {
+				headers.put(name, res.getHeader(name));
 			}
-			
-		headersList=org.apache.commons.lang3.StringUtils.chop(headersList);
+		});
+
+		for (Map.Entry<String, String> entry : headers.entrySet()) {
+			logger.info("{} : {} , ", entry.getKey(), entry.getValue());
+			headersList += entry.getKey() + ":" + entry.getValue() + ",";
+		}
+
+		headersList = org.apache.commons.lang3.StringUtils.chop(headersList);
 		return headersList;
 	}
 
-	
 //	/ for getting request parameters safely /
 	public Map<String, String> getTypesafeRequestMap(HttpServletRequest request) {
 		Map<String, String> typesafeRequestMap = new HashMap<String, String>();
@@ -215,7 +212,7 @@ public class FilterRequestResponseUtils {
 		}
 
 		public String getContent() {
-			if(bos == null) {
+			if (bos == null) {
 				return "";
 			}
 			return bos.toString();
@@ -384,12 +381,6 @@ public class FilterRequestResponseUtils {
 			original.setStatus(sc);
 		}
 
-//		@SuppressWarnings("deprecation")
-//		@Override
-//		public void setStatus(int sc, String sm) {
-//			original.setStatus(sc, sm);
-//		}
-
 		@Override
 		public String getHeader(String arg0) {
 			return original.getHeader(arg0);
@@ -413,10 +404,8 @@ public class FilterRequestResponseUtils {
 		@Override
 		public void sendRedirect(String location, int sc, boolean clearBuffer) throws IOException {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
-	
 
-	
 }
