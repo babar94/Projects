@@ -13,7 +13,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://github.com/babar94/Spring-boot--Projects.git
+git remote add origin https://github.com/babar94/Projects.git
 git branch -M main
 git push -u origin main
 ```
